@@ -1,0 +1,15 @@
+virtualenv.egg-info
+build
+dist
+lib
+bin
+include
+docs/_build
+.python
+.DS_Store
+*.py[cod]
+*.egg
+.eggs
+.tox
+.cache
+tests/test_activate_actual.output

@@ -1,0 +1,12 @@
+Flask
+Jinja2
+gunicorn
+pytest
+pytest-xdist
+requests
+faker
+nose-watch
+flask-pyoidc
+redis
+rq
+

@@ -1,3 +1,5 @@
+static/js/gen/
+static/css/gen/
 static/.webassets-cache/
 virtualenv.egg-info
 build

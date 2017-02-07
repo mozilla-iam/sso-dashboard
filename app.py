@@ -11,9 +11,10 @@ js = Bundle('js/base.js',
 assets.register('js_all', js)
 
 
-sass = Bundle('*.sass', filters='sass', output='gen/sass.css')
-all_css = Bundle('css/jquery.calendar.css', sass,
-                 filters='cssmin', output="gen/all.css")
+sass = Bundle('*.sass', filters='sass', output='css/gen/sass.css')
+css = Bundle('css/base.css', sass,
+                 filters='cssmin', output="css/gen/all.css")
+assets.register('css_all', css)
 
 
 @app.route('/')

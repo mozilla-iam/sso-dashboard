@@ -1,4 +1,4 @@
-static/.webassets/
+static/.webassets-cache/
 virtualenv.egg-info
 build
 dist

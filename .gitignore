@@ -1,6 +1,7 @@
 static/js/gen/
 static/css/gen/
 static/.webassets-cache/
+dashboard/static/.webassets-cache/
 virtualenv.egg-info
 build
 dist

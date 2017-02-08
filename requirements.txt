@@ -5,6 +5,7 @@ pytest
 pytest-xdist
 requests
 faker
+nose
 nose-watch
 flask-pyoidc
 Flask-Assets
@@ -12,3 +13,4 @@ redis
 rq
 jsmin
 cssmin
+pytest-flask

@@ -1,12 +1,18 @@
+#!/usr/bin/python
+"""Configuration loader for different environments."""
+
 import os
-basedir = os.path.abspath(os.path.dirname(__file__))
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
 
 
 class Config(object):
-    DEBUG = False
+    """Defaults for the configuration objects."""
+    DEBUG = True
     TESTING = False
     CSRF_ENABLED = True
-    SECRET_KEY = 'this-really-needs-to-be-changed'
+    SECRET_KEY = os.environ['SECRET_KEY']
 
 
 class ProductionConfig(Config):
@@ -25,4 +31,3 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
-

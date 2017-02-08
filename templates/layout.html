@@ -7,22 +7,21 @@
     {% assets "css_all" %}
       <style type="text/css" src="{{ ASSET_URL }}"></style>
     {% endassets %}
-    <style type="text/css">
-      .container {
-        max-width: 500px;
-        padding-top: 100px;
-      }
-    </style>
+    <!-- load MUI -->
+    <link href="//cdn.muicss.com/mui-0.9.9-rc2/css/mui.min.css" rel="stylesheet" type="text/css" />
+    <script src="//cdn.muicss.com/mui-0.9.9-rc2/js/mui.min.js"></script>
   </head>
   <body>
-    <div class="container">
-      {% block content %}
-      {% endblock %}
+    <!-- example content -->
+    <div class="mui-container">
+      <div class="mui-panel">
+        {% block content %}
+        {% endblock %}
+        <button class="mui-btn mui-btn--primary mui-btn--raised">Login</button>
+      </div>
     </div>
     {% assets "js_all" %}
       <script type="text/javascript" src="{{ ASSET_URL }}"></script>
     {% endassets %}
-    <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   </body>
 </html>

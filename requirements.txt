@@ -1,3 +1,4 @@
+python-dotenv
 Flask
 Jinja2
 gunicorn
@@ -14,3 +15,4 @@ rq
 jsmin
 cssmin
 pytest-flask
+python-dotenv

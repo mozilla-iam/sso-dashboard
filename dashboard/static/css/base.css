@@ -2,3 +2,27 @@
   max-width: 500px;
   padding-top: 100px;
 }
+
+.nav-buttons {
+  background-color: black !important;
+  float: right;
+  padding: 2px;
+}
+
+.nav-btn {
+  padding-top: 5px;
+}
+
+.profile-icon {
+  width: 64px;
+  height: 64px;
+  float: right;
+}
+
+.mui-appbar {
+  background-color: black !important;
+}
+
+.nav-icon {
+  padding-top: 10%;
+}

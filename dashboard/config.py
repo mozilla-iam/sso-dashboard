@@ -12,11 +12,11 @@ class Config(object):
     DEBUG = True
     TESTING = False
     CSRF_ENABLED = True
-    SECRET_KEY = os.environ['SECRET_KEY']
+    SECRET_KEY = os.environ['SECRET_KEY'] + "1234"
 
     SERVER_NAME = os.environ['SERVER_NAME']
     PERMANENT_SESSION = os.environ['PERMANENT_SESSION']
-    PERMANENT_SESSION_LIFETIME = os.environ['PERMANENT_SESSION_LIFETIME']
+    PERMANENT_SESSION_LIFETIME = int(os.environ['PERMANENT_SESSION_LIFETIME'])
 
 
 class ProductionConfig(Config):
@@ -57,6 +57,11 @@ class OIDCConfig(object):
 
     def token_endpoint(self):
         return "https://{DOMAIN}/oauth/token".format(
+                DOMAIN=self.OIDC_DOMAIN
+        )
+
+    def userinfo_endpoint(self):
+        return "https://{DOMAIN}/userinfo".format(
                 DOMAIN=self.OIDC_DOMAIN
         )
 

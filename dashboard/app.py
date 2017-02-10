@@ -1,11 +1,12 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, session
 from flask_assets import Environment, Bundle
 from dotenv import load_dotenv, find_dotenv
 from os.path import join, dirname
-from flask_pyoidc.flask_pyoidc import OIDCAuthentication
 import os
+import hashlib
 
 import config
+import auth
 
 load_dotenv(find_dotenv())
 
@@ -33,36 +34,38 @@ assets.register('css_all', css)
 
 oidc_config = config.OIDCConfig()
 
-client_info=dict(
-    client_id=oidc_config.client_id(),
-    client_secret=oidc_config.client_id()
+authentication = auth.OpenIDConnect(
+    oidc_config
 )
 
-provider_info=dict(
-    issuer=oidc_config.OIDC_DOMAIN,
-    authorization_endpoint=oidc_config.auth_endpoint(),
-    token_endpoint=oidc_config.token_endpoint()
-)
+oidc = authentication.auth(app)
 
-auth = OIDCAuthentication(
-    app,
-    provider_configuration_info=provider_info,
-    client_registration_info=client_info
-)
 
 @app.route('/')
 def home():
     return render_template('home.html')
 
+@app.route('/dashboard')
+def dashboard():
+    user = "akrug@mozilla.com"
+    m = hashlib.md5()
+    m.update(user)
+    robohash = m.hexdigest()
+
+    return render_template('dashboard.html', user=user, robohash=robohash)
+
+
+#@app.route('/redirect_uri')
+#def handle_oidc_redirect():
+#    code = request.args.get('code')
+#    print code
+#    pass
 
 @app.route('/info')
-@auth.oidc_auth
+@oidc.oidc_auth
 def info():
-    return jsonify(
-        id_token=flask.session['id_token'],
-        access_token=flask.session['access_token'],
-        userinfo=flask.session['userinfo']
-    )
+    return jsonify(id_token=session['id_token'], access_token=session['access_token'],
+userinfo=session['userinfo'])
 
 
 if __name__ == '__main__':

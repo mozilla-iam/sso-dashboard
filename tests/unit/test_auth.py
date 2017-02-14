@@ -4,9 +4,11 @@
 
 from dashboard import app as sso_dashboard
 from dashboard import auth
+from dashboard import config
 
 
 def test_object_instantiation():
     """Test that we can new up the object."""
-    a = auth.OpenIDConnect()
+    configuration = config.Config()
+    a = auth.OpenIDConnect(configuration)
     assert a is not None

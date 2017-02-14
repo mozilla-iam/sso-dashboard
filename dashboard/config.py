@@ -12,7 +12,7 @@ class Config(object):
     DEBUG = True
     TESTING = False
     CSRF_ENABLED = True
-    SECRET_KEY = os.environ['SECRET_KEY'] + "1234"
+    SECRET_KEY = os.environ['SECRET_KEY']
 
     SERVER_NAME = os.environ['SERVER_NAME']
     PERMANENT_SESSION = os.environ['PERMANENT_SESSION']

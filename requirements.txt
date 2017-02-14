@@ -16,3 +16,8 @@ jsmin
 cssmin
 pytest-flask
 python-dotenv
+pyjwt
+cryptography
+pycrypto
+ecdsa
+auth0-python

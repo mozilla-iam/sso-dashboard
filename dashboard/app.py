@@ -8,6 +8,8 @@ import hashlib
 import config
 import auth
 
+from op import authzero
+
 load_dotenv(find_dotenv())
 
 app = Flask(__name__)
@@ -46,26 +48,24 @@ def home():
     return render_template('home.html')
 
 @app.route('/dashboard')
+@oidc.oidc_auth
 def dashboard():
-    user = "akrug@mozilla.com"
+    """Primary dashboard the users will interact with."""
+    user = session['userinfo']
     m = hashlib.md5()
-    m.update(user)
+    m.update(user['email'])
     robohash = m.hexdigest()
-
     return render_template('dashboard.html', user=user, robohash=robohash)
-
-
-#@app.route('/redirect_uri')
-#def handle_oidc_redirect():
-#    code = request.args.get('code')
-#    print code
-#    pass
 
 @app.route('/info')
 @oidc.oidc_auth
 def info():
-    return jsonify(id_token=session['id_token'], access_token=session['access_token'],
-userinfo=session['userinfo'])
+    """Return the JSONified user session for debugging."""
+    return jsonify(
+            id_token=session['id_token'],
+            access_token=session['access_token'],
+            userinfo=session['userinfo']
+        )
 
 
 if __name__ == '__main__':

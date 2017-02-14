@@ -24,4 +24,4 @@ CLIENT = TestDashboardRoutes()
 def test_index():
     """Validate the resulting body of the index page."""
     result = CLIENT.app.get('/')
-    assert b'HelloWorld' in result.data
+    assert b'You are not signed in.' in result.data

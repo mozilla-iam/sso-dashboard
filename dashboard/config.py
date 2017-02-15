@@ -17,7 +17,7 @@ class Config(object):
     SERVER_NAME = os.environ['SERVER_NAME']
     PERMANENT_SESSION = os.environ['PERMANENT_SESSION']
     PERMANENT_SESSION_LIFETIME = int(os.environ['PERMANENT_SESSION_LIFETIME'])
-
+    REDIS_URL = os.environ['REDIS_URL']
 
 class ProductionConfig(Config):
     DEBUG = False

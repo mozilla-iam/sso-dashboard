@@ -2,7 +2,6 @@
 
 
 from auth0.v2.management import Auth0
-#from jwt.contrib.algorithms.pycrypto import RSAAlgorithm
 import http.client
 import json
 import jwt
@@ -80,3 +79,4 @@ class Managment(object):
 
     def get_client(self):
         self.client = Auth0(self.domain, self.token)
+        return self.client

@@ -20,4 +20,5 @@ pyjwt
 cryptography
 pycrypto
 ecdsa
+gunicorn
 auth0-python

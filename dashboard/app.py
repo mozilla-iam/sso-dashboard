@@ -1,7 +1,8 @@
-from flask import Flask, render_template, jsonify, session
+from flask import Flask, render_template, jsonify, session, request
 from flask_assets import Environment, Bundle
 from dotenv import load_dotenv, find_dotenv
 from os.path import join, dirname
+from werkzeug.exceptions import BadRequest
 import os
 import hashlib
 
@@ -17,16 +18,11 @@ load_dotenv(find_dotenv())
 app = Flask(__name__)
 
 
-
-
-
 if os.environ.get('ENVIRONMENT') == 'Production':
     app.config.from_object(config.ProductionConfig())
 elif os.environ.get('ENVIRONMENT') == 'Development':
-    print("Development Mode Running")
     app.config.from_object(config.DevelopmentConfig())
 
-print app.config
 
 assets = Environment(app)
 
@@ -49,34 +45,47 @@ authentication = auth.OpenIDConnect(
 )
 
 oidc = authentication.auth(app)
-#app.config["REDIS_URL"] = "redis://localhost"
+
+#Register the flask blueprint for SSE.
 app.register_blueprint(sse, url_prefix='/stream')
 
+
+
+
+@sse.before_request
+def check_access():
+    """Users can only view their own security alerts."""
+    session['userinfo']
+    user = session['userinfo']
+    m = hashlib.md5()
+
+    m.update(user['email'])
+    channel = m.hexdigest()
+
+    if request.args.get("channel") == channel:
+        pass
+    else:
+        abort(403)
 
 @app.route('/')
 def home():
     return render_template('home.html')
 
 @app.route('/dashboard')
-#@oidc.oidc_auth
+@oidc.oidc_auth
 def dashboard():
     """Primary dashboard the users will interact with."""
-    user = {
-        "session": {
-            "userinfo": {
-                "email": "andrewkrug@gmail.com"
-            }
-        }
-    }
-    #user = session['userinfo']
+
+    user = session['userinfo']
     m = hashlib.md5()
-    m.update("andrewkrug@gmail.com")
-    #m.update(user['email'])
+
+    m.update(user['email'])
     robohash = m.hexdigest()
+
     return render_template('dashboard.html', user=user, robohash=robohash)
 
 @app.route('/info')
-#@oidc.oidc_auth
+@oidc.oidc_auth
 def info():
     """Return the JSONified user session for debugging."""
     return jsonify(
@@ -86,11 +95,41 @@ def info():
         )
 
 
-@app.route('/hello')
-def publish_hello():
-    sse.publish({"message": "Hello!"}, type='greeting')
-    print "published"
-    return "Message sent!"
+@app.route('/alert', methods = ['POST'])
+def publish_alert():
+    """
+    Takes JSON post with user e-mail to alert.
+    Minimum fields are email and message in the form
+    of a dict.
+
+    Example:
+        {
+          "user": {"email": "andrewkrug@gmail.com"},
+            "message": "this is a security alert"
+        }
+    """
+    try:
+        content = request.json
+        #Send a real time event to the user
+        m = hashlib.md5()
+        m.update(content['user']['email'])
+        channel = m.hexdigest()
+
+        sse.publish(
+            {"message": content['message']},
+            type="alert",
+            channel=channel
+        )
+
+        #Store the event in redis
+
+
+        return jsonify({'status': 'success'})
+    except:
+        raise BadRequest('POST does not contain e-mail and message')
+        return jsonify({'status': 'fail'})
+
+
 
 
 if __name__ == '__main__':

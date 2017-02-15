@@ -36,5 +36,27 @@
     {% assets "js_all" %}
       <script type="text/javascript" src="{{ ASSET_URL }}"></script>
     {% endassets %}
+
+    <script>
+      var source = new EventSource("/stream?channel={{ robohash }}");
+      source.addEventListener('alert', function(event) {
+          var data = JSON.parse(event.data);
+          $(".messages").append("<li class=\"security-alert\"><div class=\"head\"><span class=\"name\">" + "MozDef" +  "</span><span class=\"time\"> " + (new Date().getHours()) + ":" + (new Date().getMinutes()) + " AM, Today</span></div><div class=\"message\">" + data["message"] + "</div></li>");
+          //alert("The server says " + data.message);
+      }, false);
+      source.addEventListener('error', function(event) {
+          console.log("Failed to connect to event stream. Is Redis running?");
+      }, false);
+    </script>
   </body>
+
+  <footer class="container-fluid" role="contentinfo">
+    <div class="opacity"></div>
+    <div class="panel-group col-md-12 col-sm-12 col-xs-12" id="accordion">
+    <div class="alerts panel panel-default">
+    <div class="panel-heading clearfix">
+      <h4 class="panel-title text-center"><a class="pull-right" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"> Security Alerts </a> <br></h4>
+      <ul class="messages">
+      </ul>
+  </footer>
 </html>

@@ -1,10 +1,12 @@
 from flask import Flask, render_template, jsonify, session, request
 from flask_assets import Environment, Bundle
+from flask_redis import FlaskRedis
 from dotenv import load_dotenv, find_dotenv
 from os.path import join, dirname
 from werkzeug.exceptions import BadRequest
 import os
 import hashlib
+import datetime
 
 import config
 import auth
@@ -16,6 +18,7 @@ from flask_sse import sse
 load_dotenv(find_dotenv())
 
 app = Flask(__name__)
+redis_store = FlaskRedis(app)
 
 
 if os.environ.get('ENVIRONMENT') == 'Production':
@@ -82,7 +85,14 @@ def dashboard():
     m.update(user['email'])
     robohash = m.hexdigest()
 
-    return render_template('dashboard.html', user=user, robohash=robohash)
+    alerts = redis_store.lrange(robohash, 0, -1)
+
+    return render_template(
+        'dashboard.html',
+        user=user,
+        robohash=robohash,
+        alerts=alerts
+    )
 
 @app.route('/info')
 @oidc.oidc_auth
@@ -121,8 +131,12 @@ def publish_alert():
             channel=channel
         )
 
-        #Store the event in redis
-
+        permanent_message = "Security Alert Logged at {date} : {message}".format(
+            date=datetime.datetime.now(),
+            message=content['message']
+        )
+        #Store the event in redis keyed to the users hashed e-mail
+        redis_store.lpush(channel, permanent_message)
 
         return jsonify({'status': 'success'})
     except:
@@ -130,8 +144,5 @@ def publish_alert():
         return jsonify({'status': 'fail'})
 
 
-
-
 if __name__ == '__main__':
-
     app.run()

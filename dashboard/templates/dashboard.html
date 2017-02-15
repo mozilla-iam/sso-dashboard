@@ -28,16 +28,5 @@
     <div class="mui-col-md-6">md-6</div>
     <div class="mui-col-md-6">md-6</div>
   </div>
-  <script>
-  var source = new EventSource("http://localhost:8000/stream");
-  source.addEventListener('greeting', function(event) {
-      var data = JSON.parse(event.data);
-      alert("The server says " + data.message);
-  }, false);
-  source.addEventListener('error', function(event) {
-      alert("Failed to connect to event stream. Is Redis running?");
-  }, false);
-</script>
 </div>
-
 {% endblock %}

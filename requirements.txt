@@ -21,4 +21,7 @@ cryptography
 pycrypto
 ecdsa
 gunicorn
+flask-sse
+gevent
 auth0-python
+flask-redis

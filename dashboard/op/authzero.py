@@ -1,4 +1,5 @@
 """Class for handling the auth0 specific interactions."""
+"""On hold until auth0 v2 questions answered."""
 
 
 from auth0.v2.management import Auth0

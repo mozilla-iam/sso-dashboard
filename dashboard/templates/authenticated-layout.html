@@ -18,7 +18,11 @@
     <!-- example content -->
     <div class="mui-appbar">
       <img src="static/img/mozilla-logo.png"></img>
-      <img class="profile-icon" src="https://robohash.org/{{ robohash }}.png"></img>
+      {% if user.profile_picture() %}
+        <img class="profile-icon" src="{{ user.profile_picture() }}"></img>
+      {% else %}
+        <img class="profile-icon" src="https://robohash.org/{{ user.userhash() }}.png"></img>
+      {% endif %}
         <!-- content -->
 
         <div class="mui-container nav-buttons">

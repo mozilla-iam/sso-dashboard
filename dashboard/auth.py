@@ -9,6 +9,7 @@ class nullOpenIDConnect(object):
 
     def __init__(self):
         """None based versions of OIDC Object."""
+        pass
 
 
 class OpenIDConnect(object):

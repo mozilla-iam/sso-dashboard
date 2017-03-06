@@ -5,11 +5,13 @@ from dotenv import load_dotenv, find_dotenv
 from os.path import join, dirname
 from werkzeug.exceptions import BadRequest
 import os
-import hashlib
+
 import datetime
 
 import config
 import auth
+from user import User
+from op.yaml_loader import Application
 
 from op import authzero
 
@@ -58,14 +60,8 @@ app.register_blueprint(sse, url_prefix='/stream')
 @sse.before_request
 def check_access():
     """Users can only view their own security alerts."""
-    session['userinfo']
-    user = session['userinfo']
-    m = hashlib.md5()
-
-    m.update(user['email'])
-    channel = m.hexdigest()
-
-    if request.args.get("channel") == channel:
+    user = User(session)
+    if request.args.get("channel") == Userhash():
         pass
     else:
         abort(403)
@@ -78,19 +74,15 @@ def home():
 @oidc.oidc_auth
 def dashboard():
     """Primary dashboard the users will interact with."""
-
-    user = session['userinfo']
-    m = hashlib.md5()
-
-    m.update(user['email'])
-    robohash = m.hexdigest()
-
-    alerts = redis_store.lrange(robohash, 0, -1)
+    user = User(session)
+    alerts = redis_store.lrange(user.userhash(), 0, -1)
+    all_apps = Application().apps
+    apps = user.apps(all_apps)['apps']
 
     return render_template(
         'dashboard.html',
         user=user,
-        robohash=robohash,
+        apps=apps,
         alerts=alerts
     )
 
@@ -121,14 +113,11 @@ def publish_alert():
     try:
         content = request.json
         #Send a real time event to the user
-        m = hashlib.md5()
-        m.update(content['user']['email'])
-        channel = m.hexdigest()
-
+        user = User(session)
         sse.publish(
             {"message": content['message']},
             type="alert",
-            channel=channel
+            channel=Userhash()
         )
 
         permanent_message = "Security Alert Logged at {date} : {message}".format(
@@ -136,7 +125,7 @@ def publish_alert():
             message=content['message']
         )
         #Store the event in redis keyed to the users hashed e-mail
-        redis_store.lpush(channel, permanent_message)
+        redis_store.lpush(user.userhash(), permanent_message)
 
         return jsonify({'status': 'success'})
     except:

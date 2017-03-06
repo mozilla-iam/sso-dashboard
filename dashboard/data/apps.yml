@@ -1,13 +1,50 @@
 ---
-  application:
-    name: "Demo App 1"
-    url: "https://foo.bar.com"
-    logo: "/static/img/auth0.jpg"
-  application:
-    name: "Demo App 2"
-    url: "https://foo2.bar.com"
-    logo: "/static/img/auth0.jpg"
-  application:
-    name: "Demo App 2"
-    url: "https://foo2.bar.com"
-    logo: "/static/img/auth0.jpg"
+apps:
+  - application:
+      name: "Demo App 1"
+      op: okta
+      url: "https://foo.bar.com"
+      logo: "static/img/auth0.png"
+      authorized_users: []
+      authorized_groups: []
+      display: false
+  - application:
+      name: "Demo App 2"
+      op: auth0
+      url: "https://foo2.bar.com"
+      logo: "static/img/auth0.png"
+      authorized_users: ['akrug@mozilla.com']
+      authorized_groups: []
+      display: true
+  - application:
+      name: "Demo App 3"
+      op: okta
+      url: "https://foo2.bar.com"
+      logo: "static/img/auth0.png"
+      authorized_users: []
+      authorized_groups: []
+      display: true
+  - application:
+      name: "Demo App 3"
+      op: auth0
+      url: "https://foo2.bar.com"
+      logo: "static/img/auth0.png"
+      authorized_users: ['akrug@mozilla.com']
+      authorized_groups: []
+      display: true
+  - application:
+      name: "Demo App 4"
+      op: auth0
+      url: "https://foo2.bar.com"
+      logo: "static/img/auth0.png"
+      authorized_users: ['akrug@mozilla.com']
+      authorized_groups: []
+      display: true
+  - application:
+      name: "Demo App 5"
+      op: auth0
+      url: "https://foo2.bar.com"
+      logo: "static/img/auth0.png"
+      authorized_users: ['akrug@mozilla.com']
+      authorized_groups: []
+      display: true

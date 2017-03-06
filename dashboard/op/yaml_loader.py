@@ -8,12 +8,17 @@ class Application(object):
         self.config_file = self.__find("apps.yml", ".")
         self.apps = self.__load_data()
 
+    def __load_authorized(self, session):
+        pass
+
     def __load_data(self):
+        stream = {}
         with open(self.config_file, 'r') as stream:
             try:
-                return yaml.load(stream)
+                stream = yaml.load(stream)
             except yaml.YAMLError as e:
                 print(e)
+        return stream
 
     def __find(self, name, path):
         for root, dirs, files in os.walk(path):

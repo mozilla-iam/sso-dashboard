@@ -1,8 +1,7 @@
 from dotenv import load_dotenv, find_dotenv
 from dashboard import app as sso_dashboard
-from dashboard.op import file
+from dashboard.op import yaml_loader
 
 def test_yaml_loader():
-    app_loader = file.Application()
-    print app_loader.apps
+    app_loader = yaml_loader.Application()
     assert app_loader.apps is not None

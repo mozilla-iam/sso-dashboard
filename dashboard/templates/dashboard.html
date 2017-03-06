@@ -2,42 +2,15 @@
 {% block content %}
 <div class="mui-container-fluid">
   <div class="mui-row">
-    <div class="mui-col-md-4">
-      <img src="static/img/auth0.png"></img>
-      <h4> An App </h4>
-    </div>
-    <div class="mui-col-md-4">
-      <img src="static/img/auth0.png"></img>
-      <h4> An App </h4>
-    </div>
-    <div class="mui-col-md-4">
-      <img src="static/img/auth0.png"></img>
-      <h4> An App </h4>
-    </div>
+    {% for app in apps %}
 
+      <div class="mui-col-md-4">
+        <a href="{{ app['application']['url'] }}"><img src="{{ app['application']['logo'] }}"></img></a>
+        <a href="{{ app['application']['url'] }}"><h4> {{ app['application']['name'] }} </h4></a>
+      </div>
 
+    {% endfor %}
   </div>
-
-  <div class="mui-row">
-    <hr></hr>
-  </div>
-
-
-  <div class="mui-row">
-    <div class="mui-col-md-4">
-      <img src="static/img/auth0.png"></img>
-      <h4> An App </h4>
-    </div>
-    <div class="mui-col-md-4">
-      <img src="static/img/auth0.png"></img>
-      <h4> An App </h4>
-    </div>
-    <div class="mui-col-md-4">
-      <img src="static/img/auth0.png"></img>
-      <h4> An App </h4>
-    </div>
-  </div>
-
-
 </div>
+
 {% endblock %}

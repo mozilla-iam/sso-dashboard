@@ -5,7 +5,7 @@ from dotenv import load_dotenv, find_dotenv
 from os.path import join, dirname
 from werkzeug.exceptions import BadRequest
 import os
-
+import hashlib
 import datetime
 
 import config
@@ -110,27 +110,30 @@ def publish_alert():
             "message": "this is a security alert"
         }
     """
-    try:
-        content = request.json
-        #Send a real time event to the user
-        user = User(session)
-        sse.publish(
-            {"message": content['message']},
-            type="alert",
-            channel=Userhash()
-        )
+    #try:
+    content = request.json
+    #Send a real time event to the user
+    m = hashlib.md5()
+    m.update(content['user']['email'])
+    channel = m.hexdigest()
 
-        permanent_message = "Security Alert Logged at {date} : {message}".format(
-            date=datetime.datetime.now(),
-            message=content['message']
-        )
-        #Store the event in redis keyed to the users hashed e-mail
-        redis_store.lpush(user.userhash(), permanent_message)
+    sse.publish(
+        {"message": content['message']},
+        type="alert",
+        channel=channel
+    )
 
-        return jsonify({'status': 'success'})
-    except:
-        raise BadRequest('POST does not contain e-mail and message')
-        return jsonify({'status': 'fail'})
+    permanent_message = "Security Alert Logged at {date} : {message}".format(
+        date=datetime.datetime.now(),
+        message=content['message']
+    )
+    #Store the event in redis keyed to the users hashed e-mail
+    redis_store.lpush(channel, permanent_message)
+
+    return jsonify({'status': 'success'})
+    #except:
+    #    raise BadRequest('POST does not contain e-mail and message')
+    #    return jsonify({'status': 'fail'})
 
 
 if __name__ == '__main__':

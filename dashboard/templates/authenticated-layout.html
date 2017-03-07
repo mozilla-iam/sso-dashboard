@@ -17,6 +17,7 @@
   <body>
     <!-- example content -->
     <div class="mui-appbar">
+
       <img src="static/img/mozilla-logo.png"></img>
       {% if user.profile_picture() %}
         <img class="profile-icon" src="{{ user.profile_picture() }}"></img>
@@ -33,6 +34,14 @@
     </div>
     <div class="mui-container">
       <div class="mui-panel">
+
+        <form class="mui-form--inline">
+            <div class="mui-textfield">
+              <input type="text">Search for an app.
+            </div>
+            <button class="mui-btn">Search</button>
+        </form>
+
         {% block content %}
         {% endblock %}
       </div>
@@ -42,7 +51,7 @@
     {% endassets %}
 
     <script>
-      var source = new EventSource("/stream?channel={{ robohash }}");
+      var source = new EventSource("/stream?channel={{ user.userhash() }}");
       source.addEventListener('alert', function(event) {
           var data = JSON.parse(event.data);
           $(".messages").append("<li class=\"security-alert\">" + " <div class=\"message\">" + "Security Alert Logged at " + (new Date().getHours()) + ":" + (new Date().getMinutes()) + " : " + data["message"] + "</div></li>");

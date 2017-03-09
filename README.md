@@ -70,6 +70,8 @@ this file is currently private.  Though if you are interested in the dashboard
 you may CI this file and the images however you elect.  Here at Mozilla we
 probably use CodePipeline to do that ;)
 
+https://github.com/mozilla/sso-dashboard-configuration (Private repo for inside)
+
 # Logos
 These are the rules of the logos.  They have to conform to some standards due
 to the fact they are in a responsive grid.

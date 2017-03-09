@@ -1,5 +1,6 @@
 python-dotenv
-Flask
+flask
+flask_assets
 Jinja2
 gunicorn
 pytest
@@ -9,7 +10,6 @@ faker
 nose
 nose-watch
 flask-pyoidc
-Flask-Assets
 redis
 rq
 jsmin
@@ -17,6 +17,7 @@ cssmin
 pytest-flask
 python-dotenv
 pyjwt
+dotenv
 cryptography
 pycrypto
 ecdsa

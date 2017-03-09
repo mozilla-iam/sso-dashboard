@@ -1,7 +1,6 @@
 from flask import Flask, render_template, jsonify, session, request
 from flask_assets import Environment, Bundle
 from flask_redis import FlaskRedis
-from dotenv import load_dotenv, find_dotenv
 from os.path import join, dirname
 from werkzeug.exceptions import BadRequest
 import os
@@ -17,18 +16,17 @@ from op import authzero
 
 from flask_sse import sse
 
-load_dotenv(find_dotenv())
-
 app = Flask(__name__)
-redis_store = FlaskRedis(app)
+
 
 
 if os.environ.get('ENVIRONMENT') == 'Production':
     app.config.from_object(config.ProductionConfig())
 elif os.environ.get('ENVIRONMENT') == 'Development':
+    print("Getting development config")
     app.config.from_object(config.DevelopmentConfig())
 
-
+redis_store = FlaskRedis(app)
 assets = Environment(app)
 
 js = Bundle('js/base.js',

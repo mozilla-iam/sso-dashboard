@@ -1,0 +1,28 @@
+version: "1"
+services:
+  web:
+    image: centos:7
+    ports:
+      - "8000:8000"
+    links:
+      - redis:redis
+    environment:
+      - SECRET_KEY={{ lookup('credstash', 'sso-dashboard.secret_key', region='us-east-1', app='sso-dashboard') }}
+      - ENVIRONMENT=Development
+      - OIDC_DOMAIN={{ lookup('credstash', 'sso-dashboard.oidc_domain', region='us-east-1', app='sso-dashboard') }}
+      - OIDC_CLIENT_ID={{ lookup('credstash', 'sso-dashboard.oidc_client_id', region='us-east-1', app='sso-dashboard') }}
+      - OIDC_CLIENT_SECRET={{ lookup('credstash', 'sso-dashboard.oidc_client_secret', region='us-east-1', app='sso-dashboard') }}
+      - SERVER_NAME={{ lookup('credstash', 'sso-dashboard.server_name', region='us-east-1', app='sso-dashboard') }}
+      - PERMANENT_SESSION=600
+      - PERMANENT_SESSION_LIFETIME=900
+      - REDIS_URL=redis://redis:6379
+    working_dir: '/sso-dashboard'
+    command: ['/usr/bin/dumb-init', 'gunicorn', 'app:app', '--worker-class', 'gevent', '--bind', '0.0.0.0:8000']
+  redis:
+    image: redis
+    expose:
+      - "6379/tcp"
+    ports:
+      - "6379:6379"
+    command: ['redis-server']
+registries: {}

@@ -2,10 +2,6 @@
 """Configuration loader for different environments."""
 
 import os
-from dotenv import load_dotenv, find_dotenv
-
-load_dotenv(find_dotenv())
-
 
 class Config(object):
     """Defaults for the configuration objects."""
@@ -13,7 +9,6 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
     SECRET_KEY = os.environ['SECRET_KEY']
-
     SERVER_NAME = os.environ['SERVER_NAME']
     PERMANENT_SESSION = os.environ['PERMANENT_SESSION']
     PERMANENT_SESSION_LIFETIME = int(os.environ['PERMANENT_SESSION_LIFETIME'])

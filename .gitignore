@@ -9,8 +9,10 @@ build
 dist
 lib
 bin
+man
 include
 docs/_build
+pip-selfcheck.json
 .python
 .DS_Store
 *.py[cod]

@@ -1,0 +1,54 @@
+- hosts: ansible-container
+  tasks:
+    - name: Install credstash depends
+      yum: name=gcc,libffi-devel,python-devel,openssl-devel state=latest
+
+    - name: Force install of builder requirements
+      pip:
+        requirements: requirements.txt
+
+- hosts: web
+  tasks:
+    - name: Install dumb init
+      get_url:
+        dest: /usr/bin/dumb-init
+        url: https://github.com/Yelp/dumb-init/releases/download/v1.0.2/dumb-init_1.0.2_amd64
+        mode: 0775
+        validate_certs: no
+
+    - name: Install EPEL
+      yum: name=epel-release state=latest
+
+    - name: Install credstash depends
+      yum: name=gcc,libffi-devel,python-devel,openssl-devel state=latest
+
+    - name: Install Pip
+      yum: name=python-pip state=latest
+
+    - name: Install PyDevel
+      yum: name=python-devel state=latest
+
+    - name: Install credstash
+      pip:
+        name: credstash
+
+    - name: Create Flask User
+      user: name=flaskapp state=present createhome=yes home=/sso-dashboard group=root
+
+    - name: Copy the Requirements
+      copy:
+       src: ../dashboard/prod-requirements.txt
+       dest: /sso-dashboard/requirements.txt
+       owner: flaskapp
+       mode: 0777
+
+    - name: Install requirements
+      pip:
+        requirements: '/sso-dashboard/requirements.txt'
+
+    - name: Copy The Application
+      copy:
+       src: ../dashboard/
+       dest: /sso-dashboard
+       owner: flaskapp
+       mode: 0777

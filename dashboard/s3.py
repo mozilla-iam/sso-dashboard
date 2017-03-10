@@ -7,7 +7,7 @@ from datetime import datetime
 class AppFetcher(object):
     def __init__(self):
         self.client = boto3.client('s3')
-        self.s3_bucket = 'sso-dashboard.configuration'
+        self.s3_bucket = os.environ['S3_BUCKET']
 
     def is_updated(self):
         """

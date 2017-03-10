@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, session, request, redirect
+from flask import Flask, render_template, jsonify, session, request, redirect, send_from_directory
 from flask_assets import Environment, Bundle
 from flask_redis import FlaskRedis
 from os.path import join, dirname
@@ -63,6 +63,11 @@ def check_access():
         pass
     else:
         abort(403)
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static/img'),
+                               'favicon.ico')
 
 @app.route('/')
 def home():

@@ -11,7 +11,7 @@
     {% for app in apps %}
 
       <div class="mui-col-md-4">
-        <a href="{{ app['application']['url'] }}"><img src="{{ app['application']['logo'] }}"></img></a>
+        <a href="{{ app['application']['url'] }}"><img src="/static/img/logos/{{ app['application']['logo'] }}"></img></a>
         <a href="{{ app['application']['url'] }}"><h4> {{ app['application']['name'] }} </h4></a>
       </div>
 

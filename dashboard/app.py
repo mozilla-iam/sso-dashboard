@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, session, request
+from flask import Flask, render_template, jsonify, session, request, redirect
 from flask_assets import Environment, Bundle
 from flask_redis import FlaskRedis
 from os.path import join, dirname
@@ -66,7 +66,7 @@ def check_access():
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return redirect('/dashboard', code=302)
 
 @app.route('/dashboard')
 @oidc.oidc_auth

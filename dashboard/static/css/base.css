@@ -59,3 +59,23 @@
     width: 100%;
     z-index: 999;
 }
+
+.app-tile {
+    border-radius: 25px;
+    background: #82D1F5;
+    padding: 20px;
+    width: 80%;
+    height: 80%;
+    margin: 5px 5px 5px 5px;
+}
+
+.center {
+   vertical-align: middle;
+   margin: auto;
+   width: 50%;
+   padding: 12%;
+}
+
+.center-text {
+    text-align: center;
+}

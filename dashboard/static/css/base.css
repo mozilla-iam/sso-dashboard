@@ -65,12 +65,12 @@
 }
 
 .app-tile {
-    border-radius: 25px;
-    background: #C0C0C0;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
     padding: 20px;
     width: 80%;
     height: 80%;
-    margin: 5px 5px 5px 5px;
+    margin: 8px 8px 8px 8px;
 }
 
 .center {

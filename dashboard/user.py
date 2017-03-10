@@ -51,6 +51,8 @@ class User(object):
             return False
         elif app['application']['display'] == False:
             return False
+        elif 'everyone' in app['application']['authorized_groups']:
+            return True
         elif set(app['application']['authorized_groups']) & set(self.group_membership()):
             return True
         elif set(app['application']['authorized_users']) & set(self.user_identifiers()):

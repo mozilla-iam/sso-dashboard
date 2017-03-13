@@ -26,7 +26,10 @@ class AppFetcher(object):
 
         last_mod = last_mod.strftime('%s')
 
-        if last_mod > self.last_update():
+        time_differential = int(self.last_update()) - int(last_mod)
+
+        if time_differential > 301000:
+            print time_differential
             return True
         else:
             return False
@@ -34,7 +37,7 @@ class AppFetcher(object):
     def last_update(self):
         this_dir = os.path.dirname(__file__)
         filename = os.path.join(this_dir, 'data/apps.yml')
-        return os.path.getmtime(filename)
+        return abs(os.path.getmtime(filename))
 
     def __get_images(self):
         images = self.client.list_objects(
@@ -73,9 +76,14 @@ class AppFetcher(object):
         c.close()
 
     def sync_config_and_images(self):
-        if self.is_updated():
-            self.__get_images()
-            self.__get_config()
-        else:
+        try:
+            if self.is_updated():
+
+                self.__get_images()
+                self.__get_config()
+
+            else:
+                pass
+                #Do nothing
+        except Exception as e:
             pass
-            #Do nothing

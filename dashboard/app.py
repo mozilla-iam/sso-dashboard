@@ -1,6 +1,7 @@
 from flask import Flask, render_template, jsonify, session, request, redirect, send_from_directory
 from flask_assets import Environment, Bundle
 from flask_redis import FlaskRedis
+from flask_secure_headers.core import Secure_Headers
 from os.path import join, dirname
 from werkzeug.exceptions import BadRequest
 import os
@@ -18,8 +19,6 @@ from op import authzero
 from flask_sse import sse
 
 app = Flask(__name__)
-
-
 
 if os.environ.get('ENVIRONMENT') == 'Production':
     app.config.from_object(config.ProductionConfig())
@@ -50,7 +49,58 @@ authentication = auth.OpenIDConnect(
 
 oidc = authentication.auth(app)
 
-#Register the flask blueprint for SSE.
+# Add secure Headers to satify observatory checks
+
+sh = Secure_Headers()
+sh.update(
+    {
+        'CSP': {
+            'script-src':
+                [
+                    'self',
+                    'ajax.googleapis.com',
+                    'cdn.muicss.com',
+                    'netdna.bootstrapcdn.com',
+                    's.gravatar.com',
+                    'fonts.googleapis.com'
+                ],
+            'style-src':
+                [
+                    'self',
+                    'ajax.googleapis.com',
+                    'cdn.muicss.com',
+                    'netdna.bootstrapcdn.com',
+                    's.gravatar.com',
+                    'fonts.googleapis.com'
+                ],
+            'img-src':
+                [
+                    'self',
+                    's.gravatar.com',
+                ],
+            'font-src':
+                [
+                    'self',
+                    'netdna.bootstrapcdn.com',
+                    'fonts.googleapis.com',
+                    'cdn.muicss.com'
+                ]
+        }
+    }
+)
+
+sh.update(
+    {
+        'HSTS':
+            {
+                'max-age': 1,
+                'includeSubDomains': True,
+                'preload': False
+            }
+    }
+)
+
+# Register the flask blueprint for SSE.
 app.register_blueprint(sse, url_prefix='/stream')
 
 
@@ -66,15 +116,18 @@ def check_access():
         abort(403)
 
 @app.route('/favicon.ico')
+@sh.wrapper()
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static/img'),
                                'favicon.ico')
 
 @app.route('/')
+@sh.wrapper()
 def home():
     return redirect('/dashboard', code=302)
 
 @app.route('/dashboard')
+@sh.wrapper()
 @oidc.oidc_auth
 def dashboard():
     """Primary dashboard the users will interact with."""
@@ -92,6 +145,7 @@ def dashboard():
     )
 
 @app.route('/info')
+@sh.wrapper()
 @oidc.oidc_auth
 def info():
     """Return the JSONified user session for debugging."""
@@ -103,6 +157,7 @@ def info():
 
 
 @app.route('/alert', methods = ['POST'])
+@sh.wrapper()
 def publish_alert():
     """
     Takes JSON post with user e-mail to alert.

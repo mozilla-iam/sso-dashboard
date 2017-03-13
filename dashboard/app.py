@@ -77,6 +77,7 @@ sh.update(
                 [
                     'self',
                     's.gravatar.com',
+                    'i0.wp.com'
                 ],
             'font-src':
                 [

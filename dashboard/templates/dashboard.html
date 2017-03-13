@@ -11,7 +11,8 @@
     {% for app in apps %}
     <div class="mui-col-md-4">
       <div data-id="{{ app['application']['name'] }}" class="app-tile">
-        <a class="center app-logo" href="{{ app['application']['url'] }}"><img src="/static/img/logos/{{ app['application']['logo'] }}"></img></a>
+        <a class="center app-logo" href="{{ app['application']['url'] }}"><img src="/static/img/logos/{{ app['application']['logo'] }}" alt={{ app['application']['name'] }}></img></a>
+        <br></br>
         <a class="center-text app-link" href="{{ app['application']['url'] }}"><h4> {{ app['application']['name'] }} </h4></a>
       </div>
     </div>

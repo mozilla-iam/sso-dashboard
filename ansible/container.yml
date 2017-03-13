@@ -8,7 +8,7 @@ services:
       - redis:redis
     environment:
       - SECRET_KEY={{ lookup('credstash', 'sso-dashboard.secret_key', region='us-east-1', app='sso-dashboard') }}
-      - ENVIRONMENT=Development
+      - ENVIRONMENT=Production
       - OIDC_DOMAIN={{ lookup('credstash', 'sso-dashboard.oidc_domain', region='us-east-1', app='sso-dashboard') }}
       - OIDC_CLIENT_ID={{ lookup('credstash', 'sso-dashboard.oidc_client_id', region='us-east-1', app='sso-dashboard') }}
       - OIDC_CLIENT_SECRET={{ lookup('credstash', 'sso-dashboard.oidc_client_secret', region='us-east-1', app='sso-dashboard') }}
@@ -16,8 +16,21 @@ services:
       - PERMANENT_SESSION=600
       - PERMANENT_SESSION_LIFETIME=900
       - REDIS_URL=redis://redis:6379
+      - S3_BUCKET={{ lookup('credstash', 'sso-dashboard.s3_bucket', region='us-east-1', app='sso-dashboard') }}
     working_dir: '/sso-dashboard'
     command: ['/usr/bin/dumb-init', 'gunicorn', 'app:app', '--worker-class', 'gevent', '--bind', '0.0.0.0:8000']
+    dev_overrides:
+      environment:
+        - ENVIRONMENT=Development
+        - SERVER_NAME=localhost:8000
+        - S3_BUCKET=sso-dashboard.configuration
+        - SECRET_KEY={{ lookup('credstash', 'sso-dashboard.secret_key', region='us-east-1', app='sso-dashboard') }}
+        - OIDC_DOMAIN={{ lookup('credstash', 'sso-dashboard.oidc_domain', region='us-east-1', app='sso-dashboard') }}
+        - OIDC_CLIENT_ID={{ lookup('credstash', 'sso-dashboard.oidc_client_id', region='us-east-1', app='sso-dashboard') }}
+        - OIDC_CLIENT_SECRET={{ lookup('credstash', 'sso-dashboard.oidc_client_secret', region='us-east-1', app='sso-dashboard') }}
+        - PERMANENT_SESSION=600
+        - PERMANENT_SESSION_LIFETIME=900
+        - REDIS_URL=redis://redis:6379
   redis:
     image: redis
     expose:

@@ -57,37 +57,6 @@
     {% endassets %}
 
     <script>
-      $(':input[name=filter]').on('input',function() {
-
-        //get value just typed into textbox -- see .toLowerCase()
-        var val = this.value.toLowerCase();
-
-        //find all .user-profile divs
-        $('#app-grid').find('.app-tile')
-
-        //find those that should be visible
-        .filter(function() {
-          return $(this).data('id').toLowerCase().indexOf( val ) > -1;
-        })
-
-        //make them visible
-        .show()
-
-        //now go back and get only the visible ones
-        .end().filter(':visible')
-
-        //filter only those for which typed value 'val' does not match the `data-id` value
-        .filter(function() {
-          return $(this).data('id').toLowerCase().indexOf( val ) === -1;
-        })
-
-        //fade those out
-        .fadeOut();
-
-      });
-    </script>
-
-    <script>
       var source = new EventSource("/stream?channel={{ user.userhash() }}");
       source.addEventListener('alert', function(event) {
           var data = JSON.parse(event.data);
@@ -101,6 +70,7 @@
   </body>
 
   <footer class="container-fluid" role="contentinfo">
+    <!--
     <div class="opacity"></div>
     <div id="panel-alerts" class="panel-group col-md-12 col-sm-12 col-xs-12" id="accordion">
     <div class="alerts panel panel-default">
@@ -115,5 +85,6 @@
           </li>
         {% endfor %}
       </ul>
+    -->
   </footer>
 </html>

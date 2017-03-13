@@ -10,6 +10,7 @@ import datetime
 import config
 import auth
 from user import User
+from s3 import AppFetcher
 from op.yaml_loader import Application
 
 from op import authzero
@@ -77,6 +78,7 @@ def home():
 @oidc.oidc_auth
 def dashboard():
     """Primary dashboard the users will interact with."""
+    AppFetcher().sync_config_and_images()
     user = User(session)
     alerts = redis_store.lrange(user.userhash(), 0, -1)
     all_apps = Application().apps

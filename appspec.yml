@@ -1,6 +1,6 @@
 # This is an appspec.yml template file for use with AWS CodeDeploy.
 
-version: 0.0
+version: 0.1
 
 os: linux
 
@@ -8,7 +8,7 @@ files:
   - source:
     destination:
   - source: /
-    destination: /home/ec2-user/app/dashboard
+    destination: /home/ec2-user/app/
 
 hooks:
   ApplicationStop:

@@ -1,0 +1,27 @@
+# This is an appspec.yml template file for use with AWS CodeDeploy.
+
+version: 0.0
+
+os: linux
+
+files:
+  - source:
+    destination:
+  - source: /
+    destination: /home/ec2-user/app/dashboard
+
+hooks:
+  ApplicationStop:
+    - location: /etc/init.d/supervisord stop
+      timeout: 30
+      runas: root
+
+  AfterInstall:
+    - location: cd /home/ec2-user/app && /usr/local/bin/ansible-container build
+      timeout: 120
+      runas: root
+
+  ApplicationStart:
+    - location: /etc/init.d/supervisord start
+      timeout: 60
+      runas: root

@@ -10,4 +10,6 @@ phases:
       - echo Build completed on `date`
 artifacts:
   files:
-    - dashboard/*
+    - '**/*'
+  base-directory: 'dashboard'
+  discard-paths: yes

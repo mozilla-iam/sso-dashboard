@@ -13,4 +13,3 @@ artifacts:
   files:
     - '**/*'
   base-directory: '.'
-  discard-paths: yes

@@ -11,5 +11,6 @@ phases:
       - aws deploy push --region us-west-2 --application-name sso-dashboard-dev --s3-location s3://sso-dashboard.deploy-dev/sso-dashboard-app.zip --ignore-hidden-files --source .
 artifacts:
   files:
-    - '**/*'
+    - 'ansible/*'
+    - 'dashboard/*'
   base-directory: '.'

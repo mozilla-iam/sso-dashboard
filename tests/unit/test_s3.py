@@ -17,10 +17,9 @@ def test_last_updated():
 def test_is_updated():
     af = s3.AppFetcher()
     update = af.is_updated()
-    assert update is True or False
+    assert update is not None
 
 def test_sync_config_and_images():
     af = s3.AppFetcher()
     af.sync_config_and_images()
     assert 0
-    pass

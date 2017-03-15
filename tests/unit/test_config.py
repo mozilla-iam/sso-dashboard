@@ -2,7 +2,6 @@
 """Authentication class test."""
 
 
-from dotenv import load_dotenv, find_dotenv
 from dashboard import app as sso_dashboard
 
 

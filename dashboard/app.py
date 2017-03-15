@@ -1,9 +1,10 @@
 from flask import Flask, render_template, jsonify, session, request, redirect, send_from_directory
 from flask_assets import Environment, Bundle
-from flask_redis import FlaskRedis
+
 from flask_secure_headers.core import Secure_Headers
 from os.path import join, dirname
 from werkzeug.exceptions import BadRequest
+
 import os
 import hashlib
 import datetime
@@ -11,10 +12,9 @@ import datetime
 import config
 import auth
 from user import User
+from alert import Alert
 from s3 import AppFetcher
 from op.yaml_loader import Application
-
-from op import authzero
 
 from flask_sse import sse
 
@@ -26,7 +26,6 @@ elif os.environ.get('ENVIRONMENT') == 'Development':
     print("Getting development config")
     app.config.from_object(config.DevelopmentConfig())
 
-redis_store = FlaskRedis(app)
 assets = Environment(app)
 
 js = Bundle('js/base.js',
@@ -134,7 +133,7 @@ def dashboard():
     """Primary dashboard the users will interact with."""
     AppFetcher().sync_config_and_images()
     user = User(session)
-    alerts = redis_store.lrange(user.userhash(), 0, -1)
+    alerts = Alert(user, app).get()
     all_apps = Application().apps
     apps = user.apps(all_apps)['apps']
 
@@ -171,30 +170,31 @@ def publish_alert():
             "message": "this is a security alert"
         }
     """
-    #try:
-    content = request.json
-    #Send a real time event to the user
-    m = hashlib.md5()
-    m.update(content['user']['email'])
-    channel = m.hexdigest()
+    try:
+        content = request.json
+        #Send a real time event to the user
+        m = hashlib.md5()
+        m.update(content['user']['email'])
+        channel = m.hexdigest()
 
-    sse.publish(
-        {"message": content['message']},
-        type="alert",
-        channel=channel
-    )
+        sse.publish(
+            {"message": content['message']},
+            type="alert",
+            channel=channel
+        )
 
-    permanent_message = "Security Alert Logged at {date} : {message}".format(
-        date=datetime.datetime.now(),
-        message=content['message']
-    )
-    #Store the event in redis keyed to the users hashed e-mail
-    redis_store.lpush(channel, permanent_message)
+        permanent_message = "Security Alert Logged at {date} : {message}".format(
+            date=datetime.datetime.now(),
+            message=content['message']
+        )
+        # Store the event in redis keyed to the users hashed e-mail
 
-    return jsonify({'status': 'success'})
-    #except:
-    #    raise BadRequest('POST does not contain e-mail and message')
-    #    return jsonify({'status': 'fail'})
+        Alert().set(channel, permanent_message)
+
+        return jsonify({'status': 'success'})
+    except:
+        raise BadRequest('POST does not contain e-mail and message')
+        return jsonify({'status': 'fail'})
 
 
 if __name__ == '__main__':

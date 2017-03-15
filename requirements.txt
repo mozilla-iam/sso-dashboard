@@ -28,3 +28,4 @@ gevent
 auth0-python
 flask-redis
 flask-secure-headers
+mockredis

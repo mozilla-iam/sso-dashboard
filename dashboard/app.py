@@ -156,6 +156,14 @@ def info():
         )
 
 
+@app.route('/about')
+@sh.wrapper()
+def about():
+    return render_template(
+        'about.html'
+    )
+
+
 @app.route('/alert', methods = ['POST'])
 @sh.wrapper()
 def publish_alert():

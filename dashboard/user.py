@@ -23,10 +23,11 @@ class User(object):
 
     def group_membership(self):
         """Return list of group membership if user is asserted from ldap."""
-        if len(self.userinfo['groups']) > 0:
+        if 'groups' in self.userinfo.keys() and len(self.userinfo['groups']) > 0:
             return self.userinfo['groups']
         else:
-            return None
+            # This could mean a user is authing with non-ldap
+            return []
 
     def first_name(self):
         """Return user first_name."""
@@ -60,6 +61,16 @@ class User(object):
         else:
             return False
 
+    def __is_valid_yaml(self, app):
+        """If an app doesn't have the required fields skip it."""
+        try:
+            app['application']['display']
+            app['application']['authorized_groups']
+            app['application']['authorized_users']
+            return True
+        except Exception as e:
+            return False
+
     def apps(self, app_list):
         """Return a list of the apps a user is allowed to see in dashboard."""
         authorized_apps = {
@@ -67,6 +78,7 @@ class User(object):
         }
 
         for app in app_list['apps']:
-            if self.__is_authorized(app):
-                authorized_apps['apps'].append(app)
+            if self.__is_valid_yaml(app):
+                if self.__is_authorized(app):
+                    authorized_apps['apps'].append(app)
         return authorized_apps

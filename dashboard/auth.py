@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import os
 
 """Class that governs all authentication with open id connect."""
 from flask_pyoidc.flask_pyoidc import OIDCAuthentication
@@ -30,12 +31,22 @@ class OpenIDConnect(object):
             issuer=self.oidc_config.OIDC_DOMAIN,
             authorization_endpoint=self.oidc_config.auth_endpoint(),
             token_endpoint=self.oidc_config.token_endpoint(),
-            userinfo_endpoint=self.oidc_config.userinfo_endpoint()
+            userinfo_endpoint=self.oidc_config.userinfo_endpoint(),
+
         )
 
     def auth(self, app):
-        return OIDCAuthentication(
+        o = OIDCAuthentication(
             app,
             provider_configuration_info=self.provider_info(),
             client_registration_info=self.client_info()
         )
+        """ Patch rewrites redirect_uri to only
+        SSL if running in production or stage. """
+        if os.environ['ENVIRONMENT'] == 'Production':
+            redirect_uri = o.client.registration_response['redirect_uris'][0]
+            o.client.registration_response['redirect_uris'][0] = \
+                redirect_uri.replace(
+                    'http', 'https'
+                )
+        return o

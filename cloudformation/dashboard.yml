@@ -1,0 +1,416 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Mozilla Single Sign On Dashboard"
+Mappings:
+  dev:
+      us-east-1:
+        CertificateARN: "arn:aws:acm:us-east-1:656532927350:certificate/af98d466-2099-4d99-b1d1-dc222b8e59b0"
+      us-west-2:
+        AMI: ami-983daaf8
+        CertificateARN: "arn:aws:acm:us-west-2:656532927350:certificate/ade32b62-e360-4ecd-8c3c-f44671dba94f"
+      eu-west-1:
+        CertificateARN: "arn:aws:acm:eu-central-1:656532927350:certificate/105a2ca8-3253-4d0f-973e-91d59584b4f6"
+  prod:
+      us-east-1:
+        CertificateARN: "arn:aws:acm:us-east-1:371522382791:certificate/12dd7f1a-177c-4a11-8b62-ca098d3ee40c"
+      us-west-2:
+        CertificateARN: "arn:aws:acm:us-west-2:371522382791:certificate/8f0dfce8-88c1-4b9c-b3bd-850af8dcc0a5"
+      eu-west-1:
+        CertificateARN: "arn:aws:acm:eu-central-1:371522382791:certificate/82bcf762-ea43-4f32-b78e-4bbabe2f6fe4"
+Parameters:
+  SSHKeyName:
+    Description: Name of the existing ssh key that should have access
+    Type: String
+    MinLength: "1"
+    Default: akrug-key
+  EnvType:
+    Description: Environment type.
+    Default: dev
+    Type: String
+    AllowedValues:
+      - prod
+      - dev
+Resources:
+  SSODashboardInternetGateway:
+    Type: "AWS::EC2::InternetGateway"
+  SSODashboardVPC:
+    Type: "AWS::EC2::VPC"
+    DependsOn: SSODashboardInternetGateway
+    Properties:
+      CidrBlock: "10.0.0.0/16"
+      EnableDnsSupport: True
+      EnableDnsHostnames: True
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    DependsOn: SSODashboardVPC
+    Properties:
+      VpcId:
+        Ref: SSODashboardVPC
+      InternetGatewayId:
+        Ref: SSODashboardInternetGateway
+  SSODashboardRouteTable:
+    Type: "AWS::EC2::RouteTable"
+    DependsOn: [ SSODashboardVPC, SSODashboardInternetGateway, AttachGateway ]
+    Properties:
+      VpcId:
+        Ref: SSODashboardVPC
+  DashboardDefaultRoute:
+    Type: AWS::EC2::Route
+    DependsOn: SSODashboardInternetGateway
+    Properties:
+      RouteTableId:
+        Ref: SSODashboardRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: SSODashboardInternetGateway
+  SSODashboardSubnet1:
+    Type: "AWS::EC2::Subnet"
+    DependsOn: SSODashboardRouteTable
+    Properties:
+      AvailabilityZone: "us-west-2a"
+      CidrBlock: "10.0.0.0/24"
+      MapPublicIpOnLaunch: True
+      VpcId:
+        Ref: SSODashboardVPC
+  SSODashboardSubnet2:
+    Type: "AWS::EC2::Subnet"
+    DependsOn: SSODashboardRouteTable
+    Properties:
+      AvailabilityZone: "us-west-2b"
+      CidrBlock: "10.0.1.0/24"
+      MapPublicIpOnLaunch: True
+      VpcId:
+        Ref: SSODashboardVPC
+  SSODashboardSubnet3:
+    Type: "AWS::EC2::Subnet"
+    DependsOn: SSODashboardRouteTable
+    Properties:
+      AvailabilityZone: "us-west-2c"
+      CidrBlock: "10.0.2.0/24"
+      MapPublicIpOnLaunch: True
+      VpcId:
+        Ref: SSODashboardVPC
+#  SSODashboardSubnet4:
+#    Type: "AWS::EC2::Subnet"
+#    DependsOn: SSODashboardRouteTable
+#    Properties:
+#      AvailabilityZone: "us-west-2d"
+#      CidrBlock: "10.0.2.0/24"
+#      MapPublicIpOnLaunch: True
+#      VpcId:
+#        Ref: SSODashboardVPC
+  SSODashboardRouteAssoc1:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    DependsOn: DashboardDefaultRoute
+    Properties:
+      RouteTableId:
+        Ref: SSODashboardRouteTable
+      SubnetId:
+        Ref: SSODashboardSubnet1
+  SSODashboardRouteAssoc2:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    DependsOn: DashboardDefaultRoute
+    Properties:
+      RouteTableId:
+        Ref: SSODashboardRouteTable
+      SubnetId:
+        Ref: SSODashboardSubnet2
+  SSODashboardRouteAssoc3:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    DependsOn: DashboardDefaultRoute
+    Properties:
+      RouteTableId:
+        Ref: SSODashboardRouteTable
+      SubnetId:
+        Ref: SSODashboardSubnet3
+  SSODashboardSecGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    DependsOn: SSODashboardVPC
+    Properties:
+      GroupDescription: "Allows ports to web instances of dashboard from ELB."
+      VpcId:
+        Ref: SSODashboardVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '8000'
+          ToPort: '8000'
+          CidrIp: 10.0.0.0/8
+        - IpProtocol: tcp
+          FromPort: '80'
+          ToPort: '80'
+          CidrIp: 10.0.0.0/8
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 0.0.0.0/0
+  SSODashboardELBSecGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    DependsOn: SSODashboardVPC
+    Properties:
+      GroupDescription: "Allows access to the ELB listeners."
+      VpcId:
+        Ref: SSODashboardVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '443'
+          ToPort: '443'
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: '80'
+          ToPort: '80'
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 0.0.0.0/0
+  ApplicationLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    DependsOn: SSODashboardELBSecGroup
+    Properties:
+      Scheme: internet-facing
+      Subnets:
+        - Ref: SSODashboardSubnet1
+        - Ref: SSODashboardSubnet2
+        - Ref: SSODashboardSubnet3
+      SecurityGroups:
+        - Ref: SSODashboardELBSecGroup
+  ALBHTTPListener:
+    Type : AWS::ElasticLoadBalancingV2::Listener
+    DependsOn: ApplicationLoadBalancer
+    Properties:
+      DefaultActions:
+      - Type: forward
+        TargetGroupArn:
+          Ref: ALBTargetGroup
+      LoadBalancerArn:
+        Ref: ApplicationLoadBalancer
+      Port: 80
+      Protocol: HTTP
+  ALBHTTPSListener:
+    Type : AWS::ElasticLoadBalancingV2::Listener
+    DependsOn: ApplicationLoadBalancer
+    Properties:
+      Certificates:
+        - CertificateArn: !FindInMap [!Ref EnvType, !Ref "AWS::Region", CertificateARN]
+      DefaultActions:
+      - Type: forward
+        TargetGroupArn:
+          Ref: ALBTargetGroup
+      LoadBalancerArn:
+        Ref: ApplicationLoadBalancer
+      Port: 443
+      Protocol: HTTPS
+      SslPolicy: ELBSecurityPolicy-2016-08
+  ALBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    DependsOn: ApplicationLoadBalancer
+    Properties:
+      HealthCheckIntervalSeconds: 60
+      UnhealthyThresholdCount: 10
+      HealthCheckPath: /
+      Name: DashboardWebServers
+      Port: 8000
+      Protocol: HTTP
+      VpcId:
+        Ref: SSODashboardVPC
+  SSODashboardRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "ec2.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      RoleName: SSO-Dashboard-Role
+  SSOInstanceProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    DependsOn: SSODashboardRole
+    Properties:
+      Roles:
+        -
+          Ref: SSODashboardRole
+  SSODashboardCodePipelineAccess:
+    Type: "AWS::IAM::Policy"
+    DependsOn: SSODashboardRole
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Action:
+              - "s3:GetBucketAcl"
+              - "s3:GetBucketCORS"
+              - "s3:GetBucketLocation"
+              - "s3:GetBucketLogging"
+              - "s3:GetBucketNotification"
+              - "s3:GetBucketPolicy"
+              - "s3:GetBucketRequestPayment"
+              - "s3:GetBucketTagging"
+              - "s3:GetBucketVersioning"
+              - "s3:GetBucketWebsite"
+              - "s3:GetLifecycleConfiguration"
+              - "s3:GetObject"
+              - "s3:GetObjectAcl"
+              - "s3:GetObjectTagging"
+              - "s3:GetObjectTorrent"
+              - "s3:GetObjectVersion"
+              - "s3:GetObjectVersionAcl"
+              - "s3:GetObjectVersionTagging"
+              - "s3:GetObjectVersionTorrent"
+              - "s3:GetReplicationConfiguration"
+              - "s3:ListAllMyBuckets"
+              - "s3:ListBucket"
+              - "s3:ListBucketMultipartUploads"
+              - "s3:ListBucketVersions"
+              - "s3:ListMultipartUploadParts"
+            Resource: "arn:aws:s3:::codepipeline*"
+
+      PolicyName: sso-dashboard-read-codepipeline
+      Roles:
+        -
+          Ref: SSODashboardRole
+  SSODashboardS3Access:
+    Type: "AWS::IAM::Policy"
+    DependsOn: SSODashboardRole
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Action:
+              - "s3:GetBucketAcl"
+              - "s3:GetBucketCORS"
+              - "s3:GetBucketLocation"
+              - "s3:GetBucketLogging"
+              - "s3:GetBucketNotification"
+              - "s3:GetBucketPolicy"
+              - "s3:GetBucketRequestPayment"
+              - "s3:GetBucketTagging"
+              - "s3:GetBucketVersioning"
+              - "s3:GetBucketWebsite"
+              - "s3:GetLifecycleConfiguration"
+              - "s3:GetObject"
+              - "s3:GetObjectAcl"
+              - "s3:GetObjectTagging"
+              - "s3:GetObjectTorrent"
+              - "s3:GetObjectVersion"
+              - "s3:GetObjectVersionAcl"
+              - "s3:GetObjectVersionTagging"
+              - "s3:GetObjectVersionTorrent"
+              - "s3:GetReplicationConfiguration"
+              - "s3:ListAllMyBuckets"
+              - "s3:ListBucket"
+              - "s3:ListBucketMultipartUploads"
+              - "s3:ListBucketVersions"
+              - "s3:ListMultipartUploadParts"
+            Resource: "arn:aws:s3:::sso-dashboard.*"
+
+      PolicyName: sso-dashboard-read-buckets
+      Roles:
+        -
+          Ref: SSODashboardRole
+  SSODashboardTagAccess:
+    Type: "AWS::IAM::Policy"
+    DependsOn: SSODashboardRole
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Action:
+              - "ec2:DescribeTags"
+            Resource: "*"
+      PolicyName: sso-dashboard-describe-tags
+      Roles:
+        -
+          Ref: SSODashboardRole
+  SSODashboardCodeDeploy:
+    Type: "AWS::IAM::Policy"
+    DependsOn: SSODashboardRole
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Action:
+              - "codedeploy:*"
+            Resource: "arn:aws:codedeploy:*:*:application:sso-dashboard-*"
+      PolicyName: sso-dashboard-code-deploy
+      Roles:
+        -
+          Ref: SSODashboardRole
+  SSODashboardKMSGrant:
+    Type: "AWS::IAM::Policy"
+    DependsOn: SSODashboardRole
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Action:
+              - "kms:Decrypt"
+            #Condition: { StringEqualsIfExists": { "kms:EncryptionContext:app": "sso-dashboard" } }
+            Resource: "arn:aws:kms:us-east-1:656532927350:key/6762fa27-618c-4c0b-83d4-ca42ffac454f"
+          -
+            Effect: "Allow"
+            Action:
+              - "dynamodb:GetItem"
+              - "dynamodb:Query"
+              - "dynamodb:Scan"
+            Resource: "arn:aws:dynamodb:*:*:table/credential-store"
+      PolicyName: sso-dashboard-credstash
+      Roles:
+        -
+          Ref: SSODashboardRole
+  SSODashboardLaunchConfig:
+    Type: "AWS::AutoScaling::LaunchConfiguration"
+    Properties:
+      KeyName: !Ref SSHKeyName
+      ImageId: !FindInMap [!Ref EnvType, !Ref "AWS::Region", AMI]
+      IamInstanceProfile:
+        Ref: SSOInstanceProfile
+      UserData:
+        Fn::Base64: !Sub |
+          #cloud-config
+          repo_update: true
+          repo_upgrade: all
+          runcmd:
+            - REGION=$(curl 169.254.169.254/latest/meta-data/placement/availability-zone/ | sed 's/[a-z]$//')
+            - yum update -y
+            - yum install ruby wget -y
+            - cd /home/ec2-user
+            - wget https://aws-codedeploy-$REGION.s3.amazonaws.com/latest/install
+            - chmod +x ./install
+            - ./install auto
+      SecurityGroups:
+        - Ref: SSODashboardSecGroup
+      InstanceType: "t2.small"
+  SSODashboardASG:
+    Type: "AWS::AutoScaling::AutoScalingGroup"
+    DependsOn: [ SSODashboardLaunchConfig, SSODashboardSubnet1, SSODashboardSubnet2, SSODashboardSubnet3 ]
+    Properties:
+      Tags:
+        -
+          Key: Application
+          Value: SSO-Dashboard
+          PropagateAtLaunch: true
+      #AvailabilityZones:
+      #  Fn::GetAZs:
+      #    Ref: "AWS::Region"
+      MaxSize: "3"
+      MinSize: "1"
+      VPCZoneIdentifier:
+        - Ref: SSODashboardSubnet1
+        - Ref: SSODashboardSubnet2
+        - Ref: SSODashboardSubnet3
+      LaunchConfigurationName:
+        Ref: "SSODashboardLaunchConfig"

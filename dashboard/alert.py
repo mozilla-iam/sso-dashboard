@@ -3,6 +3,7 @@
 from flask_redis import FlaskRedis
 from mockredis import MockRedis
 
+
 class Alert(object):
     def __init__(self, user, app):
         self.user = user

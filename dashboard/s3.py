@@ -14,7 +14,7 @@ class AppFetcher(object):
         Compare etag of what is in bucket to what is on disk.
         """
         try:
-            response = self.client.head_object(
+            self.client.head_object(
                 Bucket=self.s3_bucket,
                 Key='apps.yml',
                 IfMatch=self.__etag()

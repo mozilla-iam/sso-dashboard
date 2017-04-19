@@ -50,10 +50,7 @@ assets.register('js_all', js)
 
 
 sass = Bundle('*.sass', filters='sass', output='css/gen/sass.css')
-css = Bundle(
-            'css/base.css', sass,
-            filters='cssmin', output="css/gen/all.css"
-        )
+css = Bundle('css/base.css', sass, filters='cssmin', output='css/gen/all.css')
 assets.register('css_all', css)
 
 oidc_config = config.OIDCConfig()
@@ -119,6 +116,7 @@ sh.update(
 # Register the flask blueprint for SSE.
 app.register_blueprint(sse, url_prefix='/stream')
 
+
 @sse.before_request
 def check_access():
     """Users can only view their own security alerts."""
@@ -128,16 +126,19 @@ def check_access():
     else:
         abort(403)
 
+
 @app.route('/favicon.ico')
 @sh.wrapper()
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static/img'),
                                'favicon.ico')
 
+
 @app.route('/')
 @sh.wrapper()
 def home():
     return redirect('/dashboard', code=302)
+
 
 @app.route('/dashboard')
 @sh.wrapper()
@@ -158,16 +159,17 @@ def dashboard():
         alerts=alerts
     )
 
+
 @app.route('/info')
 @sh.wrapper()
 @oidc.oidc_auth
 def info():
     """Return the JSONified user session for debugging."""
     return jsonify(
-            id_token=session['id_token'],
-            access_token=session['access_token'],
-            userinfo=session['userinfo']
-        )
+        id_token=session['id_token'],
+        access_token=session['access_token'],
+        userinfo=session['userinfo']
+    )
 
 
 @app.route('/about')
@@ -178,7 +180,7 @@ def about():
     )
 
 
-@app.route('/alert', methods = ['POST'])
+@app.route('/alert', methods=['POST'])
 @sh.wrapper()
 def publish_alert():
     """
@@ -194,7 +196,7 @@ def publish_alert():
     """
     try:
         content = request.json
-        #Send a real time event to the user
+        # Send a real time event to the user
         m = hashlib.md5()
         m.update(content['user']['email'])
         channel = m.hexdigest()
@@ -224,6 +226,7 @@ logger.info("Vanity URLs loaded for {num} apps.".format(num=len(vanity)))
 logger.info(
     "Count of apps by OP is {stats}".format(stats=Application().stats())
 )
+
 
 def redirect_url():
     vanity_url = '/' + request.url.split('/')[3]

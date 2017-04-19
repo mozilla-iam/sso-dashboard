@@ -16,7 +16,7 @@ hooks:
 
   AfterInstall:
     - location: scripts/build-environment.sh
-      timeout: 120
+      timeout: 300
       runas: root
 
   ApplicationStart:

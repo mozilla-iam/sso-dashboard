@@ -2,7 +2,6 @@ from flask import Flask, render_template, jsonify, session, request, redirect, s
 from flask_assets import Environment, Bundle
 
 from flask_secure_headers.core import Secure_Headers
-from os.path import join, dirname
 from werkzeug.exceptions import BadRequest
 
 import os
@@ -11,10 +10,12 @@ import datetime
 
 import config
 import auth
+
 from user import User
 from alert import Alert
 from s3 import AppFetcher
 from op.yaml_loader import Application
+
 
 from flask_sse import sse
 
@@ -204,6 +205,20 @@ def publish_alert():
         raise BadRequest('POST does not contain e-mail and message')
         return jsonify({'status': 'fail'})
 
+
+vanity = Application().vanity_urls()
+
+def redirect_url():
+    vanity_url = '/' + request.url.split('/')[3]
+    for match in vanity:
+        if match.keys()[0] == vanity_url:
+            return redirect(match[vanity_url], code=301)
+
+for url in vanity:
+    try:
+        app.add_url_rule(url.keys()[0], url.keys()[0], redirect_url)
+    except Exception as e:
+        print("Could not create vanity URL for {app}".format(app=url))
 
 if __name__ == '__main__':
     app.run()

@@ -19,6 +19,20 @@
     - name: Install EPEL
       yum: name=epel-release state=latest
 
+    - name: Install nginx
+      yum: name=nginx
+
+    - name: Copy the config
+      copy:
+       src: nginx/nginx.conf
+       dest: /etc/nginx/nginx.conf
+
+    - name: Copy the config
+      copy:
+       src: nginx/start.sh
+       dest: /usr/bin/start.sh
+       mode: 0775
+
     - name: Install credstash depends
       yum: name=gcc,libffi-devel,python-devel,openssl-devel state=latest
 

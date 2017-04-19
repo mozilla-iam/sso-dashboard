@@ -4,4 +4,6 @@
 
 cp /home/ec2-user/app/conf/supervisor-ansible.ini /etc/supervisord.d/
 
-rm -rf /home/ec2-user/app/*
+rm -rf /home/ec2-user/app
+
+mkdir -p /home/ec2-user/app

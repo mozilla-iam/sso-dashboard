@@ -3,6 +3,7 @@
 
 import os
 
+
 class Config(object):
     """Defaults for the configuration objects."""
     DEBUG = True
@@ -13,6 +14,7 @@ class Config(object):
     PERMANENT_SESSION = os.environ['PERMANENT_SESSION']
     PERMANENT_SESSION_LIFETIME = int(os.environ['PERMANENT_SESSION_LIFETIME'])
     REDIS_URL = os.environ['REDIS_URL']
+
 
 class ProductionConfig(Config):
     DEBUG = False
@@ -44,7 +46,6 @@ class OIDCConfig(object):
             CLIENT_ID=self.OIDC_CLIENT_ID
         )
 
-
     def auth_endpoint(self):
         return "https://{DOMAIN}/authorize".format(
             DOMAIN=self.OIDC_DOMAIN
@@ -52,12 +53,12 @@ class OIDCConfig(object):
 
     def token_endpoint(self):
         return "https://{DOMAIN}/oauth/token".format(
-                DOMAIN=self.OIDC_DOMAIN
+            DOMAIN=self.OIDC_DOMAIN
         )
 
     def userinfo_endpoint(self):
         return "https://{DOMAIN}/userinfo".format(
-                DOMAIN=self.OIDC_DOMAIN
+            DOMAIN=self.OIDC_DOMAIN
         )
 
     def client_id(self):

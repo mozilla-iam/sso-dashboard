@@ -3,6 +3,7 @@ import hashlib
 
 """User class that governs maniuplation of session['userdata']"""
 
+
 class User(object):
     def __init__(self, session):
         """Constructor takes user session."""
@@ -68,7 +69,7 @@ class User(object):
             app['application']['authorized_groups']
             app['application']['authorized_users']
             return True
-        except Exception as e:
+        except Exception:
             return False
 
     def apps(self, app_list):

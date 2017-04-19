@@ -46,7 +46,5 @@ class OpenIDConnect(object):
         if os.environ['ENVIRONMENT'] == 'Production':
             redirect_uri = o.client.registration_response['redirect_uris'][0]
             o.client.registration_response['redirect_uris'][0] = \
-                redirect_uri.replace(
-                    'http', 'https'
-                )
+                redirect_uri.replace('http', 'https')
         return o

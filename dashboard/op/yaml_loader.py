@@ -15,7 +15,7 @@ class Application(object):
         stream = {}
         with open(self.config_file, 'r') as stream:
             try:
-                stream = yaml.load(stream)
+                stream = yaml.safe_load(stream)
             except yaml.YAMLError as e:
                 print(e)
         return stream
@@ -24,3 +24,22 @@ class Application(object):
         for root, dirs, files in os.walk(path):
             if name in files:
                 return os.path.join(root, name)
+
+    def __has_vanity(self, app):
+        try:
+            app['application']['vanity_url']
+            return True
+        except:
+            return False
+
+    def vanity_urls(self):
+        redirects = []
+        for app in self.apps['apps']:
+            if self.__has_vanity(app):
+                for redirect in app['application']['vanity_url']:
+                    redirects.append(
+                        {
+                            redirect: app['application']['url']
+                         }
+                    )
+        return redirects

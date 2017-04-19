@@ -3,18 +3,24 @@ Description: "Mozilla Single Sign On Dashboard"
 Mappings:
   dev:
       us-east-1:
+        branch: "git checkout master"
         CertificateARN: "arn:aws:acm:us-east-1:656532927350:certificate/af98d466-2099-4d99-b1d1-dc222b8e59b0"
       us-west-2:
         AMI: ami-983daaf8
+        branch: "git checkout master"
         CertificateARN: "arn:aws:acm:us-west-2:656532927350:certificate/ade32b62-e360-4ecd-8c3c-f44671dba94f"
       eu-west-1:
+        branch: "git checkout master"
         CertificateARN: "arn:aws:acm:eu-central-1:656532927350:certificate/105a2ca8-3253-4d0f-973e-91d59584b4f6"
   prod:
       us-east-1:
+        branch: "git checkout production"
         CertificateARN: "arn:aws:acm:us-east-1:371522382791:certificate/12dd7f1a-177c-4a11-8b62-ca098d3ee40c"
       us-west-2:
+        branch: "git checkout production"
         CertificateARN: "arn:aws:acm:us-west-2:371522382791:certificate/8f0dfce8-88c1-4b9c-b3bd-850af8dcc0a5"
       eu-west-1:
+        branch: "git checkout production"
         CertificateARN: "arn:aws:acm:eu-central-1:371522382791:certificate/82bcf762-ea43-4f32-b78e-4bbabe2f6fe4"
 Parameters:
   SSHKeyName:
@@ -89,15 +95,6 @@ Resources:
       MapPublicIpOnLaunch: True
       VpcId:
         Ref: SSODashboardVPC
-#  SSODashboardSubnet4:
-#    Type: "AWS::EC2::Subnet"
-#    DependsOn: SSODashboardRouteTable
-#    Properties:
-#      AvailabilityZone: "us-west-2d"
-#      CidrBlock: "10.0.2.0/24"
-#      MapPublicIpOnLaunch: True
-#      VpcId:
-#        Ref: SSODashboardVPC
   SSODashboardRouteAssoc1:
     Type: "AWS::EC2::SubnetRouteTableAssociation"
     DependsOn: DashboardDefaultRoute
@@ -204,9 +201,11 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn: ApplicationLoadBalancer
     Properties:
-      HealthCheckIntervalSeconds: 60
-      UnhealthyThresholdCount: 10
-      HealthCheckPath: /
+      HealthyThresholdCount: 2
+      HealthCheckIntervalSeconds: 30
+      UnhealthyThresholdCount: 5
+      HealthCheckPath: /health
+      HealthCheckPort: 80
       Name: DashboardWebServers
       Port: 8000
       Protocol: HTTP
@@ -269,7 +268,6 @@ Resources:
               - "s3:ListBucketVersions"
               - "s3:ListMultipartUploadParts"
             Resource: "arn:aws:s3:::codepipeline*"
-
       PolicyName: sso-dashboard-read-codepipeline
       Roles:
         -
@@ -310,8 +308,25 @@ Resources:
               - "s3:ListBucketVersions"
               - "s3:ListMultipartUploadParts"
             Resource: "arn:aws:s3:::sso-dashboard.*"
-
       PolicyName: sso-dashboard-read-buckets
+      Roles:
+        -
+          Ref: SSODashboardRole
+  SSODashboardCredstashRead:
+    Type: "AWS::IAM::Policy"
+    DependsOn: SSODashboardRole
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Action:
+              - "dynamodb:GetItem"
+              - "dynamodb:Query"
+              - "dynamodb:Scan"
+            Resource: "arn:aws:dynamodb:*:*:table/credential-store"
+      PolicyName: sso-dashboard-credstash
       Roles:
         -
           Ref: SSODashboardRole
@@ -347,30 +362,6 @@ Resources:
       Roles:
         -
           Ref: SSODashboardRole
-  SSODashboardKMSGrant:
-    Type: "AWS::IAM::Policy"
-    DependsOn: SSODashboardRole
-    Properties:
-      PolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          -
-            Effect: "Allow"
-            Action:
-              - "kms:Decrypt"
-            #Condition: { StringEqualsIfExists": { "kms:EncryptionContext:app": "sso-dashboard" } }
-            Resource: "arn:aws:kms:us-east-1:656532927350:key/6762fa27-618c-4c0b-83d4-ca42ffac454f"
-          -
-            Effect: "Allow"
-            Action:
-              - "dynamodb:GetItem"
-              - "dynamodb:Query"
-              - "dynamodb:Scan"
-            Resource: "arn:aws:dynamodb:*:*:table/credential-store"
-      PolicyName: sso-dashboard-credstash
-      Roles:
-        -
-          Ref: SSODashboardRole
   SSODashboardLaunchConfig:
     Type: "AWS::AutoScaling::LaunchConfiguration"
     Properties:
@@ -391,9 +382,18 @@ Resources:
             - wget https://aws-codedeploy-$REGION.s3.amazonaws.com/latest/install
             - chmod +x ./install
             - ./install auto
+            - cd /home/ec2-user
+            - rm -rf /home/ec2-user/app
+            - mkdir -p /home/ec2-user/app
+            - git clone https://github.com/mozilla-iam/sso-dashboard.git /home/ec2-user/app
+            - cd /home/ec2-user/app
+            - chmod +x /home/ec2-user/app/scripts/*
+            - cp /home/ec2-user/app/conf/supervisor-ansible.ini /etc/supervisord.d/
+            - /home/ec2-user/app/scripts/build-environment.sh
+            - service supervisord restart
       SecurityGroups:
         - Ref: SSODashboardSecGroup
-      InstanceType: "t2.small"
+      InstanceType: "t2.medium"
   SSODashboardASG:
     Type: "AWS::AutoScaling::AutoScalingGroup"
     DependsOn: [ SSODashboardLaunchConfig, SSODashboardSubnet1, SSODashboardSubnet2, SSODashboardSubnet3 ]
@@ -403,11 +403,14 @@ Resources:
           Key: Application
           Value: SSO-Dashboard
           PropagateAtLaunch: true
-      #AvailabilityZones:
-      #  Fn::GetAZs:
-      #    Ref: "AWS::Region"
-      MaxSize: "3"
-      MinSize: "1"
+        -
+          Key: Name
+          Value: SSO-Dashboard-Worker
+          PropagateAtLaunch: true
+      TargetGroupARNs:
+         - Ref: DashboardWebServers
+      MaxSize: "5"
+      MinSize: "2"
       VPCZoneIdentifier:
         - Ref: SSODashboardSubnet1
         - Ref: SSODashboardSubnet2

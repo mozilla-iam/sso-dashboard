@@ -2,7 +2,10 @@ version: "1"
 services:
   web:
     image: centos:7
+    expose:
+      - "8000/tcp"
     ports:
+      - "80:80"
       - "8000:8000"
     links:
       - redis:redis
@@ -18,7 +21,7 @@ services:
       - REDIS_URL=redis://redis:6379
       - S3_BUCKET={{ lookup('credstash', 'sso-dashboard.s3_bucket', region='us-east-1', app='sso-dashboard') }}
     working_dir: '/sso-dashboard'
-    command: ['/usr/bin/dumb-init', 'gunicorn', 'app:app', '--worker-class', 'gevent', '--bind', '0.0.0.0:8000']
+    command: ['/usr/bin/dumb-init', '/usr/bin/start.sh']
     dev_overrides:
       environment:
         - ENVIRONMENT=Development

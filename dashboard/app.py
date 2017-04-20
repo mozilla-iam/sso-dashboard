@@ -219,6 +219,9 @@ def publish_alert():
 
 vanity = Application().vanity_urls()
 logger.info("Vanity URLs loaded for {num} apps.".format(num=len(vanity)))
+logger.info(
+    "Count of apps by OP is {stats}".format(stats=Application().stats())
+)
 
 def redirect_url():
     vanity_url = '/' + request.url.split('/')[3]

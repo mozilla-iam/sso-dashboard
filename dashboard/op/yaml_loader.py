@@ -32,6 +32,16 @@ class Application(object):
         except:
             return False
 
+    def stats(self):
+        okta = 0
+        auth0 = 0
+        for app in self.apps['apps']:
+            if app['application']['op'] == 'okta':
+                okta = okta + 1
+            if app['application']['op'] == 'auth0':
+                auth0 = auth0 + 1
+        return { 'auth0': auth0, 'okta': okta }
+
     def vanity_urls(self):
         redirects = []
         for app in self.apps['apps']:

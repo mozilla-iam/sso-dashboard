@@ -20,25 +20,25 @@ from alert import Alert
 from s3 import AppFetcher
 from op.yaml_loader import Application
 
-
 from flask_sse import sse
 
 app = Flask(__name__)
-
-if os.environ.get('LOGGING') == 'True':
-    logging.basicConfig(level=logging.INFO)
-    app.logger.addHandler(handler)
-    logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 if os.environ.get('ENVIRONMENT') == 'Production':
     # Only cloudwatch log when app is in production mode.
     handler = watchtower.CloudWatchLogHandler()
     logger.info("Getting production config")
+    app.logger.addHandler(handler)
     app.config.from_object(config.ProductionConfig())
 elif os.environ.get('ENVIRONMENT') == 'Development':
     # Only log flask debug in development mode.
+    handler = logging.StreamHandler()
     logging.getLogger("werkzeug").addHandler(handler)
     app.config.from_object(config.DevelopmentConfig())
+
+if os.environ.get('LOGGING') == 'True':
+    logging.basicConfig(level=logging.INFO)
 
 assets = Environment(app)
 
@@ -116,9 +116,6 @@ sh.update(
 
 # Register the flask blueprint for SSE.
 app.register_blueprint(sse, url_prefix='/stream')
-
-
-
 
 @sse.before_request
 def check_access():
@@ -221,16 +218,25 @@ def publish_alert():
 
 
 vanity = Application().vanity_urls()
+logger.info("Vanity URLs loaded for {num} apps.".format(num=len(vanity)))
 
 def redirect_url():
     vanity_url = '/' + request.url.split('/')[3]
+
     logger.info("Attempting to match {url}".format(url=vanity_url))
+
     for match in vanity:
         if match.keys()[0] == vanity_url:
-            logger.info("Vanity URL found for {app}".format(app=url))
+            logger.info(
+                "Vanity URL found for {app}".format(app=match[vanity_url])
+            )
             return redirect(match[vanity_url], code=301)
         else:
-            logger.info("Vanity URL could not be found.")
+            pass
+
+    logger.info(
+        "Vanity URL could not be matched for {app}".format(app=vanity_url)
+    )
 
 for url in vanity:
     try:

@@ -23,6 +23,8 @@ from op.yaml_loader import Application
 from flask_sse import sse
 
 app = Flask(__name__)
+AppFetcher().sync_config_and_images()
+
 logger = logging.getLogger(__name__)
 
 if os.environ.get('ENVIRONMENT') == 'Production':

@@ -10,6 +10,7 @@ services:
     links:
       - redis:redis
     environment:
+      - LOGGING=True
       - SECRET_KEY={{ lookup('credstash', 'sso-dashboard.secret_key', region='us-east-1', app='sso-dashboard') }}
       - ENVIRONMENT=Production
       - OIDC_DOMAIN={{ lookup('credstash', 'sso-dashboard.oidc_domain', region='us-east-1', app='sso-dashboard') }}

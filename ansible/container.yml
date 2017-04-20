@@ -10,7 +10,7 @@ services:
     links:
       - redis:redis
     environment:
-      - AWS_DEFAULT_REGION=$(curl 169.254.169.254/latest/meta-data/placement/availability-zone/ | sed 's/[a-z]$//')
+      - AWS_DEFAULT_REGION=us-west-2
       - LOGGING=True
       - SECRET_KEY={{ lookup('credstash', 'sso-dashboard.secret_key', region='us-east-1', app='sso-dashboard') }}
       - ENVIRONMENT=Production
@@ -26,6 +26,7 @@ services:
     command: ['/usr/bin/dumb-init', '/usr/bin/start.sh']
     dev_overrides:
       environment:
+        - LOGGING=True
         - ENVIRONMENT=Development
         - SERVER_NAME=localhost:8000
         - S3_BUCKET=sso-dashboard.configuration

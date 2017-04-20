@@ -27,16 +27,17 @@ app = Flask(__name__)
 
 if os.environ.get('LOGGING') == 'True':
     logging.basicConfig(level=logging.INFO)
-    handler = watchtower.CloudWatchLogHandler()
     app.logger.addHandler(handler)
-    logging.getLogger("werkzeug").addHandler(handler)
     logger = logging.getLogger(__name__)
 
 if os.environ.get('ENVIRONMENT') == 'Production':
+    # Only cloudwatch log when app is in production mode.
+    handler = watchtower.CloudWatchLogHandler()
     logger.info("Getting production config")
     app.config.from_object(config.ProductionConfig())
 elif os.environ.get('ENVIRONMENT') == 'Development':
-    print("Getting development config")
+    # Only log flask debug in development mode.
+    logging.getLogger("werkzeug").addHandler(handler)
     app.config.from_object(config.DevelopmentConfig())
 
 assets = Environment(app)
@@ -144,6 +145,7 @@ def home():
 @oidc.oidc_auth
 def dashboard():
     """Primary dashboard the users will interact with."""
+    logger.info("User authenticated proceeding to dashboard.")
     AppFetcher().sync_config_and_images()
     user = User(session)
     alerts = Alert(user, app).get()
@@ -225,7 +227,10 @@ def redirect_url():
     logger.info("Attempting to match {url}".format(url=vanity_url))
     for match in vanity:
         if match.keys()[0] == vanity_url:
+            logger.info("Vanity URL found for {app}".format(app=url))
             return redirect(match[vanity_url], code=301)
+        else:
+            logger.info("Vanity URL could not be found.")
 
 for url in vanity:
     try:

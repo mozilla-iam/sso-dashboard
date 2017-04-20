@@ -8,8 +8,12 @@ import os
 import hashlib
 import datetime
 
+import watchtower
+import logging
+
 import config
 import auth
+
 
 from user import User
 from alert import Alert
@@ -21,7 +25,15 @@ from flask_sse import sse
 
 app = Flask(__name__)
 
+if os.environ.get('LOGGING') == 'True':
+    logging.basicConfig(level=logging.INFO)
+    handler = watchtower.CloudWatchLogHandler()
+    app.logger.addHandler(handler)
+    logging.getLogger("werkzeug").addHandler(handler)
+    logger = logging.getLogger(__name__)
+
 if os.environ.get('ENVIRONMENT') == 'Production':
+    logger.info("Getting production config")
     app.config.from_object(config.ProductionConfig())
 elif os.environ.get('ENVIRONMENT') == 'Development':
     print("Getting development config")
@@ -210,6 +222,7 @@ vanity = Application().vanity_urls()
 
 def redirect_url():
     vanity_url = '/' + request.url.split('/')[3]
+    logger.info("Attempting to match {url}".format(url=vanity_url))
     for match in vanity:
         if match.keys()[0] == vanity_url:
             return redirect(match[vanity_url], code=301)
@@ -218,7 +231,8 @@ for url in vanity:
     try:
         app.add_url_rule(url.keys()[0], url.keys()[0], redirect_url)
     except Exception as e:
-        print("Could not create vanity URL for {app}".format(app=url))
+        logger.error(e)
+        logger.info("Could not create vanity URL for {app}".format(app=url))
 
 if __name__ == '__main__':
     app.run()

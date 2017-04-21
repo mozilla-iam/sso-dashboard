@@ -42,13 +42,8 @@
     - name: Install PyDevel
       yum: name=python-devel state=latest
 
-    - name: Install rubygems
-      yum: name=rubygems state=latest
-
-
-    - name: Install rubygems
-      gem: name=sass state=latest
-
+    - name: Install rubygems sass compiler
+      yum: name=rubygem-sass state=latest
 
     - name: Install credstash
       pip:
@@ -74,3 +69,18 @@
        dest: /sso-dashboard
        owner: flaskapp
        mode: 0777
+
+    - name: Cache busting
+      file:
+        path: /sso-dashboard/static/css/gen/all.css
+        state: absent
+
+    - name: Cache busting
+      file:
+        path: /sso-dashboard/static/js/gen/packed.js
+        state: absent
+
+    - name: Cache busting
+      file:
+        path: /sso-dashboard/data/apps.yml-etag
+        state: absent

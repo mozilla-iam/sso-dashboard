@@ -1,10 +1,10 @@
 dashboard/data/apps.yml-etag
 dump.rdb
 .env
-static/js/gen/
-static/css/gen/
-static/.webassets-cache/
+dashboard/static/js/gen/
+dashboard/static/css/gen/
 dashboard/static/.webassets-cache/
+dashboard/static/img/logos/*
 virtualenv.egg-info
 build
 dist

@@ -49,8 +49,8 @@ js = Bundle('js/base.js',
 assets.register('js_all', js)
 
 
-sass = Bundle('*.sass', filters='sass', output='css/gen/sass.css')
-css = Bundle('css/base.css', sass, filters='cssmin', output='css/gen/all.css')
+sass = Bundle('css/base.scss', filters='scss')
+css = Bundle(sass, filters='cssmin', output='css/gen/all.css')
 assets.register('css_all', css)
 
 oidc_config = config.OIDCConfig()

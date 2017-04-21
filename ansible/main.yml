@@ -42,6 +42,14 @@
     - name: Install PyDevel
       yum: name=python-devel state=latest
 
+    - name: Install rubygems
+      yum: name=rubygems state=latest
+
+
+    - name: Install rubygems
+      gem: name=sass state=latest
+
+
     - name: Install credstash
       pip:
         name: credstash

@@ -1,23 +1,56 @@
-{% extends "authenticated-layout.html" %}
-{% block content %}
-<div class="mui-container-fluid">
+{% extends "layout.html" %}
 
-</div>
-<div class="mui-container-fluid">
-
-
-
-  <div id="app-grid" class="mui-row">
-    {% for app in apps %}
-    <div class="mui-col-md-4">
-      <div data-id="{{ app['application']['name'] }}" class="app-tile">
-        <a class="center app-logo" target="_blank" href="{{ app['application']['url'] }}"><img src="/static/img/logos/{{ app['application']['logo'] }}" alt={{ app['application']['name'] }} ></img></a>
-        <br></br>
-        <a class="center-text app-link" target="_blank" href="{{ app['application']['url'] }}"><h4> {{ app['application']['name'] }} </h4></a>
-      </div>
+{% block search %}
+  <div class="mui-form--inline filter">
+    <img src="static/img/search.svg" alt="search">
+    <div class="mui-textfield">
+      <input type="text" name="filter" id="filter" placeholder="Search for an app by name">
     </div>
+  </div>
+{% endblock %}
+
+{% block search_button %}
+  <a href="#"></a>
+{% endblock %}
+
+{% block search_mobile %}
+  <div class="search-mobile">
+    <div class="mui-textfield">
+      <input type="text" name="filter" id="filter" placeholder="Search for an app by name">
+    </div>
+  </div>
+{% endblock %}
+
+{% block menu %}
+  {% if user.profile_picture() %}
+    <img class="profile-icon" src="{{ user.profile_picture() }}"></img>
+  {% else %}
+    <img class="profile-icon" src="https://robohash.org/{{ user.userhash() }}.png"></img>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <div id="app-grid" class="mui-row app-grid">
+    {% for app in apps %}
+      <a href="{{ app['application']['url'] }}" data-id="{{ app['application']['name'] }}" class="app-tile">
+        <div class="mui--text-center app-logo">
+          <img src="/static/img/logos/{{ app['application']['logo'] }}" alt={{ app['application']['name'] }}>
+        </div>
+        <h4 class="mui--text-center app-name">{{ app['application']['name'] }}</h4>
+      </a>
     {% endfor %}
   </div>
-</div>
+{% endblock %}
 
+{% block extra_js %}
+  <script>
+    var source = new EventSource("/stream?channel={{ user.userhash() }}");
+    source.addEventListener('alert', function(event) {
+        var data = JSON.parse(event.data);
+        $(".messages").append("<li class=\"security-alert\">" + " <div class=\"message\">" + "Security Alert Logged at " + (new Date().getHours()) + ":" + (new Date().getMinutes()) + " : " + data["message"] + "</div></li>");
+    }, false);
+    source.addEventListener('error', function(event) {
+        console.log("Failed to connect to event stream. Is Redis running?");
+    }, false);
+  </script>
 {% endblock %}

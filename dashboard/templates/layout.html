@@ -3,32 +3,63 @@
   <head>
     <title>Mozilla SSO Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="//fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
-      <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link href="https://cdn.muicss.com/mui-0.9.9-rc2/css/mui.min.css" rel="stylesheet">
     {% assets "css_all" %}
       <link href="{{ ASSET_URL }}" rel="stylesheet"></style>
     {% endassets %}
-    <!-- load MUI -->
-    <link href="//cdn.muicss.com/mui-0.9.9-rc2/css/mui.min.css" rel="stylesheet" type="text/css" />
-    <script src="//cdn.muicss.com/mui-0.9.9-rc2/js/mui.min.js"></script>
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
   </head>
   <body>
-    <!-- example content -->
+
     <div class="mui-appbar">
-      <img src="static/img/mozilla-logo.png"></img>
-        <!-- content -->
+      <div class="mui-col-sm-2 mui-col-xs-6 mui--text-right brand">
+        <img src="static/img/mozilla.svg" class="logo mui--hidden-md mui--hidden-sm">
+        <img src="static/img/mozilla-m.svg" class="logo mui--hidden-lg mui--hidden-xl mui--hidden-xs">
+      </div>
+      <div class="mui-col-sm-8 mui--hidden-xs">
+        {% block search %}{% endblock %}
+      </div>
+      <div class="mui-col-xs-3 mui--hidden-lg mui--hidden-xl mui--hidden-md mui--hidden-sm search-button">
+        {% block search_button %}{% endblock %}
+      </div>
+      <div class="mui-col-sm-2 mui-col-xs-3 mui--text-left menu">
+        {% block menu %}{% endblock %}
+      </div>
     </div>
-    <div class="mui-container">
-      <div class="mui-panel">
+
+    {% block search_mobile %}{% endblock %}
+
+    <div class="content">
+      <div class="mui-container">
         {% block content %}
         {% endblock %}
       </div>
     </div>
+
+    <footer>
+      <div class="mui-container mui--text-center">
+        <div class="mui-row">
+          <div class="mui-col-xs-4">
+            <img src="static/img/email.svg" alt="email">
+            <a href="#" target="_blank">Help Desk</a>
+          </div>
+          <div class="mui-col-xs-4">
+            <img src="static/img/legal.svg" alt="legal">
+            <a href="https://www.mozilla.org/en-US/about/legal/" target="_blank">Legal</a>
+          </div>
+          <div class="mui-col-xs-4">
+            <img src="static/img/privacy.svg" alt="privacy">
+            <a href="https://www.mozilla.org/en-US/privacy/websites/" target="_blank">Privacy</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.muicss.com/mui-0.9.9-rc2/js/mui.min.js"></script>
     {% assets "js_all" %}
       <script type="text/javascript" src="{{ ASSET_URL }}"></script>
     {% endassets %}
+    {% block extra_js %}{% endblock %}
   </body>
 </html>

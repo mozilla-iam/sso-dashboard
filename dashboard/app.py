@@ -67,12 +67,15 @@ sh = Secure_Headers()
 sh.update(
     {
         'CSP': {
+            'default-src':
+                [
+                    'self',
+                ],
             'script-src':
                 [
                     'self',
                     'ajax.googleapis.com',
                     'cdn.muicss.com',
-                    'netdna.bootstrapcdn.com',
                     's.gravatar.com',
                     'fonts.googleapis.com'
                 ],
@@ -81,22 +84,22 @@ sh.update(
                     'self',
                     'ajax.googleapis.com',
                     'cdn.muicss.com',
-                    'netdna.bootstrapcdn.com',
                     's.gravatar.com',
                     'fonts.googleapis.com'
                 ],
             'img-src':
                 [
                     'self',
-                    's.gravatar.com',
-                    'i0.wp.com'
+                    '*.gravatar.com',
+                    '*.wp.com',
+                    'robohash.org'
                 ],
             'font-src':
                 [
                     'self',
-                    'netdna.bootstrapcdn.com',
+                    'cdn.muicss.com',
                     'fonts.googleapis.com',
-                    'cdn.muicss.com'
+                    'fonts.gstatic.com'
                 ]
         }
     }

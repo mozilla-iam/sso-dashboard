@@ -7,6 +7,8 @@ from werkzeug.exceptions import BadRequest
 import os
 import hashlib
 import datetime
+import mimetypes
+
 
 import watchtower
 import logging
@@ -52,6 +54,9 @@ assets.register('js_all', js)
 sass = Bundle('css/base.scss', filters='scss')
 css = Bundle(sass, filters='cssmin', output='css/gen/all.css')
 assets.register('css_all', css)
+
+# Hack to support serving .svg
+mimetypes.add_type('image/svg+xml', '.svg')
 
 oidc_config = config.OIDCConfig()
 

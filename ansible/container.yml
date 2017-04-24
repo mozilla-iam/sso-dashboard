@@ -29,6 +29,7 @@ services:
     command: ['/usr/bin/dumb-init', '/usr/bin/start.sh']
     dev_overrides:
       environment:
+        - AWS_DEFAULT_REGION=us-west-2
         - LOGGING=True
         - ENVIRONMENT=Development
         - SERVER_NAME=localhost:8000
@@ -40,7 +41,7 @@ services:
         - PERMANENT_SESSION=600
         - PERMANENT_SESSION_LIFETIME=900
         - REDIS_URL=redis://redis:6379
-        - MOZILLIANS_API_URL='https://mozillians.org/api/v2/users/'
+        - MOZILLIANS_API_URL=https://mozillians.org/api/v2/users/
         - MOZILLIANS_API_KEY={{ lookup('credstash', 'sso-dashboard.mozillians_api_key', region='us-east-1', app='sso-dashboard') }}
         - DEFAULT_AVATAR=/static/img/user.svg
   redis:

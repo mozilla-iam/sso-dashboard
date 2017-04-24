@@ -6,7 +6,8 @@
     "license": "MPLv2",
     "dependencies": {
         "jquery": "3.2.1",
-        "mui": "0.9.15"
+        "mui": "0.9.15",
+        "dnt-helper": "schalkneethling/dnt-helper"
     },
     "overrides": {
         "jquery": {
@@ -17,6 +18,9 @@
                 "packages/cdn/css/mui.min.css",
                 "packages/cdn/js/mui.min.js"
             ]
+        },
+        "dnt-helper": {
+            "main": "js/dnt-helper.js"
         }
     }
 }

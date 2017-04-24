@@ -73,9 +73,15 @@ body {
     border-bottom: 1px solid $lightgray;
     height: 64px;
 
+    .mui-col-sm-2 {
+        padding: 0;
+    }
+
     .brand {
         border-right: 1px solid $lightgray;
         height: 64px;
+        width: auto;
+        float: left;
 
         .logo {
             height: 33px;
@@ -122,6 +128,8 @@ body {
     .menu {
         border-left: 1px solid $lightgray;
         height: 64px;
+        width: auto;
+        float: right;
 
         .profile-icon {
             width: 33px;
@@ -129,6 +137,10 @@ body {
             margin: 15px;
             border: 1px solid $gray;
         }
+    }
+
+    .search-button {
+        display: none;
     }
 }
 
@@ -223,8 +235,14 @@ footer {
 
     .mui-appbar {
 
+        .brand {
+            border-right: none;
+        }
+
         .menu {
             height: 64px;
+            padding-left: 15px;
+            padding-right: 15px;
 
             .profile-icon {
                 display: block;
@@ -236,10 +254,14 @@ footer {
         }
 
         .search-button {
+            display: inline-block;
             height: 65px;
             background-image: url('../../img/search.svg');
             background-repeat: no-repeat;
             background-position: center center;
+            border-left: 1px solid $lightgray;
+            padding: 0 15px;
+            float: right;
 
             &.invert {
                 background-color: black;
@@ -249,9 +271,9 @@ footer {
 
             a {
                 display: block;
-                width: 40px;
-                height: 40px;
-                margin: 10px auto;
+                width: 35px;
+                height: 35px;
+                margin: 15px auto;
             }
         }
     }

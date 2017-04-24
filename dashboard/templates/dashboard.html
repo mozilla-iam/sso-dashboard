@@ -10,7 +10,9 @@
 {% endblock %}
 
 {% block search_button %}
-  <a href="#"></a>
+  <div class="search-button">
+    <a href="#"></a>
+  </div>
 {% endblock %}
 
 {% block search_mobile %}
@@ -22,11 +24,13 @@
 {% endblock %}
 
 {% block menu %}
-  {% if user.profile_picture() %}
-    <img class="profile-icon" src="{{ user.profile_picture() }}"></img>
-  {% else %}
-    <img class="profile-icon" src="https://robohash.org/{{ user.userhash() }}.png"></img>
-  {% endif %}
+  <div class="menu">
+    {% if user.profile_picture() %}
+      <img class="profile-icon" src="{{ user.profile_picture() }}"></img>
+    {% else %}
+      <img class="profile-icon" src="https://robohash.org/{{ user.userhash() }}.png"></img>
+    {% endif %}
+  </div>
 {% endblock %}
 
 {% block content %}

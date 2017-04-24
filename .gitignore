@@ -6,9 +6,6 @@ dashboard/static/css/gen/
 dashboard/static/.webassets-cache/
 dashboard/static/img/logos/*
 virtualenv.egg-info
-build
-dist
-lib
 bin
 man
 include
@@ -22,3 +19,5 @@ pip-selfcheck.json
 .tox
 .cache
 tests/test_activate_actual.output
+bower_components
+node_modules

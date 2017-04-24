@@ -80,7 +80,6 @@ sh.update(
                 [
                     'self',
                     'ajax.googleapis.com',
-                    's.gravatar.com',
                     'fonts.googleapis.com',
                     'https://*.google-analytics.com',
                 ],
@@ -88,16 +87,14 @@ sh.update(
                 [
                     'self',
                     'ajax.googleapis.com',
-                    's.gravatar.com',
                     'fonts.googleapis.com',
                 ],
             'img-src':
                 [
                     'self',
-                    '*.gravatar.com',
                     '*.wp.com',
-                    'robohash.org',
                     'https://*.google-analytics.com',
+                    'https://mozillians.org',
                 ],
             'font-src':
                 [

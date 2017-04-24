@@ -14,6 +14,8 @@ class Config(object):
     PERMANENT_SESSION = os.environ['PERMANENT_SESSION']
     PERMANENT_SESSION_LIFETIME = int(os.environ['PERMANENT_SESSION_LIFETIME'])
     REDIS_URL = os.environ['REDIS_URL']
+    MOZILLIANS_API_URL = os.environ['MOZILLIANS_API_URL']
+    MOZILLIANS_API_KEY = os.environ['MOZILLIANS_API_KEY']
 
 
 class ProductionConfig(Config):

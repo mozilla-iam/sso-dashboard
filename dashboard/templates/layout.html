@@ -3,7 +3,7 @@
   <head>
     <title>Mozilla SSO Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.muicss.com/mui-0.9.9-rc2/css/mui.min.css" rel="stylesheet">
+    <link href="/static/lib/mui/packages/cdn/css/mui.min.css" rel="stylesheet">
     {% assets "css_all" %}
       <link href="{{ ASSET_URL }}" rel="stylesheet"></style>
     {% endassets %}
@@ -13,8 +13,8 @@
 
     <div class="mui-appbar">
       <div class="mui-col-sm-2 mui-col-xs-6 mui--text-right brand">
-        <img src="static/img/mozilla.svg" class="logo mui--hidden-md mui--hidden-sm">
-        <img src="static/img/mozilla-m.svg" class="logo mui--hidden-lg mui--hidden-xl mui--hidden-xs">
+        <img src="/static/img/mozilla.svg" class="logo mui--hidden-md mui--hidden-sm">
+        <img src="/static/img/mozilla-m.svg" class="logo mui--hidden-lg mui--hidden-xl mui--hidden-xs">
       </div>
       <div class="mui-col-sm-8 mui--hidden-xs">
         {% block search %}{% endblock %}
@@ -40,23 +40,23 @@
       <div class="mui-container mui--text-center">
         <div class="mui-row">
           <div class="mui-col-xs-4">
-            <img src="static/img/email.svg" alt="email">
-            <a href="#" target="_blank">Help Desk</a>
+            <img src="/static/img/email.svg" alt="email">
+            <a href="https://mozilla.service-now.com/sp" target="_blank">Help Desk</a>
           </div>
           <div class="mui-col-xs-4">
-            <img src="static/img/legal.svg" alt="legal">
+            <img src="/static/img/legal.svg" alt="legal">
             <a href="https://www.mozilla.org/en-US/about/legal/" target="_blank">Legal</a>
           </div>
           <div class="mui-col-xs-4">
-            <img src="static/img/privacy.svg" alt="privacy">
+            <img src="/static/img/privacy.svg" alt="privacy">
             <a href="https://www.mozilla.org/en-US/privacy/websites/" target="_blank">Privacy</a>
           </div>
         </div>
       </div>
     </footer>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://cdn.muicss.com/mui-0.9.9-rc2/js/mui.min.js"></script>
+    <script src="/static/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/static/lib/mui/packages/cdn/js/mui.min.js"></script>
     {% assets "js_all" %}
       <script type="text/javascript" src="{{ ASSET_URL }}"></script>
     {% endassets %}

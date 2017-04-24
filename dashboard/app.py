@@ -46,7 +46,7 @@ if os.environ.get('LOGGING') == 'True':
 
 assets = Environment(app)
 
-js = Bundle('js/base.js',
+js = Bundle('js/base.js', 'js/ga.js',
             filters='jsmin', output='js/gen/packed.js')
 assets.register('js_all', js)
 
@@ -81,27 +81,29 @@ sh.update(
                     'self',
                     'ajax.googleapis.com',
                     's.gravatar.com',
-                    'fonts.googleapis.com'
+                    'fonts.googleapis.com',
+                    'https://*.google-analytics.com',
                 ],
             'style-src':
                 [
                     'self',
                     'ajax.googleapis.com',
                     's.gravatar.com',
-                    'fonts.googleapis.com'
+                    'fonts.googleapis.com',
                 ],
             'img-src':
                 [
                     'self',
                     '*.gravatar.com',
                     '*.wp.com',
-                    'robohash.org'
+                    'robohash.org',
+                    'https://*.google-analytics.com',
                 ],
             'font-src':
                 [
                     'self',
                     'fonts.googleapis.com',
-                    'fonts.gstatic.com'
+                    'fonts.gstatic.com',
                 ]
         }
     }

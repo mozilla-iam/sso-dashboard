@@ -1,5 +1,6 @@
 import hashlib
-
+import os
+import requests
 
 """User class that governs maniuplation of session['userdata']"""
 
@@ -15,12 +16,37 @@ class User(object):
         m.update(self.userinfo['email'])
         return m.hexdigest()
 
-    def profile_picture(self):
-        """Return url of profile picture of returns robohash."""
-        if self.userinfo['picture']:
-            return self.userinfo['picture']
+    def avatar(self):
+        """Return url of user avatar from mozillians.org"""
+        self.api_url = os.environ['MOZILLIANS_API_URL']
+        self.api_token = os.environ['MOZILLIANS_API_KEY']
+        self.default_avatar = os.environ['DEFAULT_AVATAR']
+
+        headers = {'X-API-KEY': self.api_token}
+        params = {'email': self.userinfo['email']}
+
+        try:
+            response = requests.get(self.api_url, headers=headers, params=params, timeout=5).json()
+        except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
+            return self.default_avatar
+
+        # Check if only single resource gets returned and it's valid
+        if response['count'] == 0 or response['count'] > 1:
+            return self.default_avatar
+        try:
+            user_url = response['results'][0]['_url']
+        except:
+            return self.default_avatar
+
+        # Finally fetch user public avatar and make sure  we have a valid fallback
+        try:
+            response = requests.get(user_url, headers=headers, timeout=5).json()
+        except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
+            return self.default_avatar
+        if response['photo']['privacy'] == 'Public':
+            return response['photo']['value']
         else:
-            return None
+            return self.default_avatar
 
     def group_membership(self):
         """Return list of group membership if user is asserted from ldap."""

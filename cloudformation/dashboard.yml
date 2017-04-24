@@ -17,6 +17,7 @@ Mappings:
         branch: "git checkout production"
         CertificateARN: "arn:aws:acm:us-east-1:371522382791:certificate/12dd7f1a-177c-4a11-8b62-ca098d3ee40c"
       us-west-2:
+        AMI: ami-983daaf8
         branch: "git checkout production"
         CertificateARN: "arn:aws:acm:us-west-2:371522382791:certificate/8f0dfce8-88c1-4b9c-b3bd-850af8dcc0a5"
       eu-west-1:
@@ -35,6 +36,11 @@ Parameters:
     AllowedValues:
       - prod
       - dev
+Conditions:
+  UseProdCondition:
+    !Equals [!Ref EnvType, prod]
+  UseDevCondition:
+    !Equals [!Ref EnvType, dev]
 Resources:
   SSODashboardInternetGateway:
     Type: "AWS::EC2::InternetGateway"
@@ -312,6 +318,28 @@ Resources:
       Roles:
         -
           Ref: SSODashboardRole
+  SSODashboardCloudWatchAccess:
+    Type: "AWS::IAM::Policy"
+    DependsOn: SSODashboardRole
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Action:
+              - "logs:CreateLogGroup"
+              - "logs:CreateLogStream"
+              - "logs:DescribeLogGroups"
+              - "logs:DescribeLogStreams"
+              - "logs:PutLogEvents"
+              - "logs:GetLogEvents"
+              - "logs:FilterLogEvents"
+            Resource: "*"
+      PolicyName: sso-dashboard-cloudwatch-log
+      Roles:
+        -
+          Ref: SSODashboardRole
   SSODashboardCredstashRead:
     Type: "AWS::IAM::Policy"
     DependsOn: SSODashboardRole
@@ -362,8 +390,44 @@ Resources:
       Roles:
         -
           Ref: SSODashboardRole
-  SSODashboardLaunchConfig:
+  SSODashboardLaunchConfigProd:
     Type: "AWS::AutoScaling::LaunchConfiguration"
+    Condition: UseProdCondition
+    Properties:
+      KeyName: !Ref SSHKeyName
+      ImageId: !FindInMap [!Ref EnvType, !Ref "AWS::Region", AMI]
+      IamInstanceProfile:
+        Ref: SSOInstanceProfile
+      UserData:
+        Fn::Base64: !Sub |
+          #cloud-config
+          repo_update: true
+          repo_upgrade: all
+          runcmd:
+            - REGION=$(curl 169.254.169.254/latest/meta-data/placement/availability-zone/ | sed 's/[a-z]$//')
+            - yum update -y
+            - yum install ruby wget -y
+            - cd /home/ec2-user
+            - wget https://aws-codedeploy-$REGION.s3.amazonaws.com/latest/install
+            - chmod +x ./install
+            - ./install auto
+            - cd /home/ec2-user
+            - rm -rf /home/ec2-user/app
+            - mkdir -p /home/ec2-user/app
+            - git clone https://github.com/mozilla-iam/sso-dashboard.git /home/ec2-user/app
+            - cd /home/ec2-user/app
+            - git checkout production
+            - chmod +x /home/ec2-user/app/scripts/*
+            - cp /home/ec2-user/app/conf/supervisor-ansible.ini /etc/supervisord.d/
+            - /home/ec2-user/app/scripts/build-environment.sh
+            - service supervisord restart
+      SecurityGroups:
+        - Ref: SSODashboardSecGroup
+      InstanceType: "t2.medium"
+  SSODashboardLaunchConfigDev:
+    Type: "AWS::AutoScaling::LaunchConfiguration"
+    Condition: UseProdCondition
+    DependsOn: [ SSODashboardSubnet1, SSODashboardSubnet2, SSODashboardSubnet3 ]
     Properties:
       KeyName: !Ref SSHKeyName
       ImageId: !FindInMap [!Ref EnvType, !Ref "AWS::Region", AMI]
@@ -396,7 +460,7 @@ Resources:
       InstanceType: "t2.medium"
   SSODashboardASG:
     Type: "AWS::AutoScaling::AutoScalingGroup"
-    DependsOn: [ SSODashboardLaunchConfig, SSODashboardSubnet1, SSODashboardSubnet2, SSODashboardSubnet3 ]
+    DependsOn: [ SSODashboardSubnet1, SSODashboardSubnet2, SSODashboardSubnet3 ]
     Properties:
       Tags:
         -
@@ -408,7 +472,7 @@ Resources:
           Value: SSO-Dashboard-Worker
           PropagateAtLaunch: true
       TargetGroupARNs:
-         - Ref: DashboardWebServers
+         - Ref: ALBTargetGroup
       MaxSize: "5"
       MinSize: "2"
       VPCZoneIdentifier:
@@ -416,4 +480,4 @@ Resources:
         - Ref: SSODashboardSubnet2
         - Ref: SSODashboardSubnet3
       LaunchConfigurationName:
-        Ref: "SSODashboardLaunchConfig"
+        !If [UseProdCondition, Ref: SSODashboardLaunchConfigProd, Ref: SSODashboardLaunchConfigDev]

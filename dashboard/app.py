@@ -80,7 +80,6 @@ sh.update(
                 [
                     'self',
                     'ajax.googleapis.com',
-                    'cdn.muicss.com',
                     's.gravatar.com',
                     'fonts.googleapis.com'
                 ],
@@ -88,7 +87,6 @@ sh.update(
                 [
                     'self',
                     'ajax.googleapis.com',
-                    'cdn.muicss.com',
                     's.gravatar.com',
                     'fonts.googleapis.com'
                 ],
@@ -102,7 +100,6 @@ sh.update(
             'font-src':
                 [
                     'self',
-                    'cdn.muicss.com',
                     'fonts.googleapis.com',
                     'fonts.gstatic.com'
                 ]

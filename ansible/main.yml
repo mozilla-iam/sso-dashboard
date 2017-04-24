@@ -84,3 +84,8 @@
       file:
         path: /sso-dashboard/data/apps.yml-etag
         state: absent
+
+    - name: Create the logos dir
+      file:
+        path: /sso-dashboard/static/img/logos
+        state: directory

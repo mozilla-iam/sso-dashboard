@@ -132,10 +132,11 @@ body {
         float: right;
 
         .profile-icon {
-            width: 33px;
-            height: 33px;
+            width: 23px;
+            height: 23px;
             margin: 15px;
-            border: 1px solid $gray;
+            border: 1px solid $lightgray;
+            padding: 5px;
         }
     }
 
@@ -246,10 +247,11 @@ footer {
 
             .profile-icon {
                 display: block;
-                width: 33px;
-                height: 33px;
+                width: 23px;
+                height: 23px;
                 margin: 15px auto;
-                border: 1px solid $gray;
+                border: 1px solid $lightgray;
+                padding: 5px;
             }
         }
 

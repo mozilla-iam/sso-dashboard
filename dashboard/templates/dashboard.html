@@ -25,11 +25,7 @@
 
 {% block menu %}
   <div class="menu">
-    {% if user.profile_picture() %}
-      <img class="profile-icon" src="{{ user.profile_picture() }}"></img>
-    {% else %}
-      <img class="profile-icon" src="https://robohash.org/{{ user.userhash() }}.png"></img>
-    {% endif %}
+    <img class="profile-icon" src="{{ user.avatar() }}"></img>
   </div>
 {% endblock %}
 

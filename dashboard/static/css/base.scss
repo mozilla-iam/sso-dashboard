@@ -72,6 +72,11 @@ body {
     text-align: center;
     border-bottom: 1px solid $lightgray;
     height: 64px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
 
     .mui-col-sm-2 {
         padding: 0;
@@ -154,6 +159,7 @@ body {
     background-color: $bggray;
     min-height: 100%;
     padding: 20px;
+    margin-top: 64px;
 
     .app-grid {
         display: flex;

@@ -90,7 +90,7 @@ body {
     }
 
     .filter {
-        margin-top: 15px;
+        margin-top: 10px;
         display: inline-flex;
 
         .mui-textfield {
@@ -104,6 +104,7 @@ body {
                 margin-left: 10px;
                 width: 400px;
                 text-align: center;
+                height: 40px;
             }
 
             &.yellow-border {
@@ -132,11 +133,9 @@ body {
         float: right;
 
         .profile-icon {
-            width: 23px;
-            height: 23px;
-            margin: 15px;
-            border: 1px solid $lightgray;
-            padding: 5px;
+            width: 40px;
+            height: 40px;
+            margin: 10px;
         }
     }
 
@@ -247,11 +246,9 @@ footer {
 
             .profile-icon {
                 display: block;
-                width: 23px;
-                height: 23px;
-                margin: 15px auto;
-                border: 1px solid $lightgray;
-                padding: 5px;
+                width: 40px;
+                height: 40px;
+                margin: 10px auto;
             }
         }
 
@@ -261,6 +258,7 @@ footer {
             background-image: url('../../img/search.svg');
             background-repeat: no-repeat;
             background-position: center center;
+            background-size: 30px;
             border-left: 1px solid $lightgray;
             padding: 0 15px;
             float: right;

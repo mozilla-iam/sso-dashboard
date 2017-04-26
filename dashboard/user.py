@@ -18,15 +18,17 @@ class User(object):
 
     def avatar(self):
         """Return url of user avatar from mozillians.org"""
-        self.api_url = os.environ['MOZILLIANS_API_URL']
-        self.api_token = os.environ['MOZILLIANS_API_KEY']
-        self.default_avatar = os.environ['DEFAULT_AVATAR']
+        self.api_url = os.getenv('MOZILLIANS_API_URL', None)
+        self.api_token = os.getenv('MOZILLIANS_API_KEY', None)
+        self.default_avatar = os.getenv('DEFAULT_AVATAR', '/static/img/user.svg')
 
         headers = {'X-API-KEY': self.api_token}
         params = {'email': self.userinfo['email']}
 
         try:
             response = requests.get(self.api_url, headers=headers, params=params, timeout=5).json()
+            if response['detail'] == "Authentication credentials were not provided.":
+                return self.default_avatar
         except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
             return self.default_avatar
 

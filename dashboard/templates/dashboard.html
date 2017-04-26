@@ -43,6 +43,7 @@
 {% endblock %}
 
 {% block extra_js %}
+  <!-- Temporarily removed until alert center comes online 
   <script>
     var source = new EventSource("/stream?channel={{ user.userhash() }}");
     source.addEventListener('alert', function(event) {
@@ -53,4 +54,5 @@
         console.log("Failed to connect to event stream. Is Redis running?");
     }, false);
   </script>
+  -->
 {% endblock %}

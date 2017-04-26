@@ -110,7 +110,7 @@ sh.update(
     {
         'HSTS':
             {
-                'max-age': 1,
+                'max-age': 15768000,
                 'includeSubDomains': True,
                 'preload': False
             }

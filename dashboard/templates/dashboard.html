@@ -25,7 +25,13 @@
 
 {% block menu %}
   <div class="menu">
-    <img class="profile-icon" src="{{ user.avatar() }}">
+    {% with avatar = user.avatar() %}
+      {% if avatar %}
+        <img class="profile-icon" src="{{ avatar }}">
+      {% else %}
+        <img class="default-avatar" src="/static/img/user.svg">
+      {% endif %}
+    {% endwith %}
   </div>
 {% endblock %}
 
@@ -43,7 +49,7 @@
 {% endblock %}
 
 {% block extra_js %}
-  <!-- Temporarily removed until alert center comes online 
+  <!-- Temporarily removed until alert center comes online
   <script>
     var source = new EventSource("/stream?channel={{ user.userhash() }}");
     source.addEventListener('alert', function(event) {

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, session, request, redirect, send_from_directory
+from flask import Flask, render_template, jsonify, session, request, redirect, send_from_directory, jsonify, url_for
 from flask_assets import Environment, Bundle
 
 from flask_secure_headers.core import Secure_Headers
@@ -182,6 +182,19 @@ def about():
     return render_template(
         'about.html'
     )
+
+@app.route('/Contribute.json')
+def contribute():
+    data = {
+        "name": "sso-dashboard",
+        "description": "Mozilla Single SignOn Dashboard for Auth0",
+        "repository": {
+            "type": "git",
+            "url": "https://github.com/mozilla-iam/sso-dashboard/"
+        }
+    }
+
+    return jsonify(data)
 
 
 @app.route('/alert', methods=['POST'])

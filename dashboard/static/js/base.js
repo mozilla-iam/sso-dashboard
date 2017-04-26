@@ -1,10 +1,6 @@
 $(document).ready(function(){
     'use strict';
 
-    $('[data-toggle~=collapse]').click(function(){
-        $('.opacity').toggle();
-    });
-
     // This is the js that powers the search box
     $(':input[name=filter]').on('input', function() {
         // Get value just typed into textbox -- see .toLowerCase()
@@ -80,7 +76,34 @@ $(document).ready(function(){
 
     // Mobile search toggle
     $('.search-button a').click(function() {
+        // Make sure user menu is hidden
+        $('.user-menu').hide();
+        $('.menu').removeClass('enabled');
+        // Make sure we have the right logo and menu placement
+        $('.logo-large').show();
+        $('.logo-small').addClass('mui--hidden-xs');
+        $('.mui-appbar').removeClass('menu-enabled');
+        $('.search-button').removeClass('menu-enabled');
+        // Show search input and invert button
         $('.search-mobile').fadeToggle();
         $('.search-button').toggleClass('invert');
+    });
+
+    // Toggle user menu
+    $('#avatar').click(function() {
+        $('.user-menu').toggle();
+        $('.menu').toggleClass('enabled');
+
+        // If search-button is visible it's mobile viewport
+        if ($('.search-button').is(':visible')) {
+            // Make sure search input is hidden
+            $('.search-mobile').hide();
+            $('.search-button').removeClass('invert');
+            // Toggle logo size and menu
+            $('.logo-large').toggle();
+            $('.logo-small').toggleClass('mui--hidden-xs');
+            $('.mui-appbar').toggleClass('menu-enabled');
+            $('.search-button').toggleClass('menu-enabled');
+        }
     });
 });

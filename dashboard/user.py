@@ -62,16 +62,16 @@ class User(object):
 
     def first_name(self):
         """Return user first_name."""
-        if self.userinfo['given_name']:
+        try:
             return self.userinfo['given_name']
-        else:
+        except KeyError:
             return None
 
     def last_name(self):
         """Return user last_name."""
-        if self.userinfo['family_name']:
+        try:
             return self.userinfo['family_name']
-        else:
+        except KeyError:
             return None
 
     def user_identifiers(self):

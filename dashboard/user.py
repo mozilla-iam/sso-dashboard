@@ -27,7 +27,7 @@ class User(object):
 
         try:
             response = requests.get(self.api_url, headers=headers, params=params, timeout=5).json()
-            if response['detail'] == "Authentication credentials were not provided.":
+            if response.status_code is not 200:
                 return self.default_avatar
         except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
             return self.default_avatar

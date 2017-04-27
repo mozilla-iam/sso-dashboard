@@ -20,37 +20,37 @@ class User(object):
         """Return url of user avatar from mozillians.org"""
         self.api_url = os.getenv('MOZILLIANS_API_URL', None)
         self.api_token = os.getenv('MOZILLIANS_API_KEY', None)
-        self.default_avatar = os.getenv('DEFAULT_AVATAR', '/static/img/user.svg')
 
         headers = {'X-API-KEY': self.api_token}
         params = {'email': self.userinfo['email']}
 
         try:
-            mozillians_response = requests.get(self.api_url, headers=headers, params=params, timeout=5)
+            mozillians_response = requests.get(self.api_url, headers=headers,
+                                               params=params, timeout=5)
             response = mozillians_response.json()
 
             if mozillians_response.status_code is not 200:
-                return self.default_avatar
+                return None
         except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
-            return self.default_avatar
+            return None
 
         # Check if only single resource gets returned and it's valid
         if response['count'] == 0 or response['count'] > 1:
-            return self.default_avatar
+            return None
         try:
             user_url = response['results'][0]['_url']
         except:
-            return self.default_avatar
+            return None
 
         # Finally fetch user public avatar and make sure  we have a valid fallback
         try:
             response = requests.get(user_url, headers=headers, timeout=5).json()
         except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
-            return self.default_avatar
+            return None
         if response['photo']['privacy'] == 'Public':
             return response['photo']['value']
         else:
-            return self.default_avatar
+            return None
 
     def group_membership(self):
         """Return list of group membership if user is asserted from ldap."""

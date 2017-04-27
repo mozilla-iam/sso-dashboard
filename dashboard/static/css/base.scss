@@ -10,30 +10,32 @@
     font-family: 'Open Sans';
     font-weight: bold;
     font-style: normal;
-    src: url('/media/fonts/opensans-semibold.woff2') format('woff2'),
-        url('/media/fonts/opensans-semibold.woff') format('woff');
+    src: url('../../fonts/opensans-semibold.woff2') format('woff2'),
+        url('../../fonts/opensans-semibold.woff') format('woff');
 }
 
 @font-face {
     font-family: 'Open Sans';
     font-weight: normal;
     font-style: italic;
-    src: url('/media/fonts/opensans-lightitalic.woff2') format('woff2'),
-        url('/media/fonts/opensans-lightitalic.woff') format('woff');
+    src: url('../../fonts/opensans-lightitalic.woff2') format('woff2'),
+        url('../../fonts/opensans-lightitalic.woff') format('woff');
 }
 
 @font-face {
     font-family: 'Open Sans';
     font-weight: bold;
     font-style: italic;
-    src: url('/media/fonts/opensans-semibolditalic.woff2') format('woff2'),
-        url('/media/fonts/opensans-semibolditalic.woff') format('woff');
+    src: url('../../fonts/opensans-semibolditalic.woff2') format('woff2'),
+        url('../../fonts/opensans-semibolditalic.woff') format('woff');
 }
 
 $gray: #808080;
 $lightgray: #cfcfcf;
 $bggray: #f8f8f8;
 $yellow: #faba00;
+
+$appbar-height: 70px;
 
 html,
 body {
@@ -59,7 +61,7 @@ body {
     color: black;
     text-align: center;
     border-bottom: 1px solid $lightgray;
-    height: 64px;
+    height: $appbar-height;
     position: fixed;
     top: 0;
     left: 0;
@@ -72,18 +74,18 @@ body {
 
     .brand {
         border-right: 1px solid $lightgray;
-        height: 64px;
+        height: $appbar-height;
         width: auto;
         float: left;
 
         .logo {
-            height: 33px;
-            margin: 15px;
+            height: 30px;
+            margin: 20px;
         }
     }
 
     .filter {
-        margin-top: 10px;
+        margin: 15px;
         display: inline-flex;
 
         .mui-textfield {
@@ -95,9 +97,9 @@ body {
             input {
                 border-bottom: none;
                 margin-left: 10px;
-                width: 400px;
+                width: 424px;
                 text-align: center;
-                height: 40px;
+                height: 38px;
             }
 
             &.yellow-border {
@@ -107,8 +109,8 @@ body {
 
         img {
             display: inline-block;
-            max-width: 20px;
-            padding: 6px;
+            width: 18px;
+            padding: 10px;
             border-width: 1px 0 1px 1px;
             border-style: solid;
             border-color: $lightgray;
@@ -121,14 +123,22 @@ body {
 
     .menu {
         border-left: 1px solid $lightgray;
-        height: 64px;
         width: auto;
         float: right;
+        height: $appbar-height;
 
         .profile-icon {
             width: 40px;
             height: 40px;
-            margin: 10px;
+            margin: 15px;
+        }
+
+        .default-avatar {
+            border: 1px solid $lightgray;
+            width: 20px;
+            height: 20px;
+            padding: 10px;
+            margin: 15px;
         }
     }
 
@@ -147,7 +157,7 @@ body {
     background-color: $bggray;
     min-height: 100%;
     padding: 20px;
-    margin-top: 64px;
+    margin-top: $appbar-height;
 
     .app-grid {
         display: flex;
@@ -206,6 +216,8 @@ footer {
 
     img {
         vertical-align: middle;
+        display: inline-block;
+        margin-right: 10px;
     }
 
     a {
@@ -221,76 +233,91 @@ footer {
 @media all and (max-width: 767px) {
 
     .mui-appbar .filter .mui-textfield input {
-        width: 280px;
+        width: 240px;
     }
 }
 
 @media all and (max-width: 543px) {
 
+    $appbar-height: 80px;
+
     .mui-appbar {
+        height: $appbar-height;
 
         .brand {
             border-right: none;
+
+            .logo {
+                margin: 25px 20px;
+            }
         }
 
         .menu {
-            height: 64px;
-            padding-left: 15px;
-            padding-right: 15px;
+            height: $appbar-height;
 
             .profile-icon {
                 display: block;
                 width: 40px;
                 height: 40px;
-                margin: 10px auto;
+                margin: 20px;
+            }
+
+            .default-avatar {
+                border: 1px solid $lightgray;
+                display: block;
+                width: 20px;
+                height: 20px;
+                padding: 10px;
+                margin: 20px;
             }
         }
 
         .search-button {
             display: inline-block;
-            height: 65px;
+            height: $appbar-height;
             background-image: url('../../img/search.svg');
             background-repeat: no-repeat;
             background-position: center center;
-            background-size: 30px;
+            background-size: 18px;
             border-left: 1px solid $lightgray;
-            padding: 0 15px;
             float: right;
 
             &.invert {
                 background-color: black;
                 color: $lightgray;
+                border-bottom: 1px solid black;
                 background-image: url('../../img/search-w.svg');
             }
 
             a {
                 display: block;
-                width: 35px;
-                height: 35px;
-                margin: 15px auto;
+                width: 18px;
+                height: 18px;
+                margin: 31px;
             }
         }
     }
 
     .search-mobile {
         background-color: black;
-        height: 64px;
+        height: $appbar-height;
+        margin-top: $appbar-height;
         visibility: visible;
+        margin-bottom: -$appbar-height;
 
         .mui-textfield {
             width: 80%;
             margin: auto;
+            padding-top: 20px;
 
             input {
                 color: $lightgray;
                 text-align: center;
+                height: 38px;
+                border: none;
 
                 &::placeholder {
                     color: $gray;
-                }
-
-                &:focus {
-                    border: none;
                 }
             }
         }
@@ -298,6 +325,7 @@ footer {
 
     .content {
         padding: 10px;
+        margin-top: $appbar-height;
 
         .app-grid {
 

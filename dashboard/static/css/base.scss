@@ -100,6 +100,15 @@ body {
                 width: 424px;
                 text-align: center;
                 height: 38px;
+
+                &:active,
+                &:focus {
+                    text-align: left;
+
+                    &::placeholder {
+                        color: white;
+                    }
+                }
             }
 
             &.yellow-border {
@@ -318,6 +327,15 @@ footer {
 
                 &::placeholder {
                     color: $gray;
+                }
+
+                &:active,
+                &:focus {
+                    text-align: left;
+
+                    &::placeholder {
+                        color: black;
+                    }
                 }
             }
         }

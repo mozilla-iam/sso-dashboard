@@ -67,7 +67,7 @@ app staging and then taking apps live.__
 In order to add applications to the dashboard there is an apps.yml file and
 a logos directory that exists in the Mozilla-IAM github org.  
 
-https://github.com/mozilla-iam/sso-dashboard-configuration (Private repo for inside)
+https://github.com/mozilla-iam/sso-dashboard-configuration
 
 # Logos
 These are the rules of the logos.  They have to conform to some standards due

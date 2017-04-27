@@ -117,6 +117,18 @@ sh.update(
     }
 )
 
+sh.update(
+    {
+        'HPKP':
+            {'pins':[
+                        {'sha256':'A7:38:F1:23:83:40:C1:68:48:A6:2C:64:2F:D0:F9:44:95:6E:81:F4:52:B2:07:6A:39:92:58:50:40:CB:3F:58'},
+                        {'sah256': '8B:D8:41:D5:4A:B6:C6:A5:A2:8D:23:7D:5E:2B:A0:0D:A1:CA:2C:5E:5F:11:37:11:DD:4F:C6:FE:D5:EB:7E:1B'}
+                    ]
+            },
+        'read-only': True
+    }
+)
+
 # Register the flask blueprint for SSE.
 app.register_blueprint(sse, url_prefix='/stream')
 
@@ -184,7 +196,20 @@ def about():
     )
 
 @app.route('/Contribute.json')
-def contribute():
+def contribute_upper():
+    data = {
+        "name": "sso-dashboard",
+        "description": "Mozilla Single SignOn Dashboard for Auth0",
+        "repository": {
+            "type": "git",
+            "url": "https://github.com/mozilla-iam/sso-dashboard/"
+        }
+    }
+
+    return jsonify(data)
+
+@app.route('/contribute.json')
+def contribute_lower():
     data = {
         "name": "sso-dashboard",
         "description": "Mozilla Single SignOn Dashboard for Auth0",

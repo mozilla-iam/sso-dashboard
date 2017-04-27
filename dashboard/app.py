@@ -46,8 +46,7 @@ if os.environ.get('LOGGING') == 'True':
 
 assets = Environment(app)
 
-js = Bundle('js/base.js', 'js/ga.js',
-            filters='jsmin', output='js/gen/packed.js')
+js = Bundle('js/base.js', filters='jsmin', output='js/gen/packed.js')
 assets.register('js_all', js)
 
 

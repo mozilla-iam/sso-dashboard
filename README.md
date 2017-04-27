@@ -65,12 +65,9 @@ app staging and then taking apps live.__
 # Adding apps to the Dashboard
 
 In order to add applications to the dashboard there is an apps.yml file and
-a logos directory that exists in the Mozilla github org.  For confidentiality
-this file is currently private.  Though if you are interested in the dashboard
-you may CI this file and the images however you elect.  Here at Mozilla we
-probably use CodePipeline to do that ;)
+a logos directory that exists in the Mozilla-IAM github org.  
 
-https://github.com/mozilla/sso-dashboard-configuration (Private repo for inside)
+https://github.com/mozilla-iam/sso-dashboard-configuration (Private repo for inside)
 
 # Logos
 These are the rules of the logos.  They have to conform to some standards due

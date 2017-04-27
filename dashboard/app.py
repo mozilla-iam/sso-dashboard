@@ -183,28 +183,39 @@ def about():
         'about.html'
     )
 
-@app.route('/Contribute.json')
-def contribute_upper():
-    data = {
-        "name": "sso-dashboard",
-        "description": "Mozilla Single SignOn Dashboard for Auth0",
-        "repository": {
-            "type": "git",
-            "url": "https://github.com/mozilla-iam/sso-dashboard/"
-        }
-    }
-
-    return jsonify(data)
-
 @app.route('/contribute.json')
 def contribute_lower():
     data = {
-        "name": "sso-dashboard",
-        "description": "Mozilla Single SignOn Dashboard for Auth0",
+        "name": "sso-dashboard by Mozilla",
+        "description": "A single signon dashboard for auth0.",
         "repository": {
-            "type": "git",
-            "url": "https://github.com/mozilla-iam/sso-dashboard/"
-        }
+            "url": "https://github.com/mozilla-iam/sso-dashboard",
+            "license": "MPL2"
+        },
+        "participate": {
+            "home": "https://github.com/mozilla-iam/sso-dashboard",
+            "irc": "irc://irc.mozilla.org/#infosec",
+            "irc-contacts": [
+                "Andrew"
+            ]
+        },
+        "bugs": {
+            "list": "https://github.com/mozilla-iam/sso-dashboard/issues",
+            "report": "https://github.com/mozilla-iam/sso-dashboard/issues/new",
+            "mentored": "https://github.com/mozilla-iam/sso-dashboard/issues?q=is%3Aissue+is%3Aclosed"
+        },
+        "urls": {
+            "prod": "https://sso.mozilla.com/",
+            "stage": "https://sso.allizom.org/"
+        },
+        "keywords": [
+            "python",
+            "html5",
+            "jquery",
+            "mui-css",
+            "sso",
+            "auth0"
+        ]
     }
 
     return jsonify(data)

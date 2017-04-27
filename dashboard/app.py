@@ -117,15 +117,6 @@ sh.update(
     }
 )
 
-sh.update({
-            'HPKP': {
-                    'pins':[
-                        {'sha256':'lQH28uKDTqXDlj2rAY3rYWqOqZi/L2wM0l/AOxt+Fbk='},
-                        {'sha256':'LyE9nDS269hk1SrbGY0KvuQIsuF5lpob7NIu4vOOZho='}
-                    ]
-            }
-})
-
 # Register the flask blueprint for SSE.
 app.register_blueprint(sse, url_prefix='/stream')
 

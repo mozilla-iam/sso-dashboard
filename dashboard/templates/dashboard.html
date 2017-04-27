@@ -38,7 +38,8 @@
 {% block content %}
   <div id="app-grid" class="mui-row app-grid">
     {% for app in apps %}
-      <a href="{{ app['application']['url'] }}" data-id="{{ app['application']['name'] }}" class="app-tile">
+      <a href="{{ app['application']['url'] }}" data-id="{{ app['application']['name'] }}"
+         class="app-tile" target="_blank">
         <div class="mui--text-center app-logo">
           <img src="/static/img/logos/{{ app['application']['logo'] }}" alt={{ app['application']['name'] }}>
         </div>

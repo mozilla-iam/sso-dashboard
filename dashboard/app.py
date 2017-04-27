@@ -78,9 +78,10 @@ sh.update(
             'script-src':
                 [
                     'self',
+                    'data:',
                     'ajax.googleapis.com',
                     'fonts.googleapis.com',
-                    'https://*.google-analytics.com',
+                    'https://*.googletagmanager.com',
                 ],
             'style-src':
                 [
@@ -91,8 +92,6 @@ sh.update(
             'img-src':
                 [
                     'self',
-                    '*.wp.com',
-                    'https://*.google-analytics.com',
                     'https://mozillians.org',
                 ],
             'font-src':

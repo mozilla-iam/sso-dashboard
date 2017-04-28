@@ -98,12 +98,12 @@ body {
                 border-bottom: none;
                 margin-left: 10px;
                 width: 424px;
-                text-align: center;
+                text-align: left;
+                padding-right: 46px;
                 height: 38px;
 
                 &:active,
                 &:focus {
-                    text-align: left;
 
                     &::placeholder {
                         color: white;
@@ -321,7 +321,7 @@ footer {
 
             input {
                 color: $lightgray;
-                text-align: center;
+                text-align: left;
                 height: 38px;
                 border: none;
 
@@ -331,7 +331,6 @@ footer {
 
                 &:active,
                 &:focus {
-                    text-align: left;
 
                     &::placeholder {
                         color: black;

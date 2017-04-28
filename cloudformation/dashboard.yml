@@ -44,6 +44,10 @@ Conditions:
 Resources:
   SSODashboardInternetGateway:
     Type: "AWS::EC2::InternetGateway"
+    Properties:
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard
   SSODashboardVPC:
     Type: "AWS::EC2::VPC"
     DependsOn: SSODashboardInternetGateway
@@ -51,6 +55,9 @@ Resources:
       CidrBlock: "10.0.0.0/16"
       EnableDnsSupport: True
       EnableDnsHostnames: True
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard
   AttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     DependsOn: SSODashboardVPC
@@ -65,6 +72,9 @@ Resources:
     Properties:
       VpcId:
         Ref: SSODashboardVPC
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard
   DashboardDefaultRoute:
     Type: AWS::EC2::Route
     DependsOn: SSODashboardInternetGateway
@@ -83,6 +93,9 @@ Resources:
       MapPublicIpOnLaunch: True
       VpcId:
         Ref: SSODashboardVPC
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard Subnet 1
   SSODashboardSubnet2:
     Type: "AWS::EC2::Subnet"
     DependsOn: SSODashboardRouteTable
@@ -92,6 +105,9 @@ Resources:
       MapPublicIpOnLaunch: True
       VpcId:
         Ref: SSODashboardVPC
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard Subnet 2
   SSODashboardSubnet3:
     Type: "AWS::EC2::Subnet"
     DependsOn: SSODashboardRouteTable
@@ -101,6 +117,9 @@ Resources:
       MapPublicIpOnLaunch: True
       VpcId:
         Ref: SSODashboardVPC
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard Subnet 3
   SSODashboardRouteAssoc1:
     Type: "AWS::EC2::SubnetRouteTableAssociation"
     DependsOn: DashboardDefaultRoute
@@ -145,6 +164,9 @@ Resources:
           FromPort: '22'
           ToPort: '22'
           CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard
   SSODashboardELBSecGroup:
     Type: "AWS::EC2::SecurityGroup"
     DependsOn: SSODashboardVPC
@@ -165,6 +187,9 @@ Resources:
           FromPort: '22'
           ToPort: '22'
           CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard ELB
   ApplicationLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     DependsOn: SSODashboardELBSecGroup
@@ -176,6 +201,9 @@ Resources:
         - Ref: SSODashboardSubnet3
       SecurityGroups:
         - Ref: SSODashboardELBSecGroup
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard
   ALBHTTPListener:
     Type : AWS::ElasticLoadBalancingV2::Listener
     DependsOn: ApplicationLoadBalancer
@@ -217,6 +245,9 @@ Resources:
       Protocol: HTTP
       VpcId:
         Ref: SSODashboardVPC
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard
   SSODashboardRole:
     Type: "AWS::IAM::Role"
     Properties:

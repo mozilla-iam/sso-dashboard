@@ -5,8 +5,6 @@ $(document).ready(function(){
         $('.opacity').toggle();
     });
 
-    $('#search').focus();
-
     // This is the js that powers the search box
     $(':input[name=filter]').on('input', function() {
         // Get value just typed into textbox -- see .toLowerCase()
@@ -30,9 +28,12 @@ $(document).ready(function(){
         .fadeOut();
     });
 
-    // Highlight elements
+    // Search input: Highlight, Align, Focus
     var filter = $(':input[name=filter]');
-
+    $(filter).focus();
+    $(filter).focusin(function() {
+        $(filter).css('text-align', 'left');
+    });
     $(filter).on('focusin mouseover', function() {
         $('.filter .mui-textfield').addClass('yellow-border');
         $('.filter img').addClass('yellow-border');
@@ -47,7 +48,27 @@ $(document).ready(function(){
     $(filter).focusout(function() {
         $('.filter .mui-textfield').removeClass('yellow-border');
         $('.filter img').removeClass('yellow-border');
+        if ($(filter).val() == '') {
+            $(filter).css('text-align', 'center');
+        } else {
+            $(filter).css('text-align', 'left');
+        }
     });
+
+    // Search input mobile: Align
+    var filter_mobile = $('.search-mobile :input[name=filter]');
+    $(filter_mobile).focusin(function() {
+        $(filter_mobile).css('text-align', 'left');
+    });
+    $(filter_mobile).focusout(function() {
+        if ($(filter_mobile).val() == '') {
+            $(filter_mobile).css('text-align', 'center');
+        } else {
+            $(filter_mobile).css('text-align', 'left');
+        }
+    });
+
+    // Highlight app tiles
     $('a.app-tile').hover(
         function() {
             $(this).find('.app-logo').addClass('yellow-border');

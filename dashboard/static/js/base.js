@@ -31,11 +31,20 @@ $(document).ready(function(){
     });
 
     // Highlight elements
-    $(':input[name=filter]').focusin(function() {
+    var filter = $(':input[name=filter]');
+
+    $(filter).on('focusin mouseover', function() {
         $('.filter .mui-textfield').addClass('yellow-border');
         $('.filter img').addClass('yellow-border');
     });
-    $(':input[name=filter]').focusout(function() {
+    $(filter).mouseout(function() {
+        var focus = $(filter).is(':focus');
+        if (!focus) {
+            $('.filter .mui-textfield').removeClass('yellow-border');
+            $('.filter img').removeClass('yellow-border');
+        }
+    });
+    $(filter).focusout(function() {
         $('.filter .mui-textfield').removeClass('yellow-border');
         $('.filter img').removeClass('yellow-border');
     });

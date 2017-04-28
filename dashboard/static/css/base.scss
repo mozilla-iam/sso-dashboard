@@ -361,10 +361,102 @@ footer {
     }
 }
 
+.p404 {
+    background-color: white;
+    padding-top: 60px;
+
+    h1 {
+        color: black;
+        font-size: 4em;
+    }
+
+    .panel {
+        background-color: #f4f4f4;
+        box-shadow: 5px 5px 0 0 rgba(217, 217, 217, 1);
+        color: black;
+        padding: 30px;
+        position: relative;
+        margin-top: 30px;
+        width: 570px;
+        max-width: 90%;
+
+        &:before {
+            content: ' ';
+            position: absolute;
+            width: 0;
+            height: 0;
+            left: 30px;
+            top: -40px;
+            border: 25px solid;
+            border-color: transparent transparent #f4f4f4 transparent;
+        }
+
+        h2 {
+            font-weight: bold;
+            margin-top: 0;
+        }
+    }
+
+    .section {
+        margin-top: 25px;
+
+        .mui-btn {
+            width: 270px;
+            float: right;
+            margin-top: 0;
+
+            &.help {
+                border: 1px solid black;
+                display: block;
+                font-weight: bold;
+            }
+
+            &.return {
+                background-color: black;
+                border: 1px solid black;
+                color: white;
+                display: block;
+                font-weight: bold;
+                margin-left: 0;
+            }
+        }
+    }
+}
+
 @media all and (max-width: 767px) {
 
     .mui-appbar .filter .mui-textfield input {
         width: 240px;
+    }
+
+    .p404 {
+
+        .panel {
+            max-width: calc(100% - 60px);
+        }
+
+        .section {
+
+            .mui-btn {
+                max-width: calc(100% - 100px);
+                float: none;
+                margin: 0 auto;
+
+                &.return {
+                    margin-left: auto;
+                    margin-top: 5px;
+                }
+            }
+
+            .video {
+                margin-top: 20px;
+
+                iframe {
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+        }
     }
 }
 
@@ -602,6 +694,31 @@ footer {
                         clear: both;
                         padding-left: 5px;
                     }
+                }
+            }
+        }
+    }
+
+    .p404 {
+        padding-top: 10px;
+
+        .panel {
+            padding: 20px;
+            width: calc(100% - 40px);
+        }
+
+        .section {
+            margin-top: 15px;
+            text-align: center;
+
+            .mui-btn {
+                width: calc(100% - 100px);
+                float: none;
+                margin: 0 auto;
+
+                &.return {
+                    margin-left: auto;
+                    margin-top: 5px;
                 }
             }
         }

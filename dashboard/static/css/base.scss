@@ -111,6 +111,24 @@ body {
                 }
             }
 
+            .clear {
+                border: none;
+                display: inline-block;
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 26px;
+                padding: 6px;
+                cursor: pointer;
+
+                &.yellow-border {
+
+                    g {
+                        fill: $yellow;
+                    }
+                }
+            }
+
             &.yellow-border {
                 border-color: $yellow;
             }
@@ -321,7 +339,7 @@ footer {
 
             input {
                 color: $lightgray;
-                text-align: left;
+                text-align: center;
                 height: 38px;
                 border: none;
 

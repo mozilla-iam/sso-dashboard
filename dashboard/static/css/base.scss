@@ -153,17 +153,16 @@ body {
         width: auto;
         float: right;
         height: $appbar-height;
+        cursor: pointer;
 
         .profile-icon {
             margin: 15px;
-            cursor: pointer;
             width: 40px;
             height: 40px;
         }
 
         .default-avatar {
             margin: 15px;
-            cursor: pointer;
             border: 1px solid $lightgray;
             width: 20px;
             height: 20px;

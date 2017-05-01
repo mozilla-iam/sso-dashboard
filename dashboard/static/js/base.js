@@ -103,7 +103,7 @@ $(document).ready(function(){
     });
 
     // Toggle user menu
-    $('#avatar').click(function() {
+    $('.menu').click(function() {
         $('.user-menu').toggle();
         $('.menu').toggleClass('enabled');
 

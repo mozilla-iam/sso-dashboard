@@ -80,6 +80,7 @@ sh.update(
                     'ajax.googleapis.com',
                     'fonts.googleapis.com',
                     'https://*.googletagmanager.com',
+                    'https://*.google-analytics.com'
                 ],
             'style-src':
                 [

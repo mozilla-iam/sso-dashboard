@@ -1,12 +1,6 @@
 $(document).ready(function(){
     'use strict';
 
-    $('[data-toggle~=collapse]').click(function(){
-        $('.opacity').toggle();
-    });
-
-    $('#search').focus();
-
     // This is the js that powers the search box
     $(':input[name=filter]').on('input', function() {
         // Get value just typed into textbox -- see .toLowerCase()
@@ -30,15 +24,60 @@ $(document).ready(function(){
         .fadeOut();
     });
 
-    // Highlight elements
-    $(':input[name=filter]').focusin(function() {
+    // Search input: Highlight, Align, Focus
+    var filter = $(':input[name=filter]');
+    $(filter).focus();
+    $('.filter .mui-textfield').addClass('yellow-border');
+    $('.filter img').addClass('yellow-border');
+    $('svg.clear').addClass('yellow-border');
+    $(filter).focusin(function() {
+        $(filter).css('text-align', 'left');
+    });
+    $(filter).on('focusin mouseover', function() {
         $('.filter .mui-textfield').addClass('yellow-border');
         $('.filter img').addClass('yellow-border');
+        $('svg.clear').addClass('yellow-border');
     });
-    $(':input[name=filter]').focusout(function() {
+    $(filter).mouseout(function() {
+        var focus = $(filter).is(':focus');
+        if (!focus) {
+            $('.filter .mui-textfield').removeClass('yellow-border');
+            $('.filter img').removeClass('yellow-border');
+            $('svg.clear').removeClass('yellow-border');
+        }
+    });
+    $(filter).focusout(function() {
         $('.filter .mui-textfield').removeClass('yellow-border');
         $('.filter img').removeClass('yellow-border');
+        $('svg.clear').removeClass('yellow-border');
+        if ($(filter).val() == '') {
+            $(filter).css('text-align', 'center');
+        } else {
+            $(filter).css('text-align', 'left');
+        }
     });
+
+    // Clear the search
+    $('svg.clear').click(function() {
+        $(filter).val('');
+        $('#app-grid').find('.app-tile').show();
+        $(filter).css('text-align', 'center');
+    });
+
+    // Search input mobile: Align
+    var filter_mobile = $('.search-mobile :input[name=filter]');
+    $(filter_mobile).focusin(function() {
+        $(filter_mobile).css('text-align', 'left');
+    });
+    $(filter_mobile).focusout(function() {
+        if ($(filter_mobile).val() == '') {
+            $(filter_mobile).css('text-align', 'center');
+        } else {
+            $(filter_mobile).css('text-align', 'left');
+        }
+    });
+
+    // Highlight app tiles
     $('a.app-tile').hover(
         function() {
             $(this).find('.app-logo').addClass('yellow-border');
@@ -50,7 +89,34 @@ $(document).ready(function(){
 
     // Mobile search toggle
     $('.search-button a').click(function() {
+        // Make sure user menu is hidden
+        $('.user-menu').hide();
+        $('.menu').removeClass('enabled');
+        // Make sure we have the right logo and menu placement
+        $('.logo-large').show();
+        $('.logo-small').addClass('mui--hidden-xs');
+        $('.mui-appbar').removeClass('menu-enabled');
+        $('.search-button').removeClass('menu-enabled');
+        // Show search input and invert button
         $('.search-mobile').fadeToggle();
         $('.search-button').toggleClass('invert');
+    });
+
+    // Toggle user menu
+    $('.menu').click(function() {
+        $('.user-menu').toggle();
+        $('.menu').toggleClass('enabled');
+
+        // If search-button is visible it's mobile viewport
+        if ($('.search-button').is(':visible')) {
+            // Make sure search input is hidden
+            $('.search-mobile').hide();
+            $('.search-button').removeClass('invert');
+            // Toggle logo size and menu
+            $('.logo-large').toggle();
+            $('.logo-small').toggleClass('mui--hidden-xs');
+            $('.mui-appbar').toggleClass('menu-enabled');
+            $('.search-button').toggleClass('menu-enabled');
+        }
     });
 });

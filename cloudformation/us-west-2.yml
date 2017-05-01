@@ -44,6 +44,10 @@ Conditions:
 Resources:
   SSODashboardInternetGateway:
     Type: "AWS::EC2::InternetGateway"
+    Properties:
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard
   SSODashboardVPC:
     Type: "AWS::EC2::VPC"
     DependsOn: SSODashboardInternetGateway
@@ -51,6 +55,9 @@ Resources:
       CidrBlock: "10.0.0.0/16"
       EnableDnsSupport: True
       EnableDnsHostnames: True
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard
   AttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     DependsOn: SSODashboardVPC
@@ -65,6 +72,9 @@ Resources:
     Properties:
       VpcId:
         Ref: SSODashboardVPC
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard
   DashboardDefaultRoute:
     Type: AWS::EC2::Route
     DependsOn: SSODashboardInternetGateway
@@ -83,6 +93,9 @@ Resources:
       MapPublicIpOnLaunch: True
       VpcId:
         Ref: SSODashboardVPC
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard Subnet 1
   SSODashboardSubnet2:
     Type: "AWS::EC2::Subnet"
     DependsOn: SSODashboardRouteTable
@@ -92,6 +105,9 @@ Resources:
       MapPublicIpOnLaunch: True
       VpcId:
         Ref: SSODashboardVPC
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard Subnet 2
   SSODashboardSubnet3:
     Type: "AWS::EC2::Subnet"
     DependsOn: SSODashboardRouteTable
@@ -101,6 +117,9 @@ Resources:
       MapPublicIpOnLaunch: True
       VpcId:
         Ref: SSODashboardVPC
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard Subnet 3
   SSODashboardRouteAssoc1:
     Type: "AWS::EC2::SubnetRouteTableAssociation"
     DependsOn: DashboardDefaultRoute
@@ -145,6 +164,9 @@ Resources:
           FromPort: '22'
           ToPort: '22'
           CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard
   SSODashboardELBSecGroup:
     Type: "AWS::EC2::SecurityGroup"
     DependsOn: SSODashboardVPC
@@ -165,6 +187,9 @@ Resources:
           FromPort: '22'
           ToPort: '22'
           CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard ELB
   ApplicationLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     DependsOn: SSODashboardELBSecGroup
@@ -176,6 +201,9 @@ Resources:
         - Ref: SSODashboardSubnet3
       SecurityGroups:
         - Ref: SSODashboardELBSecGroup
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard
   ALBHTTPListener:
     Type : AWS::ElasticLoadBalancingV2::Listener
     DependsOn: ApplicationLoadBalancer
@@ -217,187 +245,16 @@ Resources:
       Protocol: HTTP
       VpcId:
         Ref: SSODashboardVPC
-  SSODashboardRole:
-    Type: "AWS::IAM::Role"
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          -
-            Effect: "Allow"
-            Principal:
-              Service:
-                - "ec2.amazonaws.com"
-            Action:
-              - "sts:AssumeRole"
-      RoleName: SSO-Dashboard-Role
-  SSOInstanceProfile:
-    Type: "AWS::IAM::InstanceProfile"
-    DependsOn: SSODashboardRole
-    Properties:
-      Roles:
-        -
-          Ref: SSODashboardRole
-  SSODashboardCodePipelineAccess:
-    Type: "AWS::IAM::Policy"
-    DependsOn: SSODashboardRole
-    Properties:
-      PolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          -
-            Effect: "Allow"
-            Action:
-              - "s3:GetBucketAcl"
-              - "s3:GetBucketCORS"
-              - "s3:GetBucketLocation"
-              - "s3:GetBucketLogging"
-              - "s3:GetBucketNotification"
-              - "s3:GetBucketPolicy"
-              - "s3:GetBucketRequestPayment"
-              - "s3:GetBucketTagging"
-              - "s3:GetBucketVersioning"
-              - "s3:GetBucketWebsite"
-              - "s3:GetLifecycleConfiguration"
-              - "s3:GetObject"
-              - "s3:GetObjectAcl"
-              - "s3:GetObjectTagging"
-              - "s3:GetObjectTorrent"
-              - "s3:GetObjectVersion"
-              - "s3:GetObjectVersionAcl"
-              - "s3:GetObjectVersionTagging"
-              - "s3:GetObjectVersionTorrent"
-              - "s3:GetReplicationConfiguration"
-              - "s3:ListAllMyBuckets"
-              - "s3:ListBucket"
-              - "s3:ListBucketMultipartUploads"
-              - "s3:ListBucketVersions"
-              - "s3:ListMultipartUploadParts"
-            Resource: "arn:aws:s3:::codepipeline*"
-      PolicyName: sso-dashboard-read-codepipeline
-      Roles:
-        -
-          Ref: SSODashboardRole
-  SSODashboardS3Access:
-    Type: "AWS::IAM::Policy"
-    DependsOn: SSODashboardRole
-    Properties:
-      PolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          -
-            Effect: "Allow"
-            Action:
-              - "s3:GetBucketAcl"
-              - "s3:GetBucketCORS"
-              - "s3:GetBucketLocation"
-              - "s3:GetBucketLogging"
-              - "s3:GetBucketNotification"
-              - "s3:GetBucketPolicy"
-              - "s3:GetBucketRequestPayment"
-              - "s3:GetBucketTagging"
-              - "s3:GetBucketVersioning"
-              - "s3:GetBucketWebsite"
-              - "s3:GetLifecycleConfiguration"
-              - "s3:GetObject"
-              - "s3:GetObjectAcl"
-              - "s3:GetObjectTagging"
-              - "s3:GetObjectTorrent"
-              - "s3:GetObjectVersion"
-              - "s3:GetObjectVersionAcl"
-              - "s3:GetObjectVersionTagging"
-              - "s3:GetObjectVersionTorrent"
-              - "s3:GetReplicationConfiguration"
-              - "s3:ListAllMyBuckets"
-              - "s3:ListBucket"
-              - "s3:ListBucketMultipartUploads"
-              - "s3:ListBucketVersions"
-              - "s3:ListMultipartUploadParts"
-            Resource: "arn:aws:s3:::sso-dashboard.*"
-      PolicyName: sso-dashboard-read-buckets
-      Roles:
-        -
-          Ref: SSODashboardRole
-  SSODashboardCloudWatchAccess:
-    Type: "AWS::IAM::Policy"
-    DependsOn: SSODashboardRole
-    Properties:
-      PolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          -
-            Effect: "Allow"
-            Action:
-              - "logs:CreateLogGroup"
-              - "logs:CreateLogStream"
-              - "logs:DescribeLogGroups"
-              - "logs:DescribeLogStreams"
-              - "logs:PutLogEvents"
-              - "logs:GetLogEvents"
-              - "logs:FilterLogEvents"
-            Resource: "*"
-      PolicyName: sso-dashboard-cloudwatch-log
-      Roles:
-        -
-          Ref: SSODashboardRole
-  SSODashboardCredstashRead:
-    Type: "AWS::IAM::Policy"
-    DependsOn: SSODashboardRole
-    Properties:
-      PolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          -
-            Effect: "Allow"
-            Action:
-              - "dynamodb:GetItem"
-              - "dynamodb:Query"
-              - "dynamodb:Scan"
-            Resource: "arn:aws:dynamodb:*:*:table/credential-store"
-      PolicyName: sso-dashboard-credstash
-      Roles:
-        -
-          Ref: SSODashboardRole
-  SSODashboardTagAccess:
-    Type: "AWS::IAM::Policy"
-    DependsOn: SSODashboardRole
-    Properties:
-      PolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          -
-            Effect: "Allow"
-            Action:
-              - "ec2:DescribeTags"
-            Resource: "*"
-      PolicyName: sso-dashboard-describe-tags
-      Roles:
-        -
-          Ref: SSODashboardRole
-  SSODashboardCodeDeploy:
-    Type: "AWS::IAM::Policy"
-    DependsOn: SSODashboardRole
-    Properties:
-      PolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          -
-            Effect: "Allow"
-            Action:
-              - "codedeploy:*"
-            Resource: "arn:aws:codedeploy:*:*:application:sso-dashboard-*"
-      PolicyName: sso-dashboard-code-deploy
-      Roles:
-        -
-          Ref: SSODashboardRole
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard
   SSODashboardLaunchConfigProd:
     Type: "AWS::AutoScaling::LaunchConfiguration"
     Condition: UseProdCondition
     Properties:
       KeyName: !Ref SSHKeyName
       ImageId: !FindInMap [!Ref EnvType, !Ref "AWS::Region", AMI]
-      IamInstanceProfile:
-        Ref: SSOInstanceProfile
+      IamInstanceProfile: "sso-dashboard-instance-profile"
       UserData:
         Fn::Base64: !Sub |
           #cloud-config
@@ -412,6 +269,8 @@ Resources:
             - chmod +x ./install
             - ./install auto
             - cd /home/ec2-user
+            - aws ecr get-login --region us-west-2 | bash
+            - docker run -d -e SQS_QUEUE=sso-dashboard-fluentd-sqs -v /var/log:/var/log 371522382791.dkr.ecr.us-west-2.amazonaws.com/sqs-fluentd:latest td-agent -c /etc/td-agent/td-agent.conf
             - rm -rf /home/ec2-user/app
             - mkdir -p /home/ec2-user/app
             - git clone https://github.com/mozilla-iam/sso-dashboard.git /home/ec2-user/app
@@ -426,13 +285,12 @@ Resources:
       InstanceType: "t2.medium"
   SSODashboardLaunchConfigDev:
     Type: "AWS::AutoScaling::LaunchConfiguration"
-    Condition: UseProdCondition
+    Condition: UseDevCondition
     DependsOn: [ SSODashboardSubnet1, SSODashboardSubnet2, SSODashboardSubnet3 ]
     Properties:
       KeyName: !Ref SSHKeyName
       ImageId: !FindInMap [!Ref EnvType, !Ref "AWS::Region", AMI]
-      IamInstanceProfile:
-        Ref: SSOInstanceProfile
+      IamInstanceProfile: "sso-dashboard-instance-profile"
       UserData:
         Fn::Base64: !Sub |
           #cloud-config
@@ -446,6 +304,8 @@ Resources:
             - wget https://aws-codedeploy-$REGION.s3.amazonaws.com/latest/install
             - chmod +x ./install
             - ./install auto
+            - aws ecr get-login --region us-west-2 | bash
+            - docker run -d -e SQS_QUEUE=sso-dashboard-fluentd-sqs -v /var/log:/var/log 656532927350.dkr.ecr.us-west-2.amazonaws.com/sqs-fluentd:latest td-agent -c /etc/td-agent/td-agent.conf
             - cd /home/ec2-user
             - rm -rf /home/ec2-user/app
             - mkdir -p /home/ec2-user/app
@@ -474,7 +334,7 @@ Resources:
       TargetGroupARNs:
          - Ref: ALBTargetGroup
       MaxSize: "5"
-      MinSize: "2"
+      MinSize: "3"
       VPCZoneIdentifier:
         - Ref: SSODashboardSubnet1
         - Ref: SSODashboardSubnet2

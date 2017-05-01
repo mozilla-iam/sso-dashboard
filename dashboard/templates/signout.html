@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block appbar %}{% endblock %}
+
+{% block content_class %}logout{% endblock %}
+
+{% block content %}
+  <div class="mui-row">
+    <div class="mui-col-md-12 panel">
+      <div>
+        <img src="/static/img/mozilla-m.svg" alt="Mozilla">
+      </div>
+
+      <div>
+        <img src="/static/img/success.svg" alt="sucess">
+      </div>
+
+      <div>
+        <h2>Mozilla SSO</h2>
+        <h2>Log Out Success</h2>
+      </div>
+
+      <div class="notice">
+        Make sure you also log out of each individual application you used this session.
+      </div>
+
+      <hr>
+
+      <a href="/" class="mui-btn">Log In to Mozilla SSO</a>
+    </div>
+  </div>
+
+  <div class="footer-links">
+    <div class="icon-container">
+      <div class="icon">
+        <img class="footer-icon" src="/static/img/email.svg">
+        <a target="_blank" href="https://mozilla.service-now.com/sp?id=sc_cat_item&sys_id=ca46b2794fcc2200f004ef6d0210c77c">Need Help?</a>
+      </div>
+    </div>
+    <div class="icon-container">
+      <div class="icon">
+        <img class="footer-icon" src="/static/img/feedback.svg">
+        <a target="_blank" href="https://discourse.mozilla-community.org/c/iam/dashboard">Feedback</a>
+      </div>
+    </div>
+    <div class="icon-container">
+      <div class="icon">
+        <img class="footer-icon" src="/static/img/legal.svg">
+        <a target="_blank" href="https://www.mozilla.org/en-US/about/legal/">Legal</a>
+      </div>
+    </div>
+    <div class="icon-container">
+      <div class="icon">
+        <img class="footer-icon" src="/static/img/privacy.svg">
+        <a target="_blank" href="https://www.mozilla.org/en-US/privacy/websites/">Privacy</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block footer %}{% endblock %}

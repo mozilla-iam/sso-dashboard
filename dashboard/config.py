@@ -14,8 +14,10 @@ class Config(object):
     PERMANENT_SESSION = os.environ['PERMANENT_SESSION']
     PERMANENT_SESSION_LIFETIME = int(os.environ['PERMANENT_SESSION_LIFETIME'])
     REDIS_URL = os.environ['REDIS_URL']
-    MOZILLIANS_API_URL = os.environ['MOZILLIANS_API_URL']
-    MOZILLIANS_API_KEY = os.environ['MOZILLIANS_API_KEY']
+    MOZILLIANS_API_URL = os.getenv('MOZILLIANS_API_URL', None)
+    MOZILLIANS_API_KEY = os.getenv('MOZILLIANS_API_KEY', None)
+    SESSION_COOKIE_HTTPONLY = True
+    LOGGER_NAME = "sso-dashboard"
 
 
 class ProductionConfig(Config):

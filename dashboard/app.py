@@ -9,13 +9,11 @@ import hashlib
 import datetime
 import mimetypes
 
-
 import watchtower
 import logging
 
 import config
 import auth
-
 
 from user import User
 from alert import Alert
@@ -46,8 +44,7 @@ if os.environ.get('LOGGING') == 'True':
 
 assets = Environment(app)
 
-js = Bundle('js/base.js', 'js/ga.js',
-            filters='jsmin', output='js/gen/packed.js')
+js = Bundle('js/base.js', filters='jsmin', output='js/gen/packed.js')
 assets.register('js_all', js)
 
 
@@ -79,9 +76,11 @@ sh.update(
             'script-src':
                 [
                     'self',
+                    'data:',
                     'ajax.googleapis.com',
                     'fonts.googleapis.com',
-                    'https://*.google-analytics.com',
+                    'https://*.googletagmanager.com',
+                    'https://*.google-analytics.com'
                 ],
             'style-src':
                 [
@@ -92,9 +91,8 @@ sh.update(
             'img-src':
                 [
                     'self',
-                    '*.wp.com',
-                    'https://*.google-analytics.com',
                     'https://mozillians.org',
+                    'https://*.google-analytics.com'
                 ],
             'font-src':
                 [
@@ -110,7 +108,7 @@ sh.update(
     {
         'HSTS':
             {
-                'max-age': 1,
+                'max-age': 15768000,
                 'includeSubDomains': True,
                 'preload': False
             }
@@ -142,6 +140,38 @@ def favicon():
 @sh.wrapper()
 def home():
     return redirect('/dashboard', code=302)
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('404.html'), 404
+
+@app.route('/logout')
+@oidc.oidc_logout
+def logout():
+
+    """Route decorator destroys flask session and redirects to auth0 to destroy
+    auth0 session.  Ending page is mozilla signout.html."""
+
+    if os.environ.get('ENVIRONMENT') == 'Production':
+        proto = "https"
+    else:
+        proto = "http"
+
+    return_url = "{proto}://{server_name}/signout.html".format(
+        proto=proto, server_name=app.config['SERVER_NAME']
+    )
+
+    logout_url = "https://{auth0_domain}/v2/logout?returnTo={return_url}".format(
+        auth0_domain=oidc_config.OIDC_DOMAIN, return_url=return_url
+    )
+
+    return redirect(logout_url, code=302)
+
+
+@app.route('/signout.html')
+def signout():
+    return render_template('signout.html')
 
 
 @app.route('/dashboard')
@@ -182,6 +212,44 @@ def about():
     return render_template(
         'about.html'
     )
+
+
+@app.route('/contribute.json')
+def contribute_lower():
+    data = {
+        "name": "sso-dashboard by Mozilla",
+        "description": "A single signon dashboard for auth0.",
+        "repository": {
+            "url": "https://github.com/mozilla-iam/sso-dashboard",
+            "license": "MPL2"
+        },
+        "participate": {
+            "home": "https://github.com/mozilla-iam/sso-dashboard",
+            "irc": "irc://irc.mozilla.org/#infosec",
+            "irc-contacts": [
+                "Andrew"
+            ]
+        },
+        "bugs": {
+            "list": "https://github.com/mozilla-iam/sso-dashboard/issues",
+            "report": "https://github.com/mozilla-iam/sso-dashboard/issues/new",
+            "mentored": "https://github.com/mozilla-iam/sso-dashboard/issues?q=is%3Aissue+is%3Aclosed"
+        },
+        "urls": {
+            "prod": "https://sso.mozilla.com/",
+            "stage": "https://sso.allizom.org/"
+        },
+        "keywords": [
+            "python",
+            "html5",
+            "jquery",
+            "mui-css",
+            "sso",
+            "auth0"
+        ]
+    }
+
+    return jsonify(data)
 
 
 @app.route('/alert', methods=['POST'])

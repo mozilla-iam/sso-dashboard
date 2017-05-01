@@ -23,3 +23,8 @@ hooks:
     - location: scripts/post-deploy.sh
       timeout: 60
       runas: root
+
+  ValidateService:
+    - location: scripts/validate-deploy.sh
+      timeout: 120
+      runas: root

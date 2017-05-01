@@ -57,7 +57,8 @@
        src: ../dashboard/prod-requirements.txt
        dest: /sso-dashboard/requirements.txt
        owner: flaskapp
-       mode: 0777
+       group: nginx
+       mode: 755
 
     - name: Install requirements
       pip:
@@ -68,7 +69,8 @@
        src: ../dashboard/
        dest: /sso-dashboard
        owner: flaskapp
-       mode: 0777
+       group: nginx
+       mode: 755
 
     - name: Cache busting
       file:
@@ -89,3 +91,31 @@
       file:
         path: /sso-dashboard/static/img/logos
         state: directory
+
+    - name: Install credstash depends
+      yum: name=git state=latest
+    # Checkout current Mozilla SSO Content can be removed after /logout routes added
+    - git:
+        repo: 'https://github.com/mozilla/sso-mozilla-com'
+        dest: /usr/share/nginx/html/sso-mozilla-com
+        clone: yes
+        update: yes
+
+    # Allow nginx directory traversal
+    - file:
+        path: /sso-dashboard
+        state: directory
+        mode: 0750
+        owner: flaskapp
+        group: nginx
+        recurse: yes
+
+
+    # Allow nginx directory traversal
+    - file:
+        path: /sso-dashboard/static
+        state: directory
+        mode: 0750
+        owner: flaskapp
+        group: nginx
+        recurse: yes

@@ -146,10 +146,33 @@ def home():
 def page_not_found(error):
     return render_template('404.html'), 404
 
-
 @app.route('/logout')
+@oidc.oidc_logout
 def logout():
-    return render_template('logout.html')
+
+    """Route decorator destroys flask session and redirects to auth0 to destroy
+    auth0 session.  Ending page is mozilla signout.html."""
+
+    if os.environ.get('ENVIRONMENT') == 'Production':
+        proto = "https"
+    else:
+        proto = "http"
+
+    return_url = "{proto}://{server_name}/signout.html".format(
+        proto=proto, server_name=app.config['SERVER_NAME']
+    )
+
+
+    logout_url = "https://{auth0_domain}/v2/logout?returnTo={return_url}".format(
+        auth0_domain=oidc_config.OIDC_DOMAIN, return_url=return_url
+    )
+    
+    return redirect(logout_url, code=302)
+
+
+@app.route('/signout.html')
+def signout():
+    return render_template('signout.html')
 
 
 @app.route('/dashboard')

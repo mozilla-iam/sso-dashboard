@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block content_class %}p404{% endblock %}
+
+{% block content %}
+  <div class="mui-row">
+    <div class="mui-col-md-10 mui-col-md-offset-2">
+      <h1>404</h1>
+
+      <div class="panel">
+        <div class="pointer"></div>
+        <h2>Oye, something went wrong.</h2>
+        At least this little bird is here to keep you company...
+      </div>
+
+      <div class="mui-row section">
+        <div class="mui-col-md-6 mui-col-lg-4">
+          <a href="https://mozilla.service-now.com/sp?id=sc_cat_item&sys_id=ca46b2794fcc2200f004ef6d0210c77c" class="mui-btn help">Need Help?</a>
+
+          <a href="/dashboard" class="mui-btn return">Return to dashboard</a>
+        </div>
+
+        <div class="mui-col-md-6 mui-col-lg-8 video">
+          <iframe width="520" height="293" src="https://www.youtube.com/embed/Ybvwh0reiMU" frameborder="0" allowfullscreen
+          class="mui--hidden-xs mui--hidden-sm mui--hidden-md"></iframe>
+          <iframe width="290" height="163" src="https://www.youtube.com/embed/Ybvwh0reiMU" frameborder="0" allowfullscreen
+          class="mui--hidden-md mui--hidden-lg mui--hidden-xl"></iframe>
+          <iframe width="340" height="191" src="https://www.youtube.com/embed/Ybvwh0reiMU" frameborder="0" allowfullscreen
+          class="mui--visible-md-block"></iframe>
+        </div>
+      </div>
+
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, session, request, redirect, send_from_directory, jsonify, url_for
+from flask import Flask, render_template, jsonify, session, request, redirect, send_from_directory
 from flask_assets import Environment, Bundle
 
 from flask_secure_headers.core import Secure_Headers
@@ -142,6 +142,11 @@ def home():
     return redirect('/dashboard', code=302)
 
 
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('404.html'), 404
+
+
 @app.route('/dashboard')
 @sh.wrapper()
 @oidc.oidc_auth
@@ -180,6 +185,7 @@ def about():
     return render_template(
         'about.html'
     )
+
 
 @app.route('/contribute.json')
 def contribute_lower():

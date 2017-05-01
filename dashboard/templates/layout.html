@@ -31,7 +31,7 @@
 
     {% block search_mobile %}{% endblock %}
 
-    <div class="content">
+    <div class="content {% block content_class %}{% endblock %}">
       <div class="mui-container">
         {% block content %}
         {% endblock %}

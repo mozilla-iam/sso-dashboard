@@ -155,17 +155,65 @@ body {
         height: $appbar-height;
 
         .profile-icon {
+            margin: 15px;
+            cursor: pointer;
             width: 40px;
             height: 40px;
-            margin: 15px;
         }
 
         .default-avatar {
+            margin: 15px;
+            cursor: pointer;
             border: 1px solid $lightgray;
             width: 20px;
             height: 20px;
             padding: 10px;
-            margin: 15px;
+        }
+
+        .name {
+            display: none;
+        }
+
+        &.enabled {
+            background-color: black;
+            color: white;
+            width: 217px;
+            border-bottom: 1px solid #5b555c;
+            border-left: none;
+            height: calc(#{$appbar-height} - 1px);
+            position: relative;
+            z-index: 2;
+
+            .name {
+                display: inline-block;
+                padding: 0 10px 0 15px;
+                clear: both;
+                color: white;
+                text-decoration: none;
+                font-size: 14px;
+                height: calc(#{$appbar-height} - 1px);
+                line-height: $appbar-height;
+                float: left;
+                width: 130px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .default-avatar {
+                border: 1px solid $gray;
+                margin-left: 0;
+                float: right;
+
+                g {
+                    fill: white;
+                }
+            }
+
+            .profile-icon {
+                margin-left: 0;
+                float: right;
+            }
         }
     }
 
@@ -264,6 +312,55 @@ footer {
     }
 }
 
+.user-menu {
+    background-color: black;
+    color: white;
+    z-index: 999;
+    position: absolute;
+    top: $appbar-height;
+    right: 0;
+    display: none;
+    width: 217px;
+
+    a {
+        display: block;
+        padding: 0 25px 0 15px;
+        clear: both;
+        color: white;
+        text-decoration: none;
+        font-size: 14px;
+
+        &:hover {
+            text-decoration: none;
+        }
+
+        &.inactive {
+            pointer-events: none;
+            cursor: default;
+            color: $gray;
+        }
+
+        span {
+            display: inline-block;
+            float: left;
+            line-height: 50px;
+
+            &.coming-soon {
+                font-variant: small-caps;
+                font-size: 8px;
+                float: right;
+            }
+        }
+
+        .menu-icon {
+            width: 20px;
+            height: 20px;
+            float: right;
+            margin: 15px 0;
+        }
+    }
+}
+
 @media all and (max-width: 767px) {
 
     .mui-appbar .filter .mui-textfield input {
@@ -277,6 +374,21 @@ footer {
 
     .mui-appbar {
         height: $appbar-height;
+
+        &.menu-enabled {
+
+            > div {
+
+                &:first-child {
+                    width: 70px;
+                }
+
+                &:last-child {
+                    width: auto;
+                    float: none;
+                }
+            }
+        }
 
         .brand {
             border-right: none;
@@ -304,6 +416,17 @@ footer {
                 padding: 10px;
                 margin: 20px;
             }
+
+            &.enabled {
+                height: calc(#{$appbar-height} - 1px);
+                width: 200px;
+
+                .name {
+                    height: calc(#{$appbar-height} - 1px);
+                    line-height: $appbar-height;
+                    width: 105px;
+                }
+            }
         }
 
         .search-button {
@@ -323,11 +446,33 @@ footer {
                 background-image: url('../../img/search-w.svg');
             }
 
+            &.menu-enabled {
+                float: left;
+            }
+
             a {
                 display: block;
                 width: 18px;
                 height: 18px;
                 margin: 31px;
+            }
+        }
+    }
+
+    .user-menu {
+        top: $appbar-height;
+        height: 100%;
+        width: 200px;
+
+        a {
+            padding: 0 30px 0 15px;
+
+            span {
+                line-height: $appbar-height;
+            }
+
+            .menu-icon {
+                margin: 27px 0;
             }
         }
     }
@@ -413,6 +558,49 @@ footer {
 
                     &:hover {
                         color: white;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media all and (max-width: 359px) {
+
+    .mui-appbar {
+
+        .menu {
+
+            &.enabled {
+                width: 160px;
+
+                .name {
+                    width: 65px;
+                }
+            }
+        }
+    }
+
+    .user-menu {
+        width: 100%;
+
+        a {
+            padding: 0 30px 0 20px;
+
+            &.inactive {
+                padding: 30px 30px 55px 20px;
+
+                &:last-child {
+                    padding-bottom: 0;
+                }
+
+                span {
+                    line-height: normal;
+
+                    &.coming-soon {
+                        float: left;
+                        clear: both;
+                        padding-left: 5px;
                     }
                 }
             }

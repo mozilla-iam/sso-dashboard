@@ -316,7 +316,7 @@ footer {
     background-color: black;
     color: white;
     z-index: 999;
-    position: absolute;
+    position: fixed;
     top: $appbar-height;
     right: 0;
     display: none;

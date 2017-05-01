@@ -92,6 +92,7 @@ sh.update(
                 [
                     'self',
                     'https://mozillians.org',
+                    'https://*.google-analytics.com'
                 ],
             'font-src':
                 [

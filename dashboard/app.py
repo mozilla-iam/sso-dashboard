@@ -9,13 +9,11 @@ import hashlib
 import datetime
 import mimetypes
 
-
 import watchtower
 import logging
 
 import config
 import auth
-
 
 from user import User
 from alert import Alert
@@ -162,11 +160,10 @@ def logout():
         proto=proto, server_name=app.config['SERVER_NAME']
     )
 
-
     logout_url = "https://{auth0_domain}/v2/logout?returnTo={return_url}".format(
         auth0_domain=oidc_config.OIDC_DOMAIN, return_url=return_url
     )
-    
+
     return redirect(logout_url, code=302)
 
 

@@ -31,28 +31,41 @@ $(document).ready(function(){
     // Search input: Highlight, Align, Focus
     var filter = $(':input[name=filter]');
     $(filter).focus();
+    $('.filter .mui-textfield').addClass('yellow-border');
+    $('.filter img').addClass('yellow-border');
+    $('svg.clear').addClass('yellow-border');
     $(filter).focusin(function() {
         $(filter).css('text-align', 'left');
     });
     $(filter).on('focusin mouseover', function() {
         $('.filter .mui-textfield').addClass('yellow-border');
         $('.filter img').addClass('yellow-border');
+        $('svg.clear').addClass('yellow-border');
     });
     $(filter).mouseout(function() {
         var focus = $(filter).is(':focus');
         if (!focus) {
             $('.filter .mui-textfield').removeClass('yellow-border');
             $('.filter img').removeClass('yellow-border');
+            $('svg.clear').removeClass('yellow-border');
         }
     });
     $(filter).focusout(function() {
         $('.filter .mui-textfield').removeClass('yellow-border');
         $('.filter img').removeClass('yellow-border');
+        $('svg.clear').removeClass('yellow-border');
         if ($(filter).val() == '') {
             $(filter).css('text-align', 'center');
         } else {
             $(filter).css('text-align', 'left');
         }
+    });
+
+    // Clear the search
+    $('svg.clear').click(function() {
+        $(filter).val('');
+        $('#app-grid').find('.app-tile').show();
+        $(filter).css('text-align', 'center');
     });
 
     // Search input mobile: Align

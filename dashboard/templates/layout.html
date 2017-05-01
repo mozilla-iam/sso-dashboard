@@ -13,21 +13,23 @@
   </head>
   <body>
 
-    <div class="mui-appbar">
-      <div class="mui-col-sm-2 mui-col-xs-5 mui--text-right">
-        <div class="brand">
-          <img src="/static/img/mozilla.svg" class="logo logo-large mui--hidden-md mui--hidden-sm">
-          <img src="/static/img/mozilla-m.svg" class="logo logo-small mui--hidden-lg mui--hidden-xl mui--hidden-xs">
+    {% block appbar %}
+      <div class="mui-appbar">
+        <div class="mui-col-sm-2 mui-col-xs-5 mui--text-right">
+          <div class="brand">
+            <img src="/static/img/mozilla.svg" class="logo logo-large mui--hidden-md mui--hidden-sm">
+            <img src="/static/img/mozilla-m.svg" class="logo logo-small mui--hidden-lg mui--hidden-xl mui--hidden-xs">
+          </div>
+        </div>
+        <div class="mui-col-sm-8 mui--hidden-xs">
+          {% block search %}{% endblock %}
+        </div>
+        <div class="mui-col-sm-2 mui-col-xs-7 mui--text-left">
+          {% block menu %}{% endblock %}
+          {% block search_button %}{% endblock %}
         </div>
       </div>
-      <div class="mui-col-sm-8 mui--hidden-xs">
-        {% block search %}{% endblock %}
-      </div>
-      <div class="mui-col-sm-2 mui-col-xs-7 mui--text-left">
-        {% block menu %}{% endblock %}
-        {% block search_button %}{% endblock %}
-      </div>
-    </div>
+    {% endblock %}
 
     {% block search_mobile %}{% endblock %}
 
@@ -40,34 +42,36 @@
 
     {% block user_menu %}{% endblock %}
 
-    <footer>
-      <div class="mui-container mui--text-center">
-        <div class="icon-container">
-          <div class="icon">
-            <img class="footer-icon" src="/static/img/email.svg">
-            <a target="_blank" href="https://mozilla.service-now.com/sp?id=sc_cat_item&sys_id=ca46b2794fcc2200f004ef6d0210c77c">Need Help?</a>
+    {% block footer %}
+      <footer>
+        <div class="mui-container mui--text-center">
+          <div class="icon-container">
+            <div class="icon">
+              <img class="footer-icon" src="/static/img/email.svg">
+              <a target="_blank" href="https://mozilla.service-now.com/sp?id=sc_cat_item&sys_id=ca46b2794fcc2200f004ef6d0210c77c">Need Help?</a>
+            </div>
+          </div>
+          <div class="icon-container">
+            <div class="icon">
+              <img class="footer-icon" src="/static/img/feedback.svg">
+              <a target="_blank" href="https://discourse.mozilla-community.org/c/iam/dashboard">Feedback</a>
+            </div>
+          </div>
+          <div class="icon-container">
+            <div class="icon">
+              <img class="footer-icon" src="/static/img/legal.svg">
+              <a target="_blank" href="https://www.mozilla.org/en-US/about/legal/">Legal</a>
+            </div>
+          </div>
+          <div class="icon-container">
+            <div class="icon">
+              <img class="footer-icon" src="/static/img/privacy.svg">
+              <a target="_blank" href="https://www.mozilla.org/en-US/privacy/websites/">Privacy</a>
+            </div>
           </div>
         </div>
-        <div class="icon-container">
-          <div class="icon">
-            <img class="footer-icon" src="/static/img/feedback.svg">
-            <a target="_blank" href="https://discourse.mozilla-community.org/c/iam/dashboard">Feedback</a>
-          </div>
-        </div>
-        <div class="icon-container">
-          <div class="icon">
-            <img class="footer-icon" src="/static/img/legal.svg">
-            <a target="_blank" href="https://www.mozilla.org/en-US/about/legal/">Legal</a>
-          </div>
-        </div>
-        <div class="icon-container">
-          <div class="icon">
-            <img class="footer-icon" src="/static/img/privacy.svg">
-            <a target="_blank" href="https://www.mozilla.org/en-US/privacy/websites/">Privacy</a>
-          </div>
-        </div>
-      </div>
-    </footer>
+      </footer>
+    {% endblock %}
 
     <script src="/static/lib/jquery/dist/jquery.min.js"></script>
     {% assets "js_all" %}

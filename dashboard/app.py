@@ -147,6 +147,11 @@ def page_not_found(error):
     return render_template('404.html'), 404
 
 
+@app.route('/logout')
+def logout():
+    return render_template('logout.html')
+
+
 @app.route('/dashboard')
 @sh.wrapper()
 @oidc.oidc_auth

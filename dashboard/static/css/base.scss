@@ -408,6 +408,17 @@ footer {
         text-decoration: none;
         font-size: 14px;
 
+        &:first-child {
+            padding-top: 15px;
+        }
+
+        &:last-child {
+
+            span {
+                margin-bottom: 15px;
+            }
+        }
+
         &:hover {
             text-decoration: none;
         }
@@ -422,12 +433,6 @@ footer {
             display: inline-block;
             float: left;
             line-height: 50px;
-
-            &.coming-soon {
-                font-variant: small-caps;
-                font-size: 8px;
-                float: right;
-            }
         }
 
         .menu-icon {
@@ -435,6 +440,22 @@ footer {
             height: 20px;
             float: right;
             margin: 15px 0;
+        }
+    }
+
+    .coming-soon {
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid $gray;
+        line-height: 0.1em;
+        margin: 70px 0 20px;
+        text-transform: uppercase;
+        font-size: 11px;
+        clear: both;
+
+        span {
+            background-color: black;
+            padding: 0 10px;
         }
     }
 }
@@ -645,6 +666,10 @@ footer {
                 margin: 27px 0;
             }
         }
+
+        .coming-soon {
+            margin-top: 100px;
+        }
     }
 
     .search-mobile {
@@ -774,12 +799,6 @@ footer {
 
                 span {
                     line-height: normal;
-
-                    &.coming-soon {
-                        float: left;
-                        clear: both;
-                        padding-left: 5px;
-                    }
                 }
             }
         }

@@ -119,4 +119,8 @@ $(document).ready(function(){
             $('.search-button').toggleClass('menu-enabled');
         }
     });
+    $('.content').click(function() {
+        $('.user-menu').hide();
+        $('.menu').removeClass('enabled');
+    });
 });

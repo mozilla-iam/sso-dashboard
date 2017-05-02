@@ -155,6 +155,10 @@ body {
         height: $appbar-height;
         cursor: pointer;
 
+        &:hover {
+            background-color: #f8f8f8;
+        }
+
         .profile-icon {
             margin: 15px;
             width: 40px;

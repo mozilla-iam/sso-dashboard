@@ -433,6 +433,10 @@ footer {
             pointer-events: none;
             cursor: default;
             color: $gray;
+
+            img {
+                opacity: .3;
+            }
         }
 
         span {
@@ -804,6 +808,10 @@ footer {
 
                 span {
                     line-height: normal;
+                }
+
+                img {
+                    margin: 0;
                 }
             }
         }

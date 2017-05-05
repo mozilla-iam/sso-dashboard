@@ -145,6 +145,10 @@ def home():
 
 @app.errorhandler(404)
 def page_not_found(error):
+    if request.url is not None:
+        logger.error(
+            "A 404 has been generated for {route}".format(route=request.url)
+        )
     return render_template('404.html'), 404
 
 @app.route('/logout')
@@ -153,7 +157,7 @@ def logout():
 
     """Route decorator destroys flask session and redirects to auth0 to destroy
     auth0 session.  Ending page is mozilla signout.html."""
-
+    logger.info("User called logout route.")
     if os.environ.get('ENVIRONMENT') == 'Production':
         proto = "https"
     else:
@@ -172,6 +176,7 @@ def logout():
 
 @app.route('/signout.html')
 def signout():
+    logger.info("Signout messaging displayed.")
     return render_template('signout.html')
 
 
@@ -322,6 +327,7 @@ def redirect_url():
 for url in vanity:
     try:
         app.add_url_rule(url.keys()[0], url.keys()[0], redirect_url)
+        app.add_url_rule(url.keys()[0] + "/", url.keys()[0] + "/", redirect_url)
     except Exception as e:
         logger.error(e)
         logger.info("Could not create vanity URL for {app}".format(app=url))

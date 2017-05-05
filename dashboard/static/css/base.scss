@@ -244,7 +244,7 @@ body {
         justify-content: center;
 
         .app-tile {
-            margin: 20px;
+            margin: 5px 10px 15px;
             flex-basis: auto;
             text-align: center;
             max-width: 192px;
@@ -257,17 +257,17 @@ body {
             .app-logo {
                 background-color: white;
                 border: 1px solid $lightgray;
-                padding: 20px;
-                width: 150px;
-                height: 150px;
+                padding: 10px;
+                width: 130px;
+                height: 130px;
                 display: table-cell;
                 vertical-align: middle;
 
                 img {
                     display: block;
                     margin: 0 auto;
-                    max-width: 140px;
-                    max-height: 140px;
+                    max-width: 120px;
+                    max-height: 120px;
                 }
 
                 &.yellow-border {
@@ -456,6 +456,7 @@ footer {
         text-transform: uppercase;
         font-size: 11px;
         clear: both;
+        color: $gray;
 
         span {
             background-color: black;

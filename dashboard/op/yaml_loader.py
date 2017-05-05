@@ -7,6 +7,8 @@ class Application(object):
     def __init__(self):
         self.config_file = self.__find("apps.yml", ".")
         self.apps = self.__load_data()
+        self.__render_data()
+        self.__alphabetize()
 
     def __load_authorized(self, session):
         pass
@@ -20,6 +22,16 @@ class Application(object):
                 print(e)
         return stream
 
+    def __render_data(self):
+        for app in self.apps['apps']:
+            app['application']['alt_text'] = app['application']['name']
+            app['application']['name'] = self.__truncate(
+                app['application']['name']
+            )
+
+    def __alphabetize(self):
+        self.apps['apps'] = sorted(self.apps['apps'])
+
     def __find(self, name, path):
         for root, dirs, files in os.walk(path):
             if name in files:
@@ -31,6 +43,14 @@ class Application(object):
             return True
         except:
             return False
+
+    def __truncate(self, app_name):
+        """If name is longer than allowed 18 chars truncate the name."""
+        app_name = (
+            app_name[:16] + '..'
+        ) if len(app_name) > 18 else app_name
+
+        return app_name
 
     def stats(self):
         okta = 0

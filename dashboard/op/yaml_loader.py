@@ -2,6 +2,7 @@
 
 import os
 import yaml
+import operator
 
 class Application(object):
     def __init__(self):
@@ -30,7 +31,12 @@ class Application(object):
             )
 
     def __alphabetize(self):
-        self.apps['apps'] = sorted(self.apps['apps'])
+        try:
+            self.apps['apps'] = sorted(
+                self.apps['apps'], key=operator.itemgetter(1)
+            )
+        except Exception as e:
+            print(e)
 
     def __find(self, name, path):
         for root, dirs, files in os.walk(path):

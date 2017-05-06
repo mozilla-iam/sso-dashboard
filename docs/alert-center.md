@@ -8,12 +8,17 @@ Security alerts are categorized by risk levels as defined in the [Standard Level
 ### What is an alert
 
 An alert is a small notification message for the user, which is meant to alert the user of an event. The alert is not necessarily security-relevant.
-The alert may be purely informational, or be acted upon (such as with "confirm, ask for help, alert someone" buttons).
+The alert may be purely informational, or be acted upon:
+
+- Confirm: ***This was me***
+- Confirm and remember: ***This was me, don't bug me again for this***
+- Get help and alert: ***This wasn't me, I need help***
+
 It is also important to understand the alert may not always been seen by the user.
 
 ### Alert risk level
 
-The alert risk levels are standardized and defined at [Standard Levels](https://wiki.mozilla.org/Security/Standard_Levels) 
+The alert risk levels are standardized and defined by the [Standard Levels](https://wiki.mozilla.org/Security/Standard_Levels) 
 
 This is a summary for convenience (refer to the above link for up-to-date 'official' information and complete definitions).
 
@@ -23,7 +28,7 @@ This is a summary for convenience (refer to the above link for up-to-date 'offic
 - __HIGH risk (yellow ![#ffd351](https://placehold.it/15/ffd351/000000?text=+) `#ffd351`)__: There is a problem and it looks bad. User interaction required. Ex: "Your user logged in on a new system. Was it really you?".
 - __MAXIMUM risk (red ![#d04437](https://placehold.it/15/d04437/000000?text=+) `#d04437`)__: We're probably trying to call you on the phone right now, and find your physical whereabouts.  Ex: "We know for a fact that your service is compromised".
 
-__NOTE__: It is possible to add alerts that are not risk related but instead purely information for UX reasons. All security alerts must use the standard risk levels.
+__NOTE__: It is possible to add alerts that are not risk related but instead purely information for UX reasons. All security alerts **must** use the standard risk levels.
 
 ### Alert Schema
 
@@ -47,7 +52,7 @@ __Unknown and low risk alerts__
 !['dashboard.png'](images/warning.png)
 
 
-Medium, high and maximum risk alerts have buttons to acknowledge them as false-positive or to request help. If the alert is acknolwedged as false-positive, a 2FA prompt must be validated before continuing. This makes it more difficult for someone with access to the user session to flag alerts as false-positive.
+Medium, high and maximum risk alerts have buttons to acknowledge (and optionally remember the acknowledgement for this very type of alert) them as false-positive or to request help. If the alert is acknolwedged as false-positive, a 2FA prompt **must** be validated before continuing. This makes it more difficult for someone with access to the user session to flag alerts as false-positive.
 
 > The labeling, colors, etc. is to be updated in the example below.
 
@@ -68,3 +73,7 @@ Let's say that as a user I am part of a major data breach, my house gets robbed,
 Instead of spamming the user, there should be a single dialog aggregating all alerts, such as:
 
 > Important: You have 52 high and maximum risk alerts. View notification center.  _or something like that_ 
+
+### Remembering false-positives
+
+We should strive to eliminate false-positives in order to avoid user-fatigue. However, when a user asks for not being bothered again this could be a mistake. We should allow the user to cancel that action in the alert center, and/or also expire the "remember this false-positive" after a certain amount of time _such as 30 days_.

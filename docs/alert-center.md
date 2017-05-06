@@ -17,17 +17,17 @@ The alert risk levels are standardized and defined at [Standard Levels](https://
 
 This is a summary for convenience (refer to the above link for up-to-date 'official' information and complete definitions).
 
-- __UNKNOWN risk (white `#ffffff`)__: Most likely to be unused in this context.
-- __LOW risk (grey `#cccccc`)__: Most likely to be unused in this context.
-- __MEDIUM risk (blue `#4a6785`)__: There could be a problem, attention is expected from the user. Ex: "You have logged in from a new location".
-- __HIGH risk (yellow `#ffd351`)__: There is a problem and it looks bad. User interaction required. Ex: "Your user logged in on a new system. Was it really you?".
-- __MAXIMUM risk (red `#d04437`)__: We're probably trying to call you on the phone right now, and find your physical whereabouts.  Ex: "We know for a fact that your service is compromised".
+- __UNKNOWN risk (white ![#ffffff](https://placehold.it/15/ffffff/000000?text=+) `#ffffff`)__: Most likely to be unused in this context.
+- __LOW risk (grey ![#cccccc](https://placehold.it/15/cccccc/000000?text=+) `#cccccc`)__: Most likely to be unused in this context.
+- __MEDIUM risk (blue ![#4a6785](https://placehold.it/15/4a6785/000000?text=+)`#4a6785`)__: There could be a problem, attention is expected from the user. Ex: "You have logged in from a new location".
+- __HIGH risk (yellow ![#ffd351](https://placehold.it/15/ffd351/000000?text=+) `#ffd351`)__: There is a problem and it looks bad. User interaction required. Ex: "Your user logged in on a new system. Was it really you?".
+- __MAXIMUM risk (red ![#d04437](https://placehold.it/15/d04437/000000?text=+) `#d04437`)__: We're probably trying to call you on the phone right now, and find your physical whereabouts.  Ex: "We know for a fact that your service is compromised".
 
 __NOTE__: It is possible to add alerts that are not risk related but instead purely information for UX reasons. All security alerts must use the standard risk levels.
 
 ### Alert Schema
 
-As an enterprise infosec service (machine/software) I can send an alert for "All Users" or an individual and it should show the alert in near real time in the related user(s) dashboard.
+> As an enterprise infosec service (machine/software) I can send an alert for "All Users" or an individual and it should show the alert in near real time in the related user(s) dashboard.
 
 ```
 alert:
@@ -42,6 +42,7 @@ alert:
 ### Alert UI (notification bar)
 
 Unknown and low risk alerts may not have a risk level indicator associated. These may be informational messages that do not carry any perceived risk.
+
 __Unknown and low risk alerts__
 !['dashboard.png'](images/warning.png)
 
@@ -55,7 +56,7 @@ __Medium, high and maximum risk alerts__
 
 ### Alert Center
 
-The alert center possess the same information available as the notification bar with additional information taken from the "description" field of the alert schema.
+The alert center possess the same information available as the notification bar with additional information taken from the `description` field of the alert schema.
 Users can acknowledge false-positives or dismiss all alerts from the alert center as well. It also shows an history of recent alert notifications.
 
 ## Additional considerations
@@ -66,4 +67,4 @@ We want to account for a user having a lot of alerts all at once.
 Let's say that as a user I am part of a major data breach, my house gets robbed, and attackers are logging in with one of my 2FA device(s) and password all over the globe.
 Instead of spamming the user, there should be a single dialog aggregating all alerts, such as:
 
-"Important: You have 52 high and maximum risk alerts. View notification center."  _or something like that_ 
+> Important: You have 52 high and maximum risk alerts. View notification center.  _or something like that_ 

@@ -109,20 +109,6 @@ sh.update(
     }
 )
 
-# Register the flask blueprint for SSE.
-app.register_blueprint(sse, url_prefix='/stream')
-
-
-@sse.before_request
-def check_access():
-    """Users can only view their own security alerts."""
-    user = User(session)
-    if request.args.get("channel") == user.hash():
-        pass
-    else:
-        abort(403)
-
-
 @app.route('/favicon.ico')
 @sh.wrapper()
 def favicon():
@@ -250,48 +236,6 @@ def contribute_lower():
     }
 
     return jsonify(data)
-
-
-@app.route('/alert', methods=['POST'])
-@sh.wrapper()
-def publish_alert():
-    """
-    Takes JSON post with user e-mail to alert.
-    Minimum fields are email and message in the form
-    of a dict.
-
-    Example:
-        {
-          "user": {"email": "andrewkrug@gmail.com"},
-            "message": "this is a security alert"
-        }
-    """
-    try:
-        content = request.json
-        # Send a real time event to the user
-        m = hashlib.md5()
-        m.update(content['user']['email'])
-        channel = m.hexdigest()
-
-        sse.publish(
-            {"message": content['message']},
-            type="alert",
-            channel=channel
-        )
-
-        permanent_message = "Security Alert Logged at {date} : {message}".format(
-            date=datetime.datetime.now(),
-            message=content['message']
-        )
-        # Store the event in redis keyed to the users hashed e-mail
-
-        Alert().set(channel, permanent_message)
-
-        return jsonify({'status': 'success'})
-    except:
-        raise BadRequest('POST does not contain e-mail and message')
-        return jsonify({'status': 'fail'})
-
 
 vanity = Application().vanity_urls()
 logger.info("Vanity URLs loaded for {num} apps.".format(num=len(vanity)))

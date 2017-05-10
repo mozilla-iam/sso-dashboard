@@ -4,6 +4,7 @@ import os
 import yaml
 import operator
 
+
 class Application(object):
     def __init__(self):
         self.config_file = self.__find("apps.yml", ".")
@@ -66,7 +67,7 @@ class Application(object):
                 okta = okta + 1
             if app['application']['op'] == 'auth0':
                 auth0 = auth0 + 1
-        return { 'auth0': auth0, 'okta': okta }
+        return {'auth0': auth0, 'okta': okta}
 
     def vanity_urls(self):
         redirects = []
@@ -76,6 +77,6 @@ class Application(object):
                     redirects.append(
                         {
                             redirect: app['application']['url']
-                         }
+                        }
                     )
         return redirects

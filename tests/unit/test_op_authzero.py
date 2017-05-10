@@ -1,8 +1,7 @@
+from dotenv import find_dotenv, load_dotenv
+
 from dashboard import app as sso_dashboard
 from dashboard.op import authzero
-import os
-import json
-import base64
 
 
 def setup_test():
@@ -41,5 +40,5 @@ def test_get_token():
     config = sso_dashboard.oidc_config
     management = authzero.AccessToken(config)
     token = management.get_token()
-    print token
+    print(token)
     assert token['access_token'] is not None

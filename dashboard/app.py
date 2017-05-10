@@ -1,19 +1,17 @@
-from flask import Flask, render_template, jsonify, session, request, redirect, send_from_directory
-from flask_assets import Environment, Bundle
+import auth
+import config
+import datetime
+import hashlib
+import logging
+import mimetypes
+import os
+import watchtower
 
+from flask import (Flask, abort, render_template, jsonify, session, request, redirect,
+                   send_from_directory)
+from flask_assets import Environment, Bundle
 from flask_secure_headers.core import Secure_Headers
 from werkzeug.exceptions import BadRequest
-
-import os
-import hashlib
-import datetime
-import mimetypes
-
-import watchtower
-import logging
-
-import config
-import auth
 
 from user import User
 from alert import Alert
@@ -69,38 +67,33 @@ sh = Secure_Headers()
 sh.update(
     {
         'CSP': {
-            'default-src':
-                [
-                    'self',
-                ],
-            'script-src':
-                [
-                    'self',
-                    'data:',
-                    'ajax.googleapis.com',
-                    'fonts.googleapis.com',
-                    'https://*.googletagmanager.com',
-                    'https://tagmanager.google.com',
-                    'https://*.google-analytics.com'
-                ],
-            'style-src':
-                [
-                    'self',
-                    'ajax.googleapis.com',
-                    'fonts.googleapis.com',
-                ],
-            'img-src':
-                [
-                    'self',
-                    'https://mozillians.org',
-                    'https://*.google-analytics.com'
-                ],
-            'font-src':
-                [
-                    'self',
-                    'fonts.googleapis.com',
-                    'fonts.gstatic.com',
-                ]
+            'default-src': [
+                'self',
+            ],
+            'script-src': [
+                'self',
+                'data:',
+                'ajax.googleapis.com',
+                'fonts.googleapis.com',
+                'https://*.googletagmanager.com',
+                'https://tagmanager.google.com',
+                'https://*.google-analytics.com'
+            ],
+            'style-src': [
+                'self',
+                'ajax.googleapis.com',
+                'fonts.googleapis.com',
+            ],
+            'img-src': [
+                'self',
+                'https://mozillians.org',
+                'https://*.google-analytics.com'
+            ],
+            'font-src': [
+                'self',
+                'fonts.googleapis.com',
+                'fonts.gstatic.com',
+            ]
         }
     }
 )
@@ -124,7 +117,7 @@ app.register_blueprint(sse, url_prefix='/stream')
 def check_access():
     """Users can only view their own security alerts."""
     user = User(session)
-    if request.args.get("channel") == Userhash():
+    if request.args.get("channel") == user.hash():
         pass
     else:
         abort(403)
@@ -150,6 +143,7 @@ def page_not_found(error):
             "A 404 has been generated for {route}".format(route=request.url)
         )
     return render_template('404.html'), 404
+
 
 @app.route('/logout')
 @oidc.oidc_logout
@@ -239,7 +233,7 @@ def contribute_lower():
         "bugs": {
             "list": "https://github.com/mozilla-iam/sso-dashboard/issues",
             "report": "https://github.com/mozilla-iam/sso-dashboard/issues/new",
-            "mentored": "https://github.com/mozilla-iam/sso-dashboard/issues?q=is%3Aissue+is%3Aclosed"
+            "mentored": "https://github.com/mozilla-iam/sso-dashboard/issues?q=is%3Aissue+is%3Aclosed"  # noqa
         },
         "urls": {
             "prod": "https://sso.mozilla.com/",
@@ -323,6 +317,7 @@ def redirect_url():
     logger.info(
         "Vanity URL could not be matched for {app}".format(app=vanity_url)
     )
+
 
 for url in vanity:
     try:

@@ -1,19 +1,19 @@
-"""Class for handling the auth0 specific interactions."""
-"""On hold until auth0 v2 questions answered."""
-
-
-from auth0.v2.management import Auth0
 import http.client
 import json
 import jwt
+from auth0.v2.management import Auth0
+
 
 class TokenOperations(object):
+    """Class for handling the auth0 specific interactions.
+    On hold until auth0 v2 questions answered.
+    """
     def __init__(self, jwt):
         self.jwt = jwt
 
     def decode(self, secret):
-        #decoded = jwt.decode(self.jwt, verify=False)
-        ###TBD figure out what's up with RS256
+        # decoded = jwt.decode(self.jwt, verify=False)
+        # ##TBD figure out what's up with RS256
         try:
             decoded = jwt.decode(
                 self.jwt,
@@ -50,7 +50,7 @@ class AccessToken(object):
 
     def get_token(self):
         conn = self.http_client()
-        request = conn.request(
+        conn.request(
             "POST", "/oauth/token", self.payload(), self.headers
         )
 
@@ -61,7 +61,7 @@ class AccessToken(object):
 
     def blacklist_token(self, access_token):
         """TBD after doing JTI stuff."""
-        t = TokenOperations(self.get_token())
+        TokenOperations(self.get_token())
 
         """payload = {
           "aud": "https://{domain}/api/v2/".format(

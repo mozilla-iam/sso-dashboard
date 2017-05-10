@@ -81,7 +81,7 @@ class User(object):
     def __is_authorized(self, app):
         if app['application']['display'] == 'False':
             return False
-        elif app['application']['display'] == False:
+        elif not app['application']['display']:
             return False
         elif 'everyone' in app['application']['authorized_groups']:
             return True

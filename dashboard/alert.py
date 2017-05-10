@@ -1,7 +1,6 @@
 """Class for handling user alert logic. Sending and getting."""
 
 from flask_redis import FlaskRedis
-from mockredis import MockRedis
 
 
 class Alert(object):

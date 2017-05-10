@@ -1,4 +1,3 @@
-import hashlib
 import os
 import requests
 
@@ -9,7 +8,7 @@ class User(object):
     def __init__(self, session):
         """Constructor takes user session."""
         self.userinfo = session['userinfo']
-        
+
     def avatar(self):
         """Return url of user avatar from mozillians.org"""
         self.api_url = os.getenv('MOZILLIANS_API_URL', None)

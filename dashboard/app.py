@@ -1,24 +1,19 @@
 import auth
 import config
-import datetime
-import hashlib
 import logging
 import mimetypes
 import os
 import watchtower
 
-from flask import (Flask, abort, render_template, jsonify, session, request, redirect,
+from flask import (Flask, render_template, jsonify, session, request, redirect,
                    send_from_directory)
 from flask_assets import Environment, Bundle
 from flask_secure_headers.core import Secure_Headers
-from werkzeug.exceptions import BadRequest
 
+from vanity import Router
 from user import User
-from alert import Alert
 from s3 import AppFetcher
 from op.yaml_loader import Application
-
-from flask_sse import sse
 
 app = Flask(__name__)
 AppFetcher().sync_config_and_images()
@@ -60,6 +55,10 @@ authentication = auth.OpenIDConnect(
 )
 
 oidc = authentication.auth(app)
+
+# Load proxy router for redirect urls like gmail
+vanity = Router(app_load=Application(), flask_app=app)
+vanity.setup()
 
 # Add secure Headers to satify observatory checks
 
@@ -108,6 +107,7 @@ sh.update(
             }
     }
 )
+
 
 @app.route('/favicon.ico')
 @sh.wrapper()
@@ -166,17 +166,19 @@ def signout():
 def dashboard():
     """Primary dashboard the users will interact with."""
     logger.info("User authenticated proceeding to dashboard.")
+
     AppFetcher().sync_config_and_images()
+
     user = User(session)
-    alerts = Alert(user, app).get()
+
     all_apps = Application().apps
+
     apps = user.apps(all_apps)['apps']
 
     return render_template(
         'dashboard.html',
         user=user,
-        apps=apps,
-        alerts=alerts
+        apps=apps
     )
 
 
@@ -237,39 +239,6 @@ def contribute_lower():
 
     return jsonify(data)
 
-vanity = Application().vanity_urls()
-logger.info("Vanity URLs loaded for {num} apps.".format(num=len(vanity)))
-logger.info(
-    "Count of apps by OP is {stats}".format(stats=Application().stats())
-)
-
-
-def redirect_url():
-    vanity_url = '/' + request.url.split('/')[3]
-
-    logger.info("Attempting to match {url}".format(url=vanity_url))
-
-    for match in vanity:
-        if match.keys()[0] == vanity_url:
-            logger.info(
-                "Vanity URL found for {app}".format(app=match[vanity_url])
-            )
-            return redirect(match[vanity_url], code=301)
-        else:
-            pass
-
-    logger.info(
-        "Vanity URL could not be matched for {app}".format(app=vanity_url)
-    )
-
-
-for url in vanity:
-    try:
-        app.add_url_rule(url.keys()[0], url.keys()[0], redirect_url)
-        app.add_url_rule(url.keys()[0] + "/", url.keys()[0] + "/", redirect_url)
-    except Exception as e:
-        logger.error(e)
-        logger.info("Could not create vanity URL for {app}".format(app=url))
 
 if __name__ == '__main__':
     app.run()

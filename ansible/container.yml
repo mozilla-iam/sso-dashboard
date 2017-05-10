@@ -18,8 +18,6 @@ services:
       - OIDC_CLIENT_ID={{ lookup('credstash', 'sso-dashboard.oidc_client_id', region='us-east-1', app='sso-dashboard') }}
       - OIDC_CLIENT_SECRET={{ lookup('credstash', 'sso-dashboard.oidc_client_secret', region='us-east-1', app='sso-dashboard') }}
       - SERVER_NAME={{ lookup('credstash', 'sso-dashboard.server_name', region='us-east-1', app='sso-dashboard') }}
-      - PERMANENT_SESSION=86400
-      - PERMANENT_SESSION_LIFETIME=86400
       - REDIS_URL=redis://redis:6379
       - S3_BUCKET={{ lookup('credstash', 'sso-dashboard.s3_bucket', region='us-east-1', app='sso-dashboard') }}
       - MOZILLIANS_API_URL=https://mozillians.org/api/v2/users/
@@ -38,8 +36,6 @@ services:
         - OIDC_DOMAIN={{ lookup('credstash', 'sso-dashboard.oidc_domain', region='us-east-1', app='sso-dashboard') }}
         - OIDC_CLIENT_ID={{ lookup('credstash', 'sso-dashboard.oidc_client_id', region='us-east-1', app='sso-dashboard') }}
         - OIDC_CLIENT_SECRET={{ lookup('credstash', 'sso-dashboard.oidc_client_secret', region='us-east-1', app='sso-dashboard') }}
-        - PERMANENT_SESSION=600
-        - PERMANENT_SESSION_LIFETIME=900
         - REDIS_URL=redis://redis:6379
         - MOZILLIANS_API_URL=https://mozillians.org/api/v2/users/
         - MOZILLIANS_API_KEY={{ lookup('credstash', 'sso-dashboard.mozillians_api_key', region='us-east-1', app='sso-dashboard') }}

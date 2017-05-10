@@ -38,7 +38,7 @@ class OpenIDConnect(object):
     def auth(self, app):
         o = OIDCAuthentication(
             app,
-            provider_configuration_info=self.provider_info(),
+            issuer='https://' + self.provider_info()['issuer'],
             client_registration_info=self.client_info()
         )
         """ Patch rewrites redirect_uri to only

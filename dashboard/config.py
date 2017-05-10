@@ -11,8 +11,8 @@ class Config(object):
     CSRF_ENABLED = True
     SECRET_KEY = os.environ['SECRET_KEY']
     SERVER_NAME = os.environ['SERVER_NAME']
-    PERMANENT_SESSION = os.environ['PERMANENT_SESSION']
-    PERMANENT_SESSION_LIFETIME = int(os.environ['PERMANENT_SESSION_LIFETIME'])
+    #PERMANENT_SESSION = os.environ['PERMANENT_SESSION']
+    #PERMANENT_SESSION_LIFETIME = int(os.environ['PERMANENT_SESSION_LIFETIME'])
     REDIS_URL = os.environ['REDIS_URL']
     MOZILLIANS_API_URL = os.getenv('MOZILLIANS_API_URL', None)
     MOZILLIANS_API_KEY = os.getenv('MOZILLIANS_API_KEY', None)

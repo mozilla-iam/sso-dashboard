@@ -530,6 +530,30 @@ footer {
                 margin-left: 0;
             }
         }
+
+        .youtube {
+            width: 520px;
+            height: 293px;
+
+            img {
+                display: block;
+                max-width: 100%;
+            }
+        }
+    }
+}
+
+@media all and (max-width: 991px) {
+
+    .p404 {
+
+        .section {
+
+            .youtube {
+                width: 340px;
+                height: 191px;
+            }
+        }
     }
 }
 
@@ -560,6 +584,11 @@ footer {
 
             .video {
                 margin-top: 20px;
+                text-align: center;
+
+                .youtube {
+                    margin: auto;
+                }
 
                 iframe {
                     width: 100%;
@@ -838,6 +867,11 @@ footer {
                     margin-left: auto;
                     margin-top: 5px;
                 }
+            }
+
+            .youtube {
+                width: 280px;
+                height: 163px;
             }
         }
     }

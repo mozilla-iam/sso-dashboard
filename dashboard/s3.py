@@ -36,7 +36,6 @@ class AppFetcher(object):
         )
 
         for image in images['Contents']:
-            print image['Key']
             this_image = self.client.get_object(
                 Bucket=self.s3_bucket,
                 Key=image['Key']

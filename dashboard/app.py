@@ -7,8 +7,8 @@ import mimetypes
 import os
 import watchtower
 
-from flask import (Flask, abort, render_template, jsonify, session, request, redirect,
-                   send_from_directory)
+from flask import (Flask, abort, render_template, jsonify, make_response, session,
+                   request, redirect, send_from_directory)
 from flask_assets import Environment, Bundle
 from flask_secure_headers.core import Secure_Headers
 from werkzeug.exceptions import BadRequest
@@ -310,7 +310,12 @@ def redirect_url():
             logger.info(
                 "Vanity URL found for {app}".format(app=match[vanity_url])
             )
-            return redirect(match[vanity_url], code=301)
+
+            resp = make_response(redirect(match[vanity_url], code=301))
+            resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+            resp.headers['Expires'] = '-1'
+
+            return resp
         else:
             pass
 

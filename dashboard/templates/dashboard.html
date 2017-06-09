@@ -77,17 +77,4 @@
   </div>
 {% endblock %}
 
-{% block extra_js %}
-  <!-- Temporarily removed until alert center comes online
-  <script>
-    var source = new EventSource("/stream?channel={{ user.userhash() }}");
-    source.addEventListener('alert', function(event) {
-        var data = JSON.parse(event.data);
-        $(".messages").append("<li class=\"security-alert\">" + " <div class=\"message\">" + "Security Alert Logged at " + (new Date().getHours()) + ":" + (new Date().getMinutes()) + " : " + data["message"] + "</div></li>");
-    }, false);
-    source.addEventListener('error', function(event) {
-        console.log("Failed to connect to event stream. Is Redis running?");
-    }, false);
-  </script>
-  -->
-{% endblock %}
+

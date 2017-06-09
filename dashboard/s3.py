@@ -89,14 +89,25 @@ class AppFetcher(object):
         c.close()
         self.__update_etag(config['ETag'])
 
+    def __touch(self):
+        fname = 'app.py'
+        fhandle = open(fname, 'a')
+        try:
+            os.utime(fname, None)
+        finally:
+            fhandle.close()
+
     def sync_config_and_images(self):
         try:
             if self.is_updated():
                 print("Config file is updated fetching new config.")
                 self.__get_images()
                 self.__get_config()
+                # Touch app.py to force a gunicorn reload
+                self.__touch()
+                return True
             else:
-                pass
+                return False
                 # Do nothing
         except Exception as e:
             print(

@@ -21,16 +21,17 @@
         </div>
 
         <div class="mui-col-md-6 mui-col-lg-8 video">
-          <iframe width="520" height="293" src="https://www.youtube.com/embed/Ybvwh0reiMU" frameborder="0" allowfullscreen
-          class="mui--hidden-xs mui--hidden-sm mui--hidden-md"></iframe>
-          <iframe width="290" height="163" src="https://www.youtube.com/embed/Ybvwh0reiMU" frameborder="0" allowfullscreen
-          class="mui--hidden-md mui--hidden-lg mui--hidden-xl"></iframe>
-          <iframe width="340" height="191" src="https://www.youtube.com/embed/Ybvwh0reiMU" frameborder="0" allowfullscreen
-          class="mui--visible-md-block"></iframe>
+          <div class="youtube" data-id="Ybvwh0reiMU">
+            <img src="/static/img/404.jpg" alt="404">
+          </div>
         </div>
       </div>
 
       </div>
     </div>
   </div>
+{% endblock %}
+
+{% block extra_js %}
+  <script type="text/javascript" src="/static/js/404.js"></script>
 {% endblock %}

@@ -1,19 +1,17 @@
-from flask import Flask, render_template, jsonify, session, request, redirect, send_from_directory
-from flask_assets import Environment, Bundle
-
-from flask_secure_headers.core import Secure_Headers
-from werkzeug.exceptions import BadRequest
-
-import os
-import hashlib
-import datetime
-import mimetypes
-
-import watchtower
-import logging
-
-import config
 import auth
+import config
+
+import logging
+import mimetypes
+import os
+import vanity
+import watchtower
+
+from flask import (Flask, abort, render_template, jsonify, session,
+                   request, redirect, send_from_directory)
+from flask_assets import Environment, Bundle
+from flask_secure_headers.core import Secure_Headers
+
 
 from user import User
 from alert import Alert
@@ -63,44 +61,40 @@ authentication = auth.OpenIDConnect(
 
 oidc = authentication.auth(app)
 
+vanity_router = vanity.Router(app=app).setup()
 # Add secure Headers to satify observatory checks
 
 sh = Secure_Headers()
 sh.update(
     {
         'CSP': {
-            'default-src':
-                [
-                    'self',
-                ],
-            'script-src':
-                [
-                    'self',
-                    'data:',
-                    'ajax.googleapis.com',
-                    'fonts.googleapis.com',
-                    'https://*.googletagmanager.com',
-                    'https://tagmanager.google.com',
-                    'https://*.google-analytics.com'
-                ],
-            'style-src':
-                [
-                    'self',
-                    'ajax.googleapis.com',
-                    'fonts.googleapis.com',
-                ],
-            'img-src':
-                [
-                    'self',
-                    'https://mozillians.org',
-                    'https://*.google-analytics.com'
-                ],
-            'font-src':
-                [
-                    'self',
-                    'fonts.googleapis.com',
-                    'fonts.gstatic.com',
-                ]
+            'default-src': [
+                'self',
+            ],
+            'script-src': [
+                'self',
+                'data:',
+                'ajax.googleapis.com',
+                'fonts.googleapis.com',
+                'https://*.googletagmanager.com',
+                'https://tagmanager.google.com',
+                'https://*.google-analytics.com'
+            ],
+            'style-src': [
+                'self',
+                'ajax.googleapis.com',
+                'fonts.googleapis.com',
+            ],
+            'img-src': [
+                'self',
+                'https://mozillians.org',
+                'https://*.google-analytics.com'
+            ],
+            'font-src': [
+                'self',
+                'fonts.googleapis.com',
+                'fonts.gstatic.com',
+            ]
         }
     }
 )
@@ -124,7 +118,7 @@ app.register_blueprint(sse, url_prefix='/stream')
 def check_access():
     """Users can only view their own security alerts."""
     user = User(session)
-    if request.args.get("channel") == Userhash():
+    if request.args.get("channel") == user.hash():
         pass
     else:
         abort(403)
@@ -150,6 +144,7 @@ def page_not_found(error):
             "A 404 has been generated for {route}".format(route=request.url)
         )
     return render_template('404.html'), 404
+
 
 @app.route('/logout')
 @oidc.oidc_logout
@@ -239,7 +234,7 @@ def contribute_lower():
         "bugs": {
             "list": "https://github.com/mozilla-iam/sso-dashboard/issues",
             "report": "https://github.com/mozilla-iam/sso-dashboard/issues/new",
-            "mentored": "https://github.com/mozilla-iam/sso-dashboard/issues?q=is%3Aissue+is%3Aclosed"
+            "mentored": "https://github.com/mozilla-iam/sso-dashboard/issues?q=is%3Aissue+is%3Aclosed"  # noqa
         },
         "urls": {
             "prod": "https://sso.mozilla.com/",
@@ -256,81 +251,6 @@ def contribute_lower():
     }
 
     return jsonify(data)
-
-
-@app.route('/alert', methods=['POST'])
-@sh.wrapper()
-def publish_alert():
-    """
-    Takes JSON post with user e-mail to alert.
-    Minimum fields are email and message in the form
-    of a dict.
-
-    Example:
-        {
-          "user": {"email": "andrewkrug@gmail.com"},
-            "message": "this is a security alert"
-        }
-    """
-    try:
-        content = request.json
-        # Send a real time event to the user
-        m = hashlib.md5()
-        m.update(content['user']['email'])
-        channel = m.hexdigest()
-
-        sse.publish(
-            {"message": content['message']},
-            type="alert",
-            channel=channel
-        )
-
-        permanent_message = "Security Alert Logged at {date} : {message}".format(
-            date=datetime.datetime.now(),
-            message=content['message']
-        )
-        # Store the event in redis keyed to the users hashed e-mail
-
-        Alert().set(channel, permanent_message)
-
-        return jsonify({'status': 'success'})
-    except:
-        raise BadRequest('POST does not contain e-mail and message')
-        return jsonify({'status': 'fail'})
-
-
-vanity = Application().vanity_urls()
-logger.info("Vanity URLs loaded for {num} apps.".format(num=len(vanity)))
-logger.info(
-    "Count of apps by OP is {stats}".format(stats=Application().stats())
-)
-
-
-def redirect_url():
-    vanity_url = '/' + request.url.split('/')[3]
-
-    logger.info("Attempting to match {url}".format(url=vanity_url))
-
-    for match in vanity:
-        if match.keys()[0] == vanity_url:
-            logger.info(
-                "Vanity URL found for {app}".format(app=match[vanity_url])
-            )
-            return redirect(match[vanity_url], code=301)
-        else:
-            pass
-
-    logger.info(
-        "Vanity URL could not be matched for {app}".format(app=vanity_url)
-    )
-
-for url in vanity:
-    try:
-        app.add_url_rule(url.keys()[0], url.keys()[0], redirect_url)
-        app.add_url_rule(url.keys()[0] + "/", url.keys()[0] + "/", redirect_url)
-    except Exception as e:
-        logger.error(e)
-        logger.info("Could not create vanity URL for {app}".format(app=url))
 
 if __name__ == '__main__':
     app.run()

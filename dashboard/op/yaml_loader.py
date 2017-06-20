@@ -2,6 +2,8 @@
 
 import os
 import yaml
+import operator
+
 
 class Application(object):
     def __init__(self):
@@ -30,7 +32,12 @@ class Application(object):
             )
 
     def __alphabetize(self):
-        self.apps['apps'] = sorted(self.apps['apps'])
+        try:
+            self.apps['apps'] = sorted(
+                self.apps['apps'], key=operator.itemgetter(1)
+            )
+        except Exception as e:
+            print(e)
 
     def __find(self, name, path):
         for root, dirs, files in os.walk(path):
@@ -60,7 +67,7 @@ class Application(object):
                 okta = okta + 1
             if app['application']['op'] == 'auth0':
                 auth0 = auth0 + 1
-        return { 'auth0': auth0, 'okta': okta }
+        return {'auth0': auth0, 'okta': okta}
 
     def vanity_urls(self):
         redirects = []
@@ -70,6 +77,6 @@ class Application(object):
                     redirects.append(
                         {
                             redirect: app['application']['url']
-                         }
+                        }
                     )
         return redirects

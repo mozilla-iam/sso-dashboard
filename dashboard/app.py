@@ -147,7 +147,7 @@ def home():
 # See also https://github.com/mozilla/iam-project-backlog/issues/161
 @app.route('/claim')
 @sh.wrapper()
-def home():
+def claim():
     """ Show the user schema - this path is refered to by our OIDC Claim namespace,
     i.e.: https://sso.mozilla.com/claim/*
     """

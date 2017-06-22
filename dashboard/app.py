@@ -88,6 +88,7 @@ sh.update(
             'img-src': [
                 'self',
                 'https://mozillians.org',
+                'https://media.mozillians.org',
                 'https://*.google-analytics.com'
             ],
             'font-src': [
@@ -135,6 +136,21 @@ def favicon():
 @sh.wrapper()
 def home():
     return redirect('/dashboard', code=302)
+
+
+# XXX This needs to load the schema from a better location
+# See also https://github.com/mozilla/iam-project-backlog/issues/161
+@app.route('/claim')
+@sh.wrapper()
+def claim():
+    """ Show the user schema - this path is refered to by our OIDC Claim namespace,
+    i.e.: https://sso.mozilla.com/claim/*
+    """
+
+    return redirect(
+            'https://github.com/mozilla-iam/cis/blob/master/cis/schema.json',
+            code=302
+            )
 
 
 @app.errorhandler(404)

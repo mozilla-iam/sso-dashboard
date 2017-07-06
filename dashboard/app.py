@@ -148,9 +148,9 @@ def claim():
     """
 
     return redirect(
-            'https://github.com/mozilla-iam/cis/blob/master/cis/schema.json',
-            code=302
-            )
+        'https://github.com/mozilla-iam/cis/blob/master/cis/schema.json',
+        code=302
+    )
 
 
 @app.errorhandler(404)
@@ -267,6 +267,7 @@ def contribute_lower():
     }
 
     return jsonify(data)
+
 
 if __name__ == '__main__':
     app.run()

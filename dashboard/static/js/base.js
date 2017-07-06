@@ -123,4 +123,14 @@ $(document).ready(function(){
         $('.user-menu').hide();
         $('.menu').removeClass('enabled');
     });
+
+    // Nightly alert
+    if (window.navigator.userAgent.indexOf('Firefox') < 0) {
+        $('#fxalert').show();
+    }
+
+    // Alerts close button
+    $('.closebtn').click(function() {
+        $(this).parent('.alert').slideUp();
+    });
 });

@@ -63,6 +63,16 @@
   </div>
 {% endblock %}
 
+{% block messages %}
+  <div class="messages">
+    <div class="alert alert-info" role="alert" id="fxalert">
+      <img src="/static/img/alert-white.svg" alt="alert-info"><strong>Want to help test Firefox?</strong> Give Firefox Nightly a try!
+      <span class="closebtn">&times;</span>
+      <a href="https://nightly.mozilla.org/" class="btn-alert" target="_blank"><img src="/static/img/arrow-right-white.svg" alt="alert-info"> Download</a>
+    </div>
+  </div>
+{% endblock %}
+
 {% block content %}
   <div id="app-grid" class="mui-row app-grid">
     {% for app in apps %}
@@ -76,5 +86,3 @@
     {% endfor %}
   </div>
 {% endblock %}
-
-

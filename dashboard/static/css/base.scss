@@ -231,17 +231,74 @@ body {
     visibility: hidden;
 }
 
+.messages {
+    margin-top: $appbar-height;
+    background-color: $bggray;
+
+    .alert {
+        padding: 18px 18px 18px 170px;
+        text-align: center;
+        display: none;
+
+        &.alert-info {
+            background-color: #538195;
+            color: white;
+        }
+
+        img {
+            display: inline-block;
+            margin-right: 15px;
+        }
+
+        .btn-alert {
+            padding: 5px 10px;
+            margin-top: -5px;
+            background-color: #7499a9;
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            float: right;
+        }
+
+        .closebtn {
+            margin-left: 15px;
+            color: white;
+            opacity: .8;
+            font-weight: bold;
+            float: right;
+            font-size: 22px;
+            line-height: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .closebtn:hover {
+            opacity: 1;
+        }
+
+        @media all and (max-width: 767px) {
+            visibility: hidden;
+            padding: 0;
+            height: 0;
+        }
+    }
+}
+
 .content {
     background-color: $bggray;
     min-height: 100%;
     padding: 20px;
-    margin-top: $appbar-height;
 
     .app-grid {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
+
+        @media all and (max-width: 767px) {
+            width: 100%;
+            margin: auto;
+        }
 
         .app-tile {
             margin: 5px 10px 15px;
@@ -745,9 +802,12 @@ footer {
         }
     }
 
+    .messages {
+        margin-top: $appbar-height;
+    }
+
     .content {
         padding: 10px;
-        margin-top: $appbar-height;
 
         .app-grid {
 

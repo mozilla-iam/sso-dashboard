@@ -1,6 +1,7 @@
 from op import yaml_loader
 from flask import make_response, redirect, request
 
+
 class Router(object):
     def __init__(self, app):
         self.app = app
@@ -20,7 +21,8 @@ class Router(object):
         for match in self.url_list:
             if match.keys()[0] == vanity_url:
                 resp = make_response(redirect(match[vanity_url], code=301))
-                resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+                resp.headers['Cache-Control'] = ('no-store, no-cache, must-revalidate, '
+                                                 'post-check=0, pre-check=0, max-age=0')
                 resp.headers['Expires'] = '-1'
                 return resp
             else:

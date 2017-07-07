@@ -11,17 +11,17 @@ files:
 hooks:
   BeforeInstall:
     - location: scripts/prep-deploy.sh
-      timeout: 30
+      timeout: 120
       runas: root
 
   AfterInstall:
     - location: scripts/build-environment.sh
-      timeout: 300
+      timeout: 600
       runas: root
 
   ApplicationStart:
     - location: scripts/post-deploy.sh
-      timeout: 60
+      timeout: 120
       runas: root
 
   ValidateService:

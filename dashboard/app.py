@@ -89,7 +89,8 @@ sh.update(
                 'self',
                 'https://mozillians.org',
                 'https://media.mozillians.org',
-                'https://*.google-analytics.com'
+                'https://*.google-analytics.com',
+                'https://*.gravatar.com'
             ],
             'font-src': [
                 'self',

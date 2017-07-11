@@ -7,6 +7,7 @@ phases:
       - echo Creating archive of python code.
       - echo installing ansible-container
       - pip install install ansible-container[docker]
+      - cd ansible/
       - ansible-container build
   post_build:
     commands:

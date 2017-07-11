@@ -1,5 +1,4 @@
 boto3
-python-dotenv
 flask
 flask_assets
 Jinja2
@@ -16,9 +15,7 @@ rq
 jsmin
 cssmin
 pytest-flask
-python-dotenv
 pyjwt
-dotenv
 cryptography
 pycrypto
 ecdsa
@@ -29,3 +26,5 @@ auth0-python
 flask-redis
 flask-secure-headers
 mockredis
+watchtower
+requests

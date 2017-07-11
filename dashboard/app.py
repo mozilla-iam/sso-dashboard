@@ -14,7 +14,6 @@ from flask_secure_headers.core import Secure_Headers
 
 
 from user import User
-from alert import Alert
 from s3 import AppFetcher
 from op.yaml_loader import Application
 
@@ -25,17 +24,17 @@ AppFetcher().sync_config_and_images()
 
 logger = logging.getLogger(__name__)
 
-if os.environ.get('ENVIRONMENT') == 'Production':
+if os.getenv('ENVIRONMENT', None) == 'Development':
+    # Only log flask debug in development mode.
+    handler = logging.StreamHandler()
+    logging.getLogger("werkzeug").addHandler(handler)
+    app.config.from_object(config.DevelopmentConfig())
+else:
     # Only cloudwatch log when app is in production mode.
     handler = watchtower.CloudWatchLogHandler()
     logger.info("Getting production config")
     app.logger.addHandler(handler)
     app.config.from_object(config.ProductionConfig())
-elif os.environ.get('ENVIRONMENT') == 'Development':
-    # Only log flask debug in development mode.
-    handler = logging.StreamHandler()
-    logging.getLogger("werkzeug").addHandler(handler)
-    app.config.from_object(config.DevelopmentConfig())
 
 if os.environ.get('LOGGING') == 'True':
     logging.basicConfig(level=logging.INFO)
@@ -200,7 +199,6 @@ def dashboard():
     logger.info("User authenticated proceeding to dashboard.")
     AppFetcher().sync_config_and_images()
     user = User(session)
-    alerts = Alert(user, app).get()
     all_apps = Application().apps
     apps = user.apps(all_apps)['apps']
 
@@ -208,7 +206,7 @@ def dashboard():
         'dashboard.html',
         user=user,
         apps=apps,
-        alerts=alerts
+        alerts=None
     )
 
 

@@ -14,7 +14,6 @@ class Config(object):
     SERVER_NAME = get_secret('sso-dashboard.server_name', {'app': 'sso-dashboard'})
     PERMANENT_SESSION = get_secret('sso-dashboard.secret_key', {'app': 'sso-dashboard'})
     PERMANENT_SESSION_LIFETIME = 86400
-    REDIS_URL = get_secret('sso-dashboard.redis_url', {'app': 'sso-dashboard'})
     MOZILLIANS_API_URL = 'https://mozillians.org/api/v2/users/'
     MOZILLIANS_API_KEY = get_secret('sso-dashboard.mozillians_api_key', {'app': 'sso-dashboard'})
     SESSION_COOKIE_HTTPONLY = True

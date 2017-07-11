@@ -16,11 +16,4 @@ services:
     roles:
       - dashboard
     command: ['/usr/bin/dumb-init', '/usr/bin/start.sh']
-  redis:
-    from: redis
-    expose:
-      - "6379/tcp"
-    ports:
-      - "6379:6379"
-    command: ['redis-server']
 registries: {}

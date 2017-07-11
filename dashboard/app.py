@@ -14,7 +14,6 @@ from flask_secure_headers.core import Secure_Headers
 
 
 from user import User
-from alert import Alert
 from s3 import AppFetcher
 from op.yaml_loader import Application
 
@@ -200,7 +199,6 @@ def dashboard():
     logger.info("User authenticated proceeding to dashboard.")
     AppFetcher().sync_config_and_images()
     user = User(session)
-    alerts = Alert(user, app).get()
     all_apps = Application().apps
     apps = user.apps(all_apps)['apps']
 
@@ -208,7 +206,7 @@ def dashboard():
         'dashboard.html',
         user=user,
         apps=apps,
-        alerts=alerts
+        alerts=None
     )
 
 

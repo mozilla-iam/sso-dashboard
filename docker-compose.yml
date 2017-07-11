@@ -6,8 +6,6 @@ services:
     ports:
      - "8000:8000"
      - "80:80"
-    links:
-     - redis
     environment:
      - ENVIRONMENT=Production
      - AWS_DEFAULT_REGION=us-west-2

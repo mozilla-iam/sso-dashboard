@@ -1,7 +1,10 @@
-version: "1"
+version: "2"
+settings:
+  volumes:
+    ../:/dashboard
 services:
   web:
-    image: centos:7
+    from: centos:7
     expose:
       - "8000/tcp"
     ports:
@@ -26,6 +29,8 @@ services:
       - MOZILLIANS_API_KEY={{ lookup('credstash', 'sso-dashboard.mozillians_api_key', region='us-east-1', app='sso-dashboard') }}
       - DEFAULT_AVATAR=/static/img/user.svg
     working_dir: '/sso-dashboard'
+    roles:
+      - dashboard
     command: ['/usr/bin/dumb-init', '/usr/bin/start.sh']
     dev_overrides:
       environment:
@@ -45,7 +50,7 @@ services:
         - MOZILLIANS_API_KEY={{ lookup('credstash', 'sso-dashboard.mozillians_api_key', region='us-east-1', app='sso-dashboard') }}
         - DEFAULT_AVATAR=/static/img/user.svg
   redis:
-    image: redis
+    from: redis
     expose:
       - "6379/tcp"
     ports:

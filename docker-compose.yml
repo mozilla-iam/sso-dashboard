@@ -13,3 +13,7 @@ services:
      - AWS_DEFAULT_REGION=us-west-2
   redis:
     image: redis
+    expose:
+      - "6379/tcp"
+    ports:
+      - "6379:6379"

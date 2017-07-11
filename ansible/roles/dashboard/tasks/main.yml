@@ -1,13 +1,5 @@
-- hosts: ansible-container
-  tasks:
-    - name: Install credstash depends
-      yum: name=gcc,libffi-devel,python-devel,openssl-devel state=latest
+---
 
-    - name: Force install of builder requirements
-      pip:
-        requirements: requirements.txt
-
-- hosts: web
   tasks:
     - name: Install dumb init
       get_url:
@@ -109,7 +101,6 @@
         owner: flaskapp
         group: nginx
         recurse: yes
-
 
     # Allow nginx directory traversal
     - file:

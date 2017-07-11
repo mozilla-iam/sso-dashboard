@@ -25,17 +25,17 @@ AppFetcher().sync_config_and_images()
 
 logger = logging.getLogger(__name__)
 
-if os.environ.get('ENVIRONMENT') == 'Production':
+if os.getenv('ENVIRONMENT', None) == 'Development':
+    # Only log flask debug in development mode.
+    handler = logging.StreamHandler()
+    logging.getLogger("werkzeug").addHandler(handler)
+    app.config.from_object(config.DevelopmentConfig())
+else:
     # Only cloudwatch log when app is in production mode.
     handler = watchtower.CloudWatchLogHandler()
     logger.info("Getting production config")
     app.logger.addHandler(handler)
     app.config.from_object(config.ProductionConfig())
-elif os.environ.get('ENVIRONMENT') == 'Development':
-    # Only log flask debug in development mode.
-    handler = logging.StreamHandler()
-    logging.getLogger("werkzeug").addHandler(handler)
-    app.config.from_object(config.DevelopmentConfig())
 
 if os.environ.get('LOGGING') == 'True':
     logging.basicConfig(level=logging.INFO)

@@ -1,0 +1,15 @@
+version: "2"
+services:
+  web:
+    image: 656532927350.dkr.ecr.us-west-2.amazonaws.com/sso-dashboard:latest
+    command: python app.py
+    ports:
+     - "8000:8000"
+     - "80:80"
+    links:
+     - redis
+    environment:
+     - ENVIRONMENT=Production
+     - AWS_DEFAULT_REGION=us-west-2
+  redis:
+    image: redis

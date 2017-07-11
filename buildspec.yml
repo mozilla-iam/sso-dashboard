@@ -5,6 +5,9 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Creating archive of python code.
+      - echo installing ansible-container
+      - pip install install ansible-container[docker]
+      - ansible-container build
   post_build:
     commands:
       - echo Build completed on `date`

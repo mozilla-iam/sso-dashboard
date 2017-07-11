@@ -2,4 +2,6 @@
 
 cd /home/ec2-user/app
 
-/usr/local/bin/ansible-container build
+aws ecr get-login --region us-west-2 | bash
+
+/usr/local/bin/docker-compose pull

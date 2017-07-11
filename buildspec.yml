@@ -7,8 +7,7 @@ phases:
       - echo Creating archive of python code.
       - echo installing ansible-container
       - pip install ansible-container[docker]
-      - cd ansible/
-      - ansible-container build --with-volumes ../:/dashboard
+      - cd ansible && ansible-container build --with-volumes ../:/dashboard
   post_build:
     commands:
       - aws ecr get-login --region us-west -2 | bash

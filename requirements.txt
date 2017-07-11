@@ -27,3 +27,4 @@ flask-redis
 flask-secure-headers
 mockredis
 watchtower
+requests

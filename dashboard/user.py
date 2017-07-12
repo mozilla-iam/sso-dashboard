@@ -27,10 +27,9 @@ class User(object):
         try:
             mozillians_response = requests.get(self.api_url, headers=headers,
                                                params=params, timeout=5)
-            response = mozillians_response.json()
-
             if mozillians_response.status_code is not 200:
                 return None
+            response = mozillians_response.json()
         except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
             return None
 

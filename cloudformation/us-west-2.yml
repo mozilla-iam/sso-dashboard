@@ -240,7 +240,7 @@ Resources:
       UnhealthyThresholdCount: 2
       HealthCheckPath: /health
       HealthCheckPort: 80
-      Name: DashboardWebServers
+      Name: DashboardWebServers-1
       Port: 8000
       Protocol: HTTP
       VpcId:
@@ -257,7 +257,7 @@ Resources:
       UnhealthyThresholdCount: 2
       HealthCheckPath: /health
       HealthCheckPort: 80
-      Name: DashboardContentDelivery
+      Name: DashboardContentDelivery-1
       Port: 80
       Protocol: HTTP
       VpcId:

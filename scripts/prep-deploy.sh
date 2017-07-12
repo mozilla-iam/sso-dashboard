@@ -6,8 +6,6 @@ cd /home/ec2-user/app
 /usr/local/bin/docker-compose stop
 /usr/local/bin/docker-compose rm -f
 
-cp /home/ec2-user/app/conf/supervisor-ansible.ini /etc/supervisord.d/
-
 rm -rf /home/ec2-user/app
 
 mkdir -p /home/ec2-user/app

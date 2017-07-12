@@ -1,3 +1,4 @@
 #!/bin/bash
 
-/etc/init.d/supervisord start
+cd /home/ec2-user/app
+/usr/local/bin/docker-compose up -d

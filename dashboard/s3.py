@@ -2,12 +2,13 @@
 
 import os
 import boto3
+from utils import get_secret
 
 
 class AppFetcher(object):
     def __init__(self):
         self.client = boto3.client('s3')
-        self.s3_bucket = os.environ['S3_BUCKET']
+        self.s3_bucket = get_secret('sso-dashboard.s3_bucket', {'app': 'sso-dashboard'})
 
     def is_updated(self):
         """

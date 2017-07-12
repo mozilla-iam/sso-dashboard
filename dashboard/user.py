@@ -1,6 +1,6 @@
 import hashlib
-import os
 import requests
+from utils import get_secret
 
 """User class that governs maniuplation of session['userdata']"""
 
@@ -18,8 +18,8 @@ class User(object):
 
     def avatar(self):
         """Return url of user avatar from mozillians.org"""
-        self.api_url = os.getenv('MOZILLIANS_API_URL', None)
-        self.api_token = os.getenv('MOZILLIANS_API_KEY', None)
+        self.api_url = 'https://mozillians.org/api/v2/users/'
+        self.api_token = get_secret('sso-dashboard.mozillians_api_key', {'app': 'sso-dashboard'})
 
         headers = {'X-API-KEY': self.api_token}
         params = {'email': self.userinfo['email']}

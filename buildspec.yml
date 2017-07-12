@@ -5,9 +5,12 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Creating archive of python code.
+      - echo installing ansible-container
+      - pip install ansible-container[docker]
+      - cd ansible && ansible-container build --with-volumes ../:/dashboard
   post_build:
     commands:
+      - aws ecr get-login --region us-west-2 | bash
+      - docker tag ansible-web ${DOCKER_REPO}:latest
+      - docker push ${DOCKER_REPO}:latest
       - echo Build completed on `date`
-artifacts:
-  files:
-    - '**/*'

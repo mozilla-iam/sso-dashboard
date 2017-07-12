@@ -294,9 +294,9 @@ Resources:
             - git clone https://github.com/mozilla-iam/sso-dashboard.git /home/ec2-user/app
             - cd /home/ec2-user/app
             - git checkout production
+            - sed -i s/656532927350/371522382791/g docker-compose.yml
             - chmod +x /home/ec2-user/app/scripts/*
             - /home/ec2-user/app/scripts/build-environment.sh
-            - sed s/656532927350/371522382791/g docker-compose.yml > /home/ec2-user/app/docker-compose.yml
             - /usr/local/bin/docker-compose up -d
       SecurityGroups:
         - Ref: SSODashboardSecGroup

@@ -11,6 +11,6 @@ phases:
   post_build:
     commands:
       - aws ecr get-login --region us-west-2 | bash
-      - docker tag ansible-web ${DOCKER_REPO}/sso-dashboard:latest
+      - docker tag ansible-web ${DOCKER_REPO}:latest
       - docker push ${DOCKER_REPO}:latest
       - echo Build completed on `date`

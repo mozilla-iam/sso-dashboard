@@ -236,12 +236,29 @@ Resources:
     DependsOn: ApplicationLoadBalancer
     Properties:
       HealthyThresholdCount: 2
-      HealthCheckIntervalSeconds: 30
-      UnhealthyThresholdCount: 5
+      HealthCheckIntervalSeconds: 10
+      UnhealthyThresholdCount: 2
       HealthCheckPath: /health
       HealthCheckPort: 80
       Name: DashboardWebServers
       Port: 8000
+      Protocol: HTTP
+      VpcId:
+        Ref: SSODashboardVPC
+      Tags:
+        - Key: Name
+          Value: SSO-Dashboard
+  ALBTargetGroup1:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    DependsOn: ApplicationLoadBalancer
+    Properties:
+      HealthyThresholdCount: 2
+      HealthCheckIntervalSeconds: 10
+      UnhealthyThresholdCount: 2
+      HealthCheckPath: /health
+      HealthCheckPort: 80
+      Name: DashboardContentDelivery
+      Port: 80
       Protocol: HTTP
       VpcId:
         Ref: SSODashboardVPC
@@ -265,6 +282,7 @@ Resources:
             - yum update -y
             - yum install ruby wget -y
             - cd /home/ec2-user
+            - pip install boto3 --upgrade
             - wget https://aws-codedeploy-$REGION.s3.amazonaws.com/latest/install
             - chmod +x ./install
             - ./install auto
@@ -301,6 +319,7 @@ Resources:
             - yum update -y
             - yum install ruby wget -y
             - cd /home/ec2-user
+            - pip install boto3 --upgrade
             - wget https://aws-codedeploy-$REGION.s3.amazonaws.com/latest/install
             - chmod +x ./install
             - ./install auto
@@ -318,6 +337,20 @@ Resources:
       SecurityGroups:
         - Ref: SSODashboardSecGroup
       InstanceType: "t2.medium"
+  ListenerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      Actions:
+      - Type: forward
+        TargetGroupArn:
+          Ref: ALBTargetGroup1
+      Conditions:
+      - Field: path-pattern
+        Values:
+        - "/static/*"
+      ListenerArn:
+        Ref: ALBHTTPSListener
+      Priority: 1
   SSODashboardASG:
     Type: "AWS::AutoScaling::AutoScalingGroup"
     DependsOn: [ SSODashboardSubnet1, SSODashboardSubnet2, SSODashboardSubnet3 ]
@@ -333,6 +366,7 @@ Resources:
           PropagateAtLaunch: true
       TargetGroupARNs:
          - Ref: ALBTargetGroup
+         - Ref: ALBTargetGroup1
       MaxSize: "5"
       MinSize: "3"
       VPCZoneIdentifier:

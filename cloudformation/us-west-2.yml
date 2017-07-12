@@ -295,9 +295,9 @@ Resources:
             - cd /home/ec2-user/app
             - git checkout production
             - chmod +x /home/ec2-user/app/scripts/*
-            - cp /home/ec2-user/app/conf/supervisor-ansible.ini /etc/supervisord.d/
             - /home/ec2-user/app/scripts/build-environment.sh
-            - service supervisord restart
+            - sed s/656532927350/371522382791/g docker-compose.yml > /home/ec2-user/app/docker-compose.yml
+            - /usr/local/bin/docker-compose up -d
       SecurityGroups:
         - Ref: SSODashboardSecGroup
       InstanceType: "t2.medium"

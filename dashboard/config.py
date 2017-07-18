@@ -21,6 +21,7 @@ class Config(object):
 
 
 class ProductionConfig(Config):
+    PREFERRED_URL_SCHEME = 'https'
     DEBUG = False
 
 
@@ -30,8 +31,10 @@ class StagingConfig(Config):
 
 
 class DevelopmentConfig(Config):
+    PREFERRED_URL_SCHEME = 'https'
     DEVELOPMENT = True
     DEBUG = True
+    SERVER_NAME = 'localhost:5000'
 
 
 class TestingConfig(Config):

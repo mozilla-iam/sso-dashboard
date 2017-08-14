@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#Clean up old images
+docker images -q |xargs docker rmi
+
 cd /home/ec2-user/app
 
 ACCOUNT_ID=`aws sts get-caller-identity | grep Account | cut -d '"' -f4`

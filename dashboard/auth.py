@@ -41,10 +41,5 @@ class OpenIDConnect(object):
             provider_configuration_info=self.provider_info(),
             client_registration_info=self.client_info()
         )
-        """ Patch rewrites redirect_uri to only
-        SSL if running in production or stage. """
-        if os.getenv('ENVIRONMENT', None) == 'Production':
-            redirect_uri = o.client.registration_response['redirect_uris'][0]
-            o.client.registration_response['redirect_uris'][0] = \
-                redirect_uri.replace('http', 'https')
+
         return o

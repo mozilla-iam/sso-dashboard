@@ -7,24 +7,32 @@ import os
 import vanity
 import watchtower
 
-from flask import (Flask, abort, render_template, jsonify, session,
-                   request, redirect, send_from_directory)
-from flask_assets import Environment, Bundle
+from flask import Flask
+from flask import jsonify
+from flask import redirect
+from flask import render_template
+from flask import request
+from flask import send_from_directory
+from flask import session
+
+from flask_assets import Bundle
+from flask_assets import Environment
+
 from flask_secure_headers.core import Secure_Headers
 
-
-from user import User
-from s3 import AppFetcher
 from op.yaml_loader import Application
-
-from flask_sse import sse
+from s3 import AppFetcher
+from user import User
 
 app = Flask(__name__)
 AppFetcher().sync_config_and_images()
 
 logger = logging.getLogger(__name__)
 
-if os.getenv('ENVIRONMENT', None) == 'Development':
+environment = os.getenv('ENVIRONMENT', None)
+logger.info('Loading {environment} environment.'.format(environment=environment))
+
+if environment == 'Development':
     # Only log flask debug in development mode.
     handler = logging.StreamHandler()
     logging.getLogger("werkzeug").addHandler(handler)
@@ -32,7 +40,6 @@ if os.getenv('ENVIRONMENT', None) == 'Development':
 else:
     # Only cloudwatch log when app is in production mode.
     handler = watchtower.CloudWatchLogHandler()
-    logger.info("Getting production config")
     app.logger.addHandler(handler)
     app.config.from_object(config.ProductionConfig())
 
@@ -77,25 +84,39 @@ sh.update(
                 'fonts.googleapis.com',
                 'https://*.googletagmanager.com',
                 'https://tagmanager.google.com',
-                'https://*.google-analytics.com'
+                'https://*.google-analytics.com',
+                'https://cdn.sso.mozilla.com',
+                'https://cdn.sso.allizom.org',
+                'https://dhjrqi6qcwjfu.cloudfront.net'
             ],
             'style-src': [
                 'self',
                 'ajax.googleapis.com',
                 'fonts.googleapis.com',
+                'https://cdn.sso.mozilla.com',
+                'https://cdn.sso.allizom.org',
+                'https://dhjrqi6qcwjfu.cloudfront.net'
             ],
             'img-src': [
                 'self',
                 'https://mozillians.org',
                 'https://media.mozillians.org',
                 'https://cdn.mozillians.org',
+                'https://cdn.sso.mozilla.com',
+                'https://cdn.sso.allizom.org',
                 'https://*.google-analytics.com',
-                'https://*.gravatar.com'
+                'https://*.gravatar.com',
+                'https://cdn.sso.mozilla.com',
+                'https://cdn.sso.allizom.org',
+                'https://dhjrqi6qcwjfu.cloudfront.net'
             ],
             'font-src': [
                 'self',
                 'fonts.googleapis.com',
                 'fonts.gstatic.com',
+                'https://cdn.sso.mozilla.com',
+                'https://cdn.sso.allizom.org',
+                'https://dhjrqi6qcwjfu.cloudfront.net'
             ]
         }
     }
@@ -112,18 +133,11 @@ sh.update(
     }
 )
 
-# Register the flask blueprint for SSE.
-app.register_blueprint(sse, url_prefix='/stream')
-
-
-@sse.before_request
-def check_access():
-    """Users can only view their own security alerts."""
-    user = User(session)
-    if request.args.get("channel") == user.hash():
-        pass
-    else:
-        abort(403)
+sh.update(
+    {
+        'HPKP': {}
+    }
+)
 
 
 @app.route('/favicon.ico')
@@ -144,10 +158,8 @@ def home():
 @app.route('/claim')
 @sh.wrapper()
 def claim():
-    """ Show the user schema - this path is refered to by our OIDC Claim namespace,
-    i.e.: https://sso.mozilla.com/claim/*
-    """
-
+    """Show the user schema - this path is refered to by
+    our OIDC Claim namespace, i.e.: https://sso.mozilla.com/claim/*"""
     return redirect(
         'https://github.com/mozilla-iam/cis/blob/master/cis/schema.json',
         code=302
@@ -205,6 +217,7 @@ def dashboard():
 
     return render_template(
         'dashboard.html',
+        config=app.config,
         user=user,
         apps=apps,
         alerts=None
@@ -217,9 +230,9 @@ def dashboard():
 def info():
     """Return the JSONified user session for debugging."""
     return jsonify(
-        id_token=session['id_token'],
-        access_token=session['access_token'],
-        userinfo=session['userinfo']
+        id_token=session.get('id_token'),
+        access_token=session.get('access_token'),
+        userinfo=session.get('userinfo')
     )
 
 

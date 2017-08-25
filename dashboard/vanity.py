@@ -1,5 +1,8 @@
+from flask import make_response
+from flask import redirect
+from flask import request
+
 from op import yaml_loader
-from flask import make_response, redirect, request
 
 
 class Router(object):

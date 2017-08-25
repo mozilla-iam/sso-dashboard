@@ -1,16 +1,5 @@
-#!/usr/bin/python
-import os
-
 """Class that governs all authentication with open id connect."""
 from flask_pyoidc.flask_pyoidc import OIDCAuthentication
-
-
-class nullOpenIDConnect(object):
-    """Null object for ensuring test cov if new up fails."""
-
-    def __init__(self):
-        """None based versions of OIDC Object."""
-        pass
 
 
 class OpenIDConnect(object):
@@ -22,8 +11,8 @@ class OpenIDConnect(object):
 
     def client_info(self):
         return dict(
-            client_id=self.oidc_config.client_id(),
-            client_secret=self.oidc_config.client_secret()
+            client_id=self.oidc_config.client_id,
+            client_secret=self.oidc_config.client_secret
         )
 
     def provider_info(self):
@@ -43,3 +32,27 @@ class OpenIDConnect(object):
         )
 
         return o
+
+
+class nullOpenIDConnect(OpenIDConnect):
+    """Null object for ensuring test cov if new up fails."""
+
+    def __init__(self, configuration):
+        """None based versions of OIDC Object."""
+        self.oidc_config = None
+
+    def client_info(self):
+        return dict(
+            client_id=None,
+            client_secret=None
+        )
+
+    def provider_info(self):
+        return dict(
+            issuer=None,
+            authorization_endpoint=None,
+            token_endpoint=None,
+            userinfo_endpoint=None,
+        )
+
+

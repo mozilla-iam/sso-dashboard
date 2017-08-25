@@ -79,7 +79,7 @@
       <a href="{{ app['application']['url'] }}" data-id="{{ app['application']['name'] }}"
          class="app-tile" target="_blank">
         <div class="mui--text-center app-logo">
-          <img src="/static/img/logos/{{ app['application']['logo'] }}" alt={{ app['application']['name'] }}>
+          <img src="{{ config.CDN }}/images/{{ app['application']['logo'] }}" alt={{ app['application']['name'] }}>
         </div>
         <h4 class="mui--text-center app-name">{{ app['application']['name'] }}</h4>
       </a>

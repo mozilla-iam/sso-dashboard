@@ -3,6 +3,7 @@ version: 0.1
 phases:
   build:
     commands:
+      - yum install curl-devel -y
       - echo Build started on `date`
       - echo Creating archive of python code.
       - echo installing ansible-container

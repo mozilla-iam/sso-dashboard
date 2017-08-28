@@ -1,5 +1,5 @@
 import requests
-from dashboard.utils import get_secret
+from utils import get_secret
 
 """User class that governs maniuplation of session['userdata']"""
 

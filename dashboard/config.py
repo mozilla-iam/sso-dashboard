@@ -1,5 +1,5 @@
 """Configuration loader for different environments."""
-from dashboard.utils import get_secret
+from utils import get_secret
 
 
 class Config(object):

@@ -25,8 +25,11 @@
    dest: /usr/bin/start.sh
    mode: 0775
 
+- name: Install git
+  yum: name=git state=latest
+
 - name: Install credstash depends
-  yum: name=gcc,libffi-devel,python-devel,openssl-devel state=latest
+  yum: name=gcc,libffi-devel,python-devel,openssl-devel,curl-devel state=latest
 
 - name: Install Pip
   yum: name=python-pip state=latest

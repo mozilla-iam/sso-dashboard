@@ -3,10 +3,10 @@ $(document).ready(function(){
 
     // This is the js that powers the search box
     $(':input[name=filter]').on('input', function() {
-            // Get value just typed into textbox -- see .toLowerCase()
+        // Get value just typed into textbox -- see .toLowerCase()
         var val = this.value.toLowerCase();
 
-            // Find all .user-profile divs
+        // Find all .user-profile divs
         $('#app-grid').find('.app-tile')
             // Find those that should be visible
             .filter(function() {

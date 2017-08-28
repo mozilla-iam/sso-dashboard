@@ -54,5 +54,3 @@ class nullOpenIDConnect(OpenIDConnect):
             token_endpoint=None,
             userinfo_endpoint=None,
         )
-
-

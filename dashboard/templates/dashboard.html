@@ -34,7 +34,7 @@
 
 {% block menu %}
   <div class="menu">
-    {% with avatar = user.avatar(), name = user.first_name() %}
+    {% with avatar = user.avatar, name = user.first_name %}
       <span class="name">{% if name %}{{ name }}{% endif %}</span>
       {% if avatar %}
         <img class="profile-icon" src="{{ avatar }}">

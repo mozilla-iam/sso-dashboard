@@ -1,11 +1,6 @@
-import auth
-import config
-
 import logging
 import mimetypes
 import os
-import vanity
-import watchtower
 
 from flask import Flask
 from flask import jsonify
@@ -14,37 +9,25 @@ from flask import render_template
 from flask import request
 from flask import send_from_directory
 from flask import session
-
 from flask_assets import Bundle
 from flask_assets import Environment
-
 from flask_secure_headers.core import Secure_Headers
 
+import auth
+import config
+import vanity
+from models.user import User
 from op.yaml_loader import Application
 from s3 import AppFetcher
-from user import User
 
 app = Flask(__name__)
 AppFetcher().sync_config_and_images()
 
 logger = logging.getLogger(__name__)
+logging.getLogger("werkzeug").addHandler(logging.StreamHandler())
+logging.basicConfig(level=logging.INFO)
 
-environment = os.getenv('ENVIRONMENT', None)
-logger.info('Loading {environment} environment.'.format(environment=environment))
-
-if environment == 'Development':
-    # Only log flask debug in development mode.
-    handler = logging.StreamHandler()
-    logging.getLogger("werkzeug").addHandler(handler)
-    app.config.from_object(config.DevelopmentConfig())
-else:
-    # Only cloudwatch log when app is in production mode.
-    handler = watchtower.CloudWatchLogHandler()
-    app.logger.addHandler(handler)
-    app.config.from_object(config.ProductionConfig())
-
-if os.environ.get('LOGGING') == 'True':
-    logging.basicConfig(level=logging.INFO)
+app.config.from_object(config.Config(app).settings)
 
 assets = Environment(app)
 
@@ -211,9 +194,8 @@ def dashboard():
     """Primary dashboard the users will interact with."""
     logger.info("User authenticated proceeding to dashboard.")
     AppFetcher().sync_config_and_images()
-    user = User(session)
-    all_apps = Application().apps
-    apps = user.apps(all_apps)['apps']
+    user = User(session, config.Config(app).settings)
+    apps = user.apps(Application().apps)
 
     return render_template(
         'dashboard.html',

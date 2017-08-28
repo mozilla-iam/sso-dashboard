@@ -1,7 +1,7 @@
 import json
 import os
 
-from dashboard import user
+from dashboard.models import user
 
 
 class TestUser(object):
@@ -20,14 +20,14 @@ class TestUser(object):
 
         }
 
-        self.u = user.User(session=self.session_fixture)
+        self.u = user.User(session=self.session_fixture, app_config=None)
         self.u.api_token = 'foo'
 
     def test_object_init(self):
         assert self.u is not None
 
     def test_avatar(self):
-        avatar = self.u.avatar()
+        avatar = self.u.avatar
         assert avatar is None
 
     def test_parsing_groups(self):
@@ -35,8 +35,8 @@ class TestUser(object):
         assert len(groups) > 0
 
     def test_user_name(self):
-        f_name = self.u.first_name()
-        l_name = self.u.last_name()
+        f_name = self.u.first_name
+        l_name = self.u.last_name
 
         assert f_name == 'Andrew'
         assert l_name == 'Krug'
@@ -45,4 +45,5 @@ class TestUser(object):
         assert len(self.u.user_identifiers()) == 2
 
     def test_apps(self):
-        assert self.u.apps(self.good_apps_list)
+        apps = self.u.apps(self.good_apps_list)
+        assert apps == []

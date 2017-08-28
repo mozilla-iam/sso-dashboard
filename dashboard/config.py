@@ -1,8 +1,29 @@
 """Configuration loader for different environments."""
+import os
+import watchtower
+
 from utils import get_secret
 
 
 class Config(object):
+    def __init__(self, app):
+        self.app = app
+        self.environment = os.environ.get('ENVIRONMENT')
+        self.settings = self._init_env()
+
+    def _init_env(self):
+        if self.environment == 'Production':
+            self.app.logger.addHandler(watchtower.CloudWatchLogHandler())
+            return ProductionConfig()
+        elif self.environment == 'Development':
+            return DevelopmentConfig()
+        elif self.environment == 'Testing':
+            return TestingConfig()
+        else:
+            return DevelopmentConfig()
+
+
+class DefaultConfig(object):
     """Defaults for the configuration objects."""
     DEBUG = True
     TESTING = False
@@ -22,17 +43,17 @@ class Config(object):
     CDN = 'https://cdn.{SERVER_NAME}'.format(SERVER_NAME=SERVER_NAME)
 
 
-class ProductionConfig(Config):
+class ProductionConfig(DefaultConfig):
     PREFERRED_URL_SCHEME = 'https'
     DEBUG = False
 
 
-class StagingConfig(Config):
+class StagingConfig(DefaultConfig):
     DEVELOPMENT = True
     DEBUG = True
 
 
-class DevelopmentConfig(Config):
+class DevelopmentConfig(DefaultConfig):
     PREFERRED_URL_SCHEME = 'http'
     DEVELOPMENT = True
     DEBUG = True
@@ -41,7 +62,7 @@ class DevelopmentConfig(Config):
     CDN = 'https://cdn.sso.allizom.org'
 
 
-class TestingConfig(Config):
+class TestingConfig(DefaultConfig):
     TESTING = True
 
 

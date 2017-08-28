@@ -11,7 +11,6 @@ env:
   - sso-dashboard.oidc_domain='foo'
   - sso-dashboard.oidc_client_id='foo'
   - sso-dashboard.oidc_client_secret='foo'
-
 before_install:
   - pip install flake8
   - flake8 dashboard

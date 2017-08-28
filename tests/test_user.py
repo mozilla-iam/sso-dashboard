@@ -5,7 +5,7 @@ from dashboard import user
 
 
 class TestUser(object):
-    def __init__(self):
+    def setup(self):
         self.fixture_file = os.path.join(
             os.path.abspath(
                 os.path.dirname(__file__)
@@ -25,9 +25,6 @@ class TestUser(object):
 
     def test_object_init(self):
         assert self.u is not None
-
-    def test_userhash(self):
-        assert type(self.u.userhash()) is str
 
     def test_avatar(self):
         avatar = self.u.avatar()

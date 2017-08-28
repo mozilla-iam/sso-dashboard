@@ -1,6 +1,5 @@
-import hashlib
 import requests
-from utils import get_secret
+from dashboard.utils import get_secret
 
 """User class that governs maniuplation of session['userdata']"""
 
@@ -8,18 +7,30 @@ from utils import get_secret
 class User(object):
     def __init__(self, session):
         """Constructor takes user session."""
-        self.userinfo = session['userinfo']
+        self.userinfo = session.get('userinfo', None)
+        self.api_token = None
 
-    def userhash(self):
-        """Represent user e-mail as hex hash."""
-        m = hashlib.md5()
-        m.update(self.userinfo['email'])
-        return m.hexdigest()
+    def apps(self, app_list):
+        """Return a list of the apps a user is allowed to see in dashboard."""
+        authorized_apps = {
+            'apps': []
+        }
+
+        for app in app_list['apps']:
+            if self._is_valid_yaml(app):
+                if self._is_authorized(app):
+                    authorized_apps['apps'].append(app)
+        return authorized_apps
 
     def avatar(self):
         """Return url of user avatar from mozillians.org"""
         self.api_url = 'https://mozillians.org/api/v2/users/'
-        self.api_token = get_secret('sso-dashboard.mozillians_api_key', {'app': 'sso-dashboard'})
+
+        if not self.api_token:
+            self.api_token = get_secret(
+                'sso-dashboard.mozillians_api_key',
+                {'app': 'sso-dashboard'}
+            )
 
         headers = {'X-API-KEY': self.api_token}
         params = {'email': self.userinfo['email']}
@@ -38,7 +49,7 @@ class User(object):
             return None
         try:
             user_url = response['results'][0]['_url']
-        except:
+        except Exception:
             return None
 
         # Finally fetch user public avatar and make sure  we have a valid fallback
@@ -77,7 +88,7 @@ class User(object):
         """Construct a list of potential user identifiers to match on."""
         return [self.userinfo['email'], self.userinfo['user_id']]
 
-    def __is_authorized(self, app):
+    def _is_authorized(self, app):
         if app['application']['display'] == 'False':
             return False
         elif not app['application']['display']:
@@ -91,7 +102,7 @@ class User(object):
         else:
             return False
 
-    def __is_valid_yaml(self, app):
+    def _is_valid_yaml(self, app):
         """If an app doesn't have the required fields skip it."""
         try:
             app['application']['display']
@@ -100,15 +111,3 @@ class User(object):
             return True
         except Exception:
             return False
-
-    def apps(self, app_list):
-        """Return a list of the apps a user is allowed to see in dashboard."""
-        authorized_apps = {
-            'apps': []
-        }
-
-        for app in app_list['apps']:
-            if self.__is_valid_yaml(app):
-                if self.__is_authorized(app):
-                    authorized_apps['apps'].append(app)
-        return authorized_apps

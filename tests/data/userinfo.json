@@ -1,0 +1,80 @@
+{
+  "access_token": "aaaaaaaaa",
+  "id_token": {
+    "aud": [
+      "aaaaaaaaaaaaaaa"
+    ],
+    "exp": 1503327981,
+    "https://sso.mozilla.com/claim/_HRData": {
+      "placeholder": "empty"
+    },
+    "https://sso.mozilla.com/claim/emails": [
+      "akrug@mozilla.com"
+    ],
+    "https://sso.mozilla.com/claim/groups": [
+      "IntranetWiki",
+      "StatsDashboard",
+      "phonebook_access",
+      "team_moco",
+      "cloudhealth-enhanced-standard-user",
+      "mozilliansorg_cis_whitelist"
+    ],
+    "iat": 1502723181,
+    "iss": "https://auth.mozilla.auth0.com/",
+    "nonce": "1234567890",
+    "sub": "ad|Mozilla-LDAP|akrug"
+  },
+  "userinfo": {
+    "_HRData": {
+      "placeholder": "empty"
+    },
+    "clientID": "abc123",
+    "created_at": "2017-02-06T22:53:30.473Z",
+    "email": "akrug@mozilla.com",
+    "email_verified": true,
+    "emails": [
+      "akrug@mozilla.com"
+    ],
+    "family_name": "Krug",
+    "given_name": "Andrew",
+    "groups": [
+      "IntranetWiki",
+      "StatsDashboard",
+      "phonebook_access",
+      "team_moco",
+      "cloudhealth-enhanced-standard-user",
+      "mozilliansorg_cis_whitelist"
+    ],
+    "https://sso.mozilla.com/claim/_HRData": {
+      "placeholder": "empty"
+    },
+    "https://sso.mozilla.com/claim/emails": [
+      "akrug@mozilla.com"
+    ],
+    "https://sso.mozilla.com/claim/groups": [
+      "IntranetWiki",
+      "StatsDashboard",
+      "phonebook_access",
+      "team_moco",
+      "cloudhealth-enhanced-standard-user",
+      "mozilliansorg_cis_whitelist"
+    ],
+    "identities": [
+      {
+        "connection": "Mozilla-LDAP",
+        "isSocial": false,
+        "provider": "ad",
+        "user_id": "Mozilla-LDAP|akrug"
+      }
+    ],
+    "multifactor": [
+      "duo"
+    ],
+    "name": "Andrew Krug",
+    "nickname": "Andrew Krug",
+    "picture": "https://s.gravatar.com/avatar/abf4796da7aa08d55d5facd12be2c2b0?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fak.png",
+    "sub": "ad|Mozilla-LDAP|akrug",
+    "updated_at": "2017-08-14T15:06:21.078Z",
+    "user_id": "ad|Mozilla-LDAP|akrug"
+  }
+}

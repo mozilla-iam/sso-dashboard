@@ -4,6 +4,10 @@ notifications:
   email: false
 python:
   - 3.6
+env:
+  - sso-dashboard.secret_key='123456'
+  - sso-dashboard.server_nam='a.b.com'
+  - sso-dashboard.mozillians_api_key='foo'
 before_install:
   - pip install flake8
   - flake8 dashboard

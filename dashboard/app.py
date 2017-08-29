@@ -30,9 +30,6 @@ app.config.from_object(config.Config(app).settings)
 
 S3Transfer(config.Config(app).settings).sync_config()
 
-
-
-
 assets = Environment(app)
 
 js = Bundle('js/base.js', filters='jsmin', output='js/gen/packed.js')

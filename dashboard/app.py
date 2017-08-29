@@ -18,6 +18,7 @@ import config
 import vanity
 from models.user import User
 from op.yaml_loader import Application
+from models.alert import Rules
 from models.tile import S3Transfer
 
 logger = logging.getLogger(__name__)
@@ -196,7 +197,13 @@ def signout():
 def dashboard():
     """Primary dashboard the users will interact with."""
     logger.info("User authenticated proceeding to dashboard.")
+
+    # Transfer any updates in to the app_tiles.
     S3Transfer(config.Config(app).settings).sync_config()
+
+    # Send the user session and browser headers to the alert rules engine.
+    Rules(userinfo=session['userinfo'], request=request).run()
+
     user = User(session, config.Config(app).settings)
     apps = user.apps(Application().apps)
 

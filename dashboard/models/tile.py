@@ -4,6 +4,8 @@ import logging
 import os
 
 
+from boto3.dynamodb.conditions import Key, Attr
+
 
 logger = logging.getLogger(__name__)
 
@@ -101,9 +103,26 @@ class S3Transfer(object):
                 )
             )
 
+
 class DynamoTransfer(object):
     """News up and does the job if configuration specifies that dynamo should be used for app information."""
-    pass
+    def __init__(self, app_config):
+        self.configuration_table_name = 'sso-dashboard-apps'
+        self.dynamodb = None
+
+    def connect_dynamodb(self):
+        if self.dynamodb is None:
+            dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
+            table = dynamodb.Table(self.configuration_table_name)
+            self.dynamodb = table
+
+    def sync_config(self):
+        self.connect_dynamodb()
+        results = self.dynamodb.scan(
+            FilterExpression=Attr('name').exists()
+        )
+        return results.get('Items', None)
+
 
 class Tile(object):
     def __init__(self, app_config):

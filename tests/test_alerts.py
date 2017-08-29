@@ -70,3 +70,10 @@ class TestAlerts(object):
 
         res = a.destroy(alert_id=sample_alert_id)
         assert res['ResponseMetadata']['HTTPStatusCode'] == 200
+
+
+class TestRules(object):
+    def test_object_init(self):
+        a = alert.Rules(userinfo=None, request=None)
+
+        assert a is not None

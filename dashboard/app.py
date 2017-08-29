@@ -18,16 +18,19 @@ import config
 import vanity
 from models.user import User
 from op.yaml_loader import Application
-from s3 import AppFetcher
-
-app = Flask(__name__)
-AppFetcher().sync_config_and_images()
+from models.tile import S3Transfer
 
 logger = logging.getLogger(__name__)
-logging.getLogger("werkzeug").addHandler(logging.StreamHandler())
+logging.getLogger(__name__).addHandler(logging.StreamHandler())
 logging.basicConfig(level=logging.INFO)
 
+app = Flask(__name__)
 app.config.from_object(config.Config(app).settings)
+
+S3Transfer(config.Config(app).settings).sync_config()
+
+
+
 
 assets = Environment(app)
 
@@ -193,7 +196,7 @@ def signout():
 def dashboard():
     """Primary dashboard the users will interact with."""
     logger.info("User authenticated proceeding to dashboard.")
-    AppFetcher().sync_config_and_images()
+    S3Transfer(config.Config(app).settings).sync_config()
     user = User(session, config.Config(app).settings)
     apps = user.apps(Application().apps)
 

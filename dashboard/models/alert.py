@@ -3,13 +3,20 @@ import binascii
 import boto3
 import os
 
+from boto3.dynamodb.conditions import Attr
 
-class AlertDelegate(object):
+
+class Alert(object):
     """Primary object containing alert functions."""
     def __init__(self):
-        self.alert_table_name = 'sso-dashboard-alerts'
+        self.alert_table_name = 'sso-dashboard-alert'
         self.dynamodb = None
 
+    def connect_dynamodb(self):
+        if self.dynamodb is None:
+            dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
+            table = dynamodb.Table(self.alert_table_name)
+            self.dynamodb = table
 
     def create(self, alert_dict):
         """
@@ -17,7 +24,14 @@ class AlertDelegate(object):
         :param alert_json: takes a dictionary of alert information 
         :return: alert_id
         """
-        pass
+        # self.connect_dynamodb()
+
+        alert_dict['alert_id'] = self._create_alert_id()
+        response = self.dynamodb.put_item(
+            Item=alert_dict
+        )
+
+        return response
 
     def destroy(self, alert_id):
         """
@@ -25,7 +39,13 @@ class AlertDelegate(object):
         :param alert_id: Primary key of the alert to destroy.
         :return: status_code
         """
-        pass
+        response = self.dynamodb.delete_item(
+            Key={
+                'alert_id': alert_id
+            }
+        )
+
+        return response
 
     def update(self, alert_id, alert_dict):
         """
@@ -34,7 +54,12 @@ class AlertDelegate(object):
         :param alert_dict: Complete information for replacement of the alert.
         :return: 
         """
-        pass
+        alert_dict['alert_id'] = alert_id
+        response = self.dynamodb.put_item(
+            Item=alert_dict
+        )
+
+        return response
 
     def find(self, user_id):
         """
@@ -42,12 +67,11 @@ class AlertDelegate(object):
         :param user_id: The auth0 id of the user.
         :return: List of alerts
         """
+        response = self.dynamodb.scan(
+            FilterExpression=Attr('user_id').eq(user_id)
+        )
 
-    def _connect_dynamo(self):
-        """
-        Sets the dyanmodb_table object on the alert object.
-        :return: None
-        """
+        return response.get('Items')
 
     def _create_alert_id(self):
         """
@@ -55,9 +79,3 @@ class AlertDelegate(object):
         :return: random alertid
         """
         return binascii.b2a_hex(os.urandom(15))
-
-class Alert(AlertDelegate):
-    pass
-
-class NullAlert(AlertDelegate):
-    pass

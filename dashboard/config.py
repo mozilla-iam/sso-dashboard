@@ -37,6 +37,8 @@ class DefaultConfig(object):
     SECRET_KEY = get_secret('sso-dashboard.secret_key', {'app': 'sso-dashboard'})
     SERVER_NAME = get_secret('sso-dashboard.server_name', {'app': 'sso-dashboard'})
 
+    S3_BUCKET = get_secret('sso-dashboard.s3_bucket', {'app': 'sso-dashboard'})
+
     MOZILLIANS_API_URL = 'https://mozillians.org/api/v2/users/'
     MOZILLIANS_API_KEY = get_secret('sso-dashboard.mozillians_api_key', {'app': 'sso-dashboard'})
 

@@ -226,6 +226,7 @@ def alert_operation(alert_id):
         else:
             return '500'
 
+
 @app.route('/info')
 @sh.wrapper()
 @oidc.oidc_auth

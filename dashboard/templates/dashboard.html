@@ -74,6 +74,17 @@
 {% endblock %}
 
 {% block content %}
+
+    {% for alert in user.alerts %}
+        {{ alert }}
+        <form action="/alert/{{ alert.get('alert_id') }}" method="POST">
+          <button type="submit" id="submitButton">Ack</button>
+        </form>
+
+    {% endfor %}
+
+
+
   <div id="app-grid" class="mui-row app-grid">
     {% for app in apps %}
       <a href="{{ app['application']['url'] }}" data-id="{{ app['application']['name'] }}"
@@ -86,3 +97,12 @@
     {% endfor %}
   </div>
 {% endblock %}
+
+<script>
+    $(".delete").restintag(optionsObj, function(data) {
+        console.log(data);
+    },
+    function(error) {
+        console.log(error);
+    });
+</script>

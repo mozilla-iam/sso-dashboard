@@ -1,5 +1,12 @@
 """User class that governs maniuplation of session['userdata']"""
+import logging
 import requests
+
+
+from models import alert
+
+
+logger = logging.getLogger(__name__)
 
 
 class Mozillians(object):
@@ -116,6 +123,18 @@ class User(object):
     def user_identifiers(self):
         """Construct a list of potential user identifiers to match on."""
         return [self.userinfo['email'], self.userinfo['user_id']]
+
+    @property
+    def alerts(self):
+        alerts = alert.Alert().find(user_id=self.userinfo['user_id'])
+        return alerts
+
+    def acknowledge_alert(self, alert_id):
+        a = alert.Alert()
+
+        """ Future home of the code that pushes an alert back to MozDef """
+        logger.info('An alert was acked for {uid}.'.format(uid=self.userinfo['user_id']))
+        return a.destroy(alert_id=alert_id, user_id=self.userinfo['user_id'])
 
     def _is_authorized(self, app):
         if app['application']['display'] == 'False':

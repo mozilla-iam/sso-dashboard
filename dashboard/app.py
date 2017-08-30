@@ -213,6 +213,19 @@ def dashboard():
     )
 
 
+@sh.wrapper
+@oidc.oidc_auth
+@app.route('/alert/<alert_id>', methods=['POST'])
+def alert_operation(alert_id):
+    if request.method == 'POST':
+        user = User(session, config.Config(app).settings)
+        result = user.acknowledge_alert(alert_id)
+
+        if result['ResponseMetadata']['HTTPStatusCode'] == 200:
+            return '200'
+        else:
+            return '500'
+
 @app.route('/info')
 @sh.wrapper()
 @oidc.oidc_auth

@@ -21,11 +21,32 @@ class Alert(object):
             table = dynamodb.Table(self.alert_table_name)
             self.dynamodb = table
 
+    def find_or_create_by(self, alert_dict, user_id):
+        """
+        
+        :param alert_dict: takes a dictionary of alert information 
+        :param user_id: the session info user_id
+        :return: dynamodb response or none
+        """
+
+        # Search for the user alerts
+        current_alerts = self.find(user_id)
+
+        # If the alert is duplicate false do not create another instance of it.
+        for alert in current_alerts:
+            if alert.get('alert_code') == alert_dict.get('alert_code') and alert_dict.get('duplicate') is False:
+                return None
+            else:
+                continue
+
+        # Else create another alert.
+        return self.create(alert_dict)
+
     def create(self, alert_dict):
         """
         Create an alert.
         :param alert_json: takes a dictionary of alert information 
-        :return: alert_id
+        :return: dynamodb response
         """
         self.connect_dynamodb()
 
@@ -36,7 +57,7 @@ class Alert(object):
 
         return response
 
-    def destroy(self, alert_id):
+    def destroy(self, alert_id, user_id):
         """
         Delete an alert.
         :param alert_id: Primary key of the alert to destroy.
@@ -46,7 +67,8 @@ class Alert(object):
 
         response = self.dynamodb.delete_item(
             Key={
-                'alert_id': alert_id
+                'alert_id': alert_id,
+                'user_id': user_id
             }
         )
 
@@ -107,6 +129,7 @@ class Rules(object):
     def alert_firefox_out_of_date(self):
         if self._firefox_out_of_date():
             alert_dict = {
+                'alert_code': '63f675d8896f4fb2b3caa204c8c2761e',
                 'user_id': self.userinfo.get('user_id'),
                 'risk': 'MEDIUM',
                 'summary': 'Your version of Firefox is older than the current stable release.',
@@ -116,9 +139,10 @@ class Rules(object):
                                'steal your data or load malware, which can put you and Mozilla at risk. ',
                 'date': str(datetime.date.today()),
                 'url': None,
-                'url_title': None
+                'url_title': None,
+                'duplicate': False
             }
-            self.alert.create(alert_dict=alert_dict)
+            self.alert.find_or_create_by(alert_dict=alert_dict, user_id=self.userinfo.get('user_id'))
 
     def _firefox_info(self):
         release_json = requests.get('https://product-details.mozilla.org/1.0/firefox_versions.json')

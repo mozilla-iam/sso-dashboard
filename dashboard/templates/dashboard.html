@@ -65,26 +65,29 @@
 
 {% block messages %}
   <div class="messages">
-    <div class="alert alert-info" role="alert" id="fxalert">
-      <img src="/static/img/alert-white.svg" alt="alert-info"><strong>Want to help test Firefox?</strong> Give Firefox Nightly a try!
-      <span class="closebtn">&times;</span>
-      <a href="https://nightly.mozilla.org/" class="btn-alert" target="_blank"><img src="/static/img/arrow-right-white.svg" alt="alert-info"> Download</a>
+    <div class="alert alert-medium" role="alert" id="alert-nightly">
+      <p><img src="/static/img/alert-white.svg" alt="alert-info">Want to help test Firefox? Give Firefox Nightly a try!</p>
+      <div class="actions">
+        <a href="https://nightly.mozilla.org/" class="btn-alert" target="_blank"><img src="/static/img/arrow-right-white.svg" alt="alert-info"> Download</a>
+        <span id="close-alert" class="closebtn">&times;</span>
+      </div>
     </div>
+
+    {% for alert in user.alerts %}
+      <div class="alert alert-{{ alert.risk }}" role="alert">
+        <div class="actions">
+          <a href="{{ alert.url }}" class="btn-alert" target="_blank"><img src="/static/img/arrow-right-white.svg" alt="alert-info"> {{ alert.url_title }}</a>
+          <span id="submit-alert" class="closebtn">&times;</span>
+          <form action="/alert/{{ alert.get('alert_id') }}" method="POST"></form>
+        </div>
+        <p><img src="/static/img/alert-white.svg" alt="alert-info">{{ alert.summary }}</p>
+
+      </div>
+    {% endfor %}
   </div>
 {% endblock %}
 
 {% block content %}
-
-    {% for alert in user.alerts %}
-        {{ alert }}
-        <form action="/alert/{{ alert.get('alert_id') }}" method="POST">
-          <button type="submit" id="submitButton">Ack</button>
-        </form>
-
-    {% endfor %}
-
-
-
   <div id="app-grid" class="mui-row app-grid">
     {% for app in apps %}
       <a href="{{ app['application']['url'] }}" data-id="{{ app['application']['name'] }}"

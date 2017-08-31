@@ -23,8 +23,8 @@ class Alert(object):
 
     def find_or_create_by(self, alert_dict, user_id):
         """
-        
-        :param alert_dict: takes a dictionary of alert information 
+
+        :param alert_dict: takes a dictionary of alert information
         :param user_id: the session info user_id
         :return: dynamodb response or none
         """
@@ -45,7 +45,7 @@ class Alert(object):
     def create(self, alert_dict):
         """
         Create an alert.
-        :param alert_json: takes a dictionary of alert information 
+        :param alert_json: takes a dictionary of alert information
         :return: dynamodb response
         """
         self.connect_dynamodb()
@@ -79,7 +79,7 @@ class Alert(object):
         Update an alert record for a user.
         :param alert_id: Primary key of the alert to update.
         :param alert_dict: Complete information for replacement of the alert.
-        :return: 
+        :return:
         """
         self.connect_dynamodb()
 
@@ -106,7 +106,7 @@ class Alert(object):
 
     def _create_alert_id(self):
         """
-        
+
         :return: random alertid
         """
         return binascii.b2a_hex(os.urandom(15))
@@ -115,7 +115,7 @@ class Alert(object):
 class Rules(object):
     def __init__(self, userinfo, request):
         """
-        
+
         :param userinfo: Flask session info about the user so that Rules can make decisions about the user.
         :param browser_header: The browser header as seen by Flask.
         """
@@ -131,15 +131,15 @@ class Rules(object):
             alert_dict = {
                 'alert_code': '63f675d8896f4fb2b3caa204c8c2761e',
                 'user_id': self.userinfo.get('user_id'),
-                'risk': 'MEDIUM',
+                'risk': 'medium',
                 'summary': 'Your version of Firefox is older than the current stable release.',
                 'description': 'Running the latest version of your browser is key to keeping your '
                                'computer secure and your private data private. Older browsers may '
                                'have known security vulnerabilities that attackers can exploit to '
                                'steal your data or load malware, which can put you and Mozilla at risk. ',
                 'date': str(datetime.date.today()),
-                'url': None,
-                'url_title': None,
+                'url': 'https://www.mozilla.org/firefox/',
+                'url_title': 'Download',
                 'duplicate': False
             }
             self.alert.find_or_create_by(alert_dict=alert_dict, user_id=self.userinfo.get('user_id'))
@@ -164,8 +164,3 @@ class Rules(object):
             return True
         else:
             return False
-
-
-
-
-

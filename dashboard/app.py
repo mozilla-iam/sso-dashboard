@@ -9,6 +9,7 @@ from flask import render_template
 from flask import request
 from flask import send_from_directory
 from flask import session
+from flask import url_for
 from flask_assets import Bundle
 from flask_assets import Environment
 from flask_secure_headers.core import Secure_Headers
@@ -222,7 +223,7 @@ def alert_operation(alert_id):
         result = user.acknowledge_alert(alert_id)
 
         if result['ResponseMetadata']['HTTPStatusCode'] == 200:
-            return '200'
+            return redirect(url_for('dashboard'))
         else:
             return '500'
 

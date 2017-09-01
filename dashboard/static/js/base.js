@@ -8,20 +8,20 @@ $(document).ready(function(){
 
         // Find all .user-profile divs
         $('#app-grid').find('.app-tile')
-        // Find those that should be visible
-        .filter(function() {
-            return $(this).data('id').toLowerCase().indexOf( val ) > -1;
-        })
-        // Make them visible
-        .show()
-        // Now go back and get only the visible ones
-        .end().filter(':visible')
-        // Filter only those for which typed value 'val' does not match the `data-id` value
-        .filter(function() {
-            return $(this).data('id').toLowerCase().indexOf( val ) === -1;
-        })
-        // Fade those out
-        .fadeOut();
+            // Find those that should be visible
+            .filter(function() {
+                return $(this).data('id').toLowerCase().indexOf( val ) > -1;
+            })
+            // Make them visible
+            .show()
+            // Now go back and get only the visible ones
+            .end().filter(':visible')
+            // Filter only those for which typed value 'val' does not match the `data-id` value
+            .filter(function() {
+                return $(this).data('id').toLowerCase().indexOf( val ) === -1;
+            })
+            // Fade those out
+            .fadeOut();
     });
 
     // Search input: Highlight, Align, Focus

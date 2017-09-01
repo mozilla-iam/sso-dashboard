@@ -1,3 +1,4 @@
+credstash
 boto3
 flask
 flask_assets
@@ -9,8 +10,6 @@ requests
 faker
 nose
 nose-watch
-flask-pyoidc
-redis
 rq
 jsmin
 cssmin
@@ -20,11 +19,11 @@ cryptography
 pycrypto
 ecdsa
 gunicorn
-flask-sse
 gevent
 auth0-python
-flask-redis
-flask-secure-headers
 mockredis
 watchtower
 requests
+flask-secure-headers
+git+https://github.com/zamzterz/Flask-pyoidc
+git+https://github.com/mozilla-iam/pyoidc.git@backport_fix_0.9.1

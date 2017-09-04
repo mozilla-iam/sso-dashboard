@@ -77,11 +77,9 @@
       <div class="alert alert-{{ alert.risk }}" role="alert">
         <div class="actions">
           <a href="{{ alert.url }}" class="btn-alert" target="_blank"><img src="/static/img/arrow-right-white.svg" alt="alert-info"> {{ alert.url_title }}</a>
-          <span id="submit-alert" class="closebtn">&times;</span>
-          <form action="/alert/{{ alert.get('alert_id') }}" method="POST"></form>
+          <span id="submit-alert" class="closebtn" data-alert-id="{{ alert.get('alert_id') }}">&times;</span>
         </div>
         <p><img src="/static/img/alert-white.svg" alt="alert-info">{{ alert.summary }}</p>
-
       </div>
     {% endfor %}
   </div>

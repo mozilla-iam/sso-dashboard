@@ -132,8 +132,11 @@ $(document).ready(function(){
 
     // Alerts ack
     $('#submit-alert').click(function() {
-        var form = $('#submit-alert').parent('div').find('form');
-        form.submit();
+        var alert_id = $('#submit-alert').data('alert-id');
+        $.ajax({
+            type: 'POST',
+            url: '/alert/' + alert_id
+        });
     });
 
     // Alerts close button

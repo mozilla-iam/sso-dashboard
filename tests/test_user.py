@@ -1,7 +1,7 @@
 import json
 import os
 
-from dashboard.models import user
+import dashboard.models.user as user
 
 
 class TestUser(object):

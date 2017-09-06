@@ -68,7 +68,7 @@ class TestAlerts(object):
         res = a.update(alert_id=sample_alert_id, alert_dict=updated_alert_dict)
         assert res['ResponseMetadata']['HTTPStatusCode'] == 200
 
-        res = a.destroy(alert_id=sample_alert_id)
+        res = a.destroy(alert_id=sample_alert_id, user_id='bob|ad|123456')
         assert res['ResponseMetadata']['HTTPStatusCode'] == 200
 
 

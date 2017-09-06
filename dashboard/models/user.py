@@ -3,7 +3,7 @@ import logging
 import requests
 
 
-from models import alert
+from . import alert
 
 
 logger = logging.getLogger(__name__)

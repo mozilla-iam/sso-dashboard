@@ -64,8 +64,7 @@ class Mozillians(object):
 
         response = self._has_avatar(email)
 
-        if response:
-            self._is_only_one_avatar(response)
+        if response and self._is_only_one_avatar(response):
             avatar_url = self._get_image_url()
         else:
             avatar_url = None

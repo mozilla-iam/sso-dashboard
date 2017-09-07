@@ -125,7 +125,6 @@ $(document).ready(function(){
     });
 
     // Nightly alert
-    $('#alert-nightly').show();
     if (window.navigator.userAgent.indexOf('Firefox') < 0) {
         $('#alert-nightly').show();
     }

@@ -106,14 +106,3 @@
     owner: flaskapp
     group: nginx
     recurse: yes
-
-- name: Install patched flask-pyoidc
-  pip:
-    name: git+git://github.com/zamzterz/Flask-pyoidc#egg=Flask-pyoidc
-    state: forcereinstall
-
-- name: Install patched pyoidc
-  pip:
-    name: git+git://github.com/mozilla-iam/pyoidc.git@backport_fix_0.9.1#egg=pyoidc
-    state: forcereinstall
-

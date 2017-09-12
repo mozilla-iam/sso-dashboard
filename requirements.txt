@@ -25,5 +25,4 @@ mockredis
 watchtower
 requests
 flask-secure-headers
-git+https://github.com/zamzterz/Flask-pyoidc
-git+https://github.com/mozilla-iam/pyoidc.git@backport_fix_0.9.1
+Flask-pyoidc

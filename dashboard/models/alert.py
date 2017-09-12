@@ -171,19 +171,20 @@ class Rules(object):
         return version_dict
 
     def _firefox_out_of_date(self):
-        u_version = self._version_to_dictionary(self._user_firefox_version())
-        f_version = self._version_to_dictionary(self._firefox_info().get('LATEST_FIREFOX_VERSION'))
+        if self._user_firefox_version() is not None:
+            u_version = self._version_to_dictionary(self._user_firefox_version())
+            f_version = self._version_to_dictionary(self._firefox_info().get('LATEST_FIREFOX_VERSION'))
 
-        if u_version.get('major_version') < f_version.get('major_version'):
-            return True
-        elif u_version.get('major_version') == f_version.get('major_version'):
-            if u_version.get('minor_version') < f_version.get('minor_version'):
+            if u_version.get('major_version') < f_version.get('major_version'):
                 return True
-            elif u_version.get('minor_version') == f_version.get('minor_version') \
-                    and u_version.get('dot_version') is not None:
-                if u_version.get('dot_version') < f_version.get('dot_version'):
+            elif u_version.get('major_version') == f_version.get('major_version'):
+                if u_version.get('minor_version') < f_version.get('minor_version'):
                     return True
+                elif u_version.get('minor_version') == f_version.get('minor_version') \
+                        and u_version.get('dot_version') is not None:
+                    if u_version.get('dot_version') < f_version.get('dot_version'):
+                        return True
+                else:
+                    return False
             else:
                 return False
-        else:
-            return False

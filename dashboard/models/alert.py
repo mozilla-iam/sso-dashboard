@@ -179,7 +179,8 @@ class Rules(object):
         elif u_version.get('major_version') == f_version.get('major_version'):
             if u_version.get('minor_version') < f_version.get('minor_version'):
                 return True
-            elif u_version.get('minor_version') == f_version.get('minor_version') and u_version.get('dot_version') is not None:
+            elif u_version.get('minor_version') == f_version.get('minor_version') \
+                    and u_version.get('dot_version') is not None:
                 if u_version.get('dot_version') < f_version.get('dot_version'):
                     return True
             else:

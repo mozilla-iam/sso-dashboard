@@ -150,17 +150,39 @@ class Rules(object):
 
     def _user_firefox_version(self):
         agent = self.request.headers.get('User-Agent')
-        print(agent)
         if agent.find('Firefox') != -1:
             version = agent.split('Firefox/')[1]
         else:
             version = None
         return version
 
-    def _firefox_out_of_date(self):
-        u_version = self._user_firefox_version()
+    def _version_to_dictionary(self, version_number):
+        version_number_list = version_number.split('.')
+        version_dict = {
+            'major_version': version_number_list[0],
+            'minor_version': version_number_list[1]
+        }
 
-        if u_version and u_version < self._firefox_info().get('LATEST_FIREFOX_VERSION'):
+        if len(version_number_list) == 3:
+            version_dict['dot_version'] = version_number_list[2]
+        else:
+            version_dict['dot_version'] = None
+
+        return version_dict
+
+    def _firefox_out_of_date(self):
+        u_version = self._version_to_dictionary(self._user_firefox_version())
+        f_version = self._version_to_dictionary(self._firefox_info().get('LATEST_FIREFOX_VERSION'))
+
+        if u_version.get('major_version') < f_version.get('major_version'):
             return True
+        elif u_version.get('major_version') == f_version.get('major_version'):
+            if u_version.get('minor_version') < f_version.get('minor_version'):
+                return True
+            elif u_version.get('minor_version') == f_version.get('minor_version') and u_version.get('dot_version') is not None:
+                if u_version.get('dot_version') < f_version.get('dot_version'):
+                    return True
+            else:
+                return False
         else:
             return False

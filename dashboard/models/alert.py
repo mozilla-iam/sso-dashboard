@@ -159,8 +159,8 @@ class Rules(object):
 
     def _firefox_out_of_date(self):
         u_version = self._user_firefox_version()
+        current_version = self._firefox_info().get('LATEST_FIREFOX_VERSION', '').split('.')[0]
 
-        if u_version and u_version < self._firefox_info().get('LATEST_FIREFOX_VERSION'):
+        if u_version and u_version < current_version:
             return True
-        else:
-            return False
+        return False

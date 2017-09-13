@@ -5,9 +5,10 @@ notifications:
 python:
   - 2.7
 env:
-  - secret_key='123456' server_name='a.b.com' mozillians_api_key='foo' oidc_domain='foo' oidc_client_id='foo' oidc_client_secret='foo'
+  - secret_key='123456' server_name='a.b.com' mozillians_api_key='foo' oidc_domain='foo' oidc_client_id='foo' oidc_client_secret='foo' s3_bucket='foo' AWS_DEFAULT_REGION='us-west-2'
 before_install:
   - pip install flake8
+  - pip install moto
   - flake8 dashboard
   - flake8 tests
 install:

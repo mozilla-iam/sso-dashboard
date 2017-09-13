@@ -3,7 +3,7 @@ from dashboard import config
 
 class TestConfig(object):
     def test_object_init(self):
-        c = config.Config()
+        c = config.DefaultConfig()
 
         assert c.DEBUG is True
         assert c.TESTING is False

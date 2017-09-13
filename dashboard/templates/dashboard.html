@@ -34,7 +34,7 @@
 
 {% block menu %}
   <div class="menu">
-    {% with avatar = user.avatar(), name = user.first_name() %}
+    {% with avatar = user.avatar, name = user.first_name %}
       <span class="name">{% if name %}{{ name }}{% endif %}</span>
       {% if avatar %}
         <img class="profile-icon" src="{{ avatar }}">
@@ -65,11 +65,23 @@
 
 {% block messages %}
   <div class="messages">
-    <div class="alert alert-info" role="alert" id="fxalert">
-      <img src="/static/img/alert-white.svg" alt="alert-info"><strong>Want to help test Firefox?</strong> Give Firefox Nightly a try!
-      <span class="closebtn">&times;</span>
-      <a href="https://nightly.mozilla.org/" class="btn-alert" target="_blank"><img src="/static/img/arrow-right-white.svg" alt="alert-info"> Download</a>
+    <div class="alert alert-medium" role="alert" id="alert-nightly">
+      <p><img src="/static/img/alert-white.svg" alt="alert-info">Want to help test Firefox? Give Firefox Nightly a try!</p>
+      <div class="actions">
+        <a href="https://nightly.mozilla.org/" class="btn-alert" target="_blank"><img src="/static/img/arrow-right-white.svg" alt="alert-info"> Download</a>
+        <span id="close-alert" class="closebtn">&times;</span>
+      </div>
     </div>
+
+    {% for alert in user.alerts %}
+      <div class="alert alert-{{ alert.risk }}" role="alert">
+        <div class="actions">
+          <a href="{{ alert.url }}" class="btn-alert" target="_blank"><img src="/static/img/arrow-right-white.svg" alt="alert-info"> {{ alert.url_title }}</a>
+          <span id="submit-alert" class="closebtn" data-alert-id="{{ alert.get('alert_id') }}">&times;</span>
+        </div>
+        <p><img src="/static/img/alert-white.svg" alt="alert-info">{{ alert.summary }}</p>
+      </div>
+    {% endfor %}
   </div>
 {% endblock %}
 
@@ -86,3 +98,12 @@
     {% endfor %}
   </div>
 {% endblock %}
+
+<script>
+    $(".delete").restintag(optionsObj, function(data) {
+        console.log(data);
+    },
+    function(error) {
+        console.log(error);
+    });
+</script>

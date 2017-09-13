@@ -126,11 +126,20 @@ $(document).ready(function(){
 
     // Nightly alert
     if (window.navigator.userAgent.indexOf('Firefox') < 0) {
-        $('#fxalert').show();
+        $('#alert-nightly').show();
     }
+
+    // Alerts ack
+    $('#submit-alert').click(function() {
+        var alert_id = $('#submit-alert').data('alert-id');
+        $.ajax({
+            type: 'POST',
+            url: '/alert/' + alert_id
+        });
+    });
 
     // Alerts close button
     $('.closebtn').click(function() {
-        $(this).parent('.alert').slideUp();
+        $(this).parent('div').parent('.alert').slideUp();
     });
 });

@@ -10,6 +10,7 @@ phases:
       - cd ansible && ansible-container build --with-volumes ../:/dashboard
   post_build:
     commands:
+      - rm -rf /root/.docker/config.json
       - aws ecr get-login --region us-west-2 | bash
       - docker tag ansible-web ${DOCKER_REPO}:latest
       - docker push ${DOCKER_REPO}:latest

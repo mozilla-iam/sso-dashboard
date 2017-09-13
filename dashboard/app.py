@@ -1,11 +1,6 @@
-import auth
-import config
-
 import logging
 import mimetypes
 import os
-import vanity
-import watchtower
 
 from flask import Flask
 from flask import jsonify
@@ -14,37 +9,26 @@ from flask import render_template
 from flask import request
 from flask import send_from_directory
 from flask import session
-
 from flask_assets import Bundle
 from flask_assets import Environment
-
 from flask_secure_headers.core import Secure_Headers
 
+import auth
+import config
+import vanity
+from models.user import User
 from op.yaml_loader import Application
-from s3 import AppFetcher
-from user import User
-
-app = Flask(__name__)
-AppFetcher().sync_config_and_images()
+from models.alert import Rules
+from models.tile import S3Transfer
 
 logger = logging.getLogger(__name__)
+logging.getLogger(__name__).addHandler(logging.StreamHandler())
+logging.basicConfig(level=logging.INFO)
 
-environment = os.getenv('ENVIRONMENT', None)
-logger.info('Loading {environment} environment.'.format(environment=environment))
+app = Flask(__name__)
+app.config.from_object(config.Config(app).settings)
 
-if environment == 'Development':
-    # Only log flask debug in development mode.
-    handler = logging.StreamHandler()
-    logging.getLogger("werkzeug").addHandler(handler)
-    app.config.from_object(config.DevelopmentConfig())
-else:
-    # Only cloudwatch log when app is in production mode.
-    handler = watchtower.CloudWatchLogHandler()
-    app.logger.addHandler(handler)
-    app.config.from_object(config.ProductionConfig())
-
-if os.environ.get('LOGGING') == 'True':
-    logging.basicConfig(level=logging.INFO)
+S3Transfer(config.Config(app).settings).sync_config()
 
 assets = Environment(app)
 
@@ -210,10 +194,15 @@ def signout():
 def dashboard():
     """Primary dashboard the users will interact with."""
     logger.info("User authenticated proceeding to dashboard.")
-    AppFetcher().sync_config_and_images()
-    user = User(session)
-    all_apps = Application().apps
-    apps = user.apps(all_apps)['apps']
+
+    # Transfer any updates in to the app_tiles.
+    S3Transfer(config.Config(app).settings).sync_config()
+
+    # Send the user session and browser headers to the alert rules engine.
+    Rules(userinfo=session['userinfo'], request=request).run()
+
+    user = User(session, config.Config(app).settings)
+    apps = user.apps(Application().apps)
 
     return render_template(
         'dashboard.html',
@@ -222,6 +211,20 @@ def dashboard():
         apps=apps,
         alerts=None
     )
+
+
+@sh.wrapper
+@oidc.oidc_auth
+@app.route('/alert/<alert_id>', methods=['POST'])
+def alert_operation(alert_id):
+    if request.method == 'POST':
+        user = User(session, config.Config(app).settings)
+        result = user.acknowledge_alert(alert_id)
+
+        if result['ResponseMetadata']['HTTPStatusCode'] == 200:
+            return '200'
+        else:
+            return '500'
 
 
 @app.route('/info')

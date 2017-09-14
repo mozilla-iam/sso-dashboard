@@ -106,3 +106,8 @@
     owner: flaskapp
     group: nginx
     recurse: yes
+
+- name: Install patched pyoidc
+  pip:
+    name: git+git://github.com/mozilla-iam/pyoidc.git@hotfix_unicode#egg=pyoidc
+    state: forcereinstall

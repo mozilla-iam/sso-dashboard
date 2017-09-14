@@ -23,7 +23,7 @@ from models.tile import S3Transfer
 
 logger = logging.getLogger(__name__)
 logging.getLogger(__name__).addHandler(logging.StreamHandler())
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.CRITICAL)
 
 app = Flask(__name__)
 app.config.from_object(config.Config(app).settings)

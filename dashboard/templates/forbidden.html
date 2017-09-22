@@ -5,33 +5,32 @@
 {% block content %}
   <div class="mui-row">
     <div class="mui-col-md-10 mui-col-md-offset-2">
-      <h1>404</h1>
+      <h1>Error</h1>
 
       <div class="panel">
         <div class="pointer"></div>
-        <h2>Oye, something went wrong.</h2>
-        At least this little bird is here to keep you company...
+        <h2>
+          {% if reason %}
+            {{ reason }}
+          {% else %}
+            Oye, something went wrong.
+          {% endif %}
+        </h2>
       </div>
 
       <div class="mui-row section">
-        <div class="mui-col-md-6 mui-col-lg-4">
+        <div class="mui-col-lg-5">
           <a href="https://mozilla.service-now.com/sp?id=sc_cat_item&sys_id=ca46b2794fcc2200f004ef6d0210c77c" class="mui-btn help">Need Help?</a>
 
           <a href="/dashboard" class="mui-btn return">Return to dashboard</a>
         </div>
 
-        <div class="mui-col-md-6 mui-col-lg-8 video">
-          <div class="youtube" data-id="Ybvwh0reiMU">
-            <img src="/static/img/404.jpg" alt="404">
-          </div>
+        <div class="mui-col-lg-7">
+          <img src="/static/img/error.svg" alt="error" class="error-img">
         </div>
       </div>
 
       </div>
     </div>
   </div>
-{% endblock %}
-
-{% block extra_js %}
-  <script type="text/javascript" src="/static/js/404.js"></script>
 {% endblock %}

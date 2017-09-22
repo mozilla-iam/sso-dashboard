@@ -24,52 +24,66 @@ class Mozillians(object):
         if self.app_config is not None:
             return self.app_config.MOZILLIANS_API_URL
 
-    def _has_avatar(self, email):
-        if self.api_url is not None:
-            try:
-                mozillians_response = requests.get(self.api_url, headers=self.headers,
-                                                   params=self.params, timeout=5)
-                if mozillians_response.status_code is not 200:
-                    return None
-                response = mozillians_response.json()
-                return response
-            except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
-                return None
-        else:
+    def _get_user_info(self, email):
+        response = self._get_user(email)
+        if not response:
             return None
 
-    def _is_only_one_avatar(self, response):
-        # Check if only single resource gets returned and it's valid
-        avatars = response.get('results', -1)
-
-        if len(avatars) == 1:
-            self.user_url = avatars[0].get('_url')
-            return True
-        else:
-            self.user_url = None
-            return False
-
-    def _get_image_url(self):
-        # Finally fetch user public avatar and make sure  we have a valid fallback
         try:
-            response = requests.get(self.user_url, headers=self.headers, timeout=5).json()
-            if response['photo']['privacy'] == 'Public':
-                return response['photo']['value']
-        except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
+            results = response.get('results', -1)
+            user_url = results[0].get('_url')
+            user_info = requests.get(user_url, headers=self.headers, timeout=5)
+        except:
             return None
 
-    def avatar(self, email):
+        if user_info.status_code is not 200:
+            return None
+
+        try:
+            info = user_info.json()
+        except:
+            return None
+
+        return info
+
+    def _get_user(self, email):
         self.headers = {'X-API-KEY': self.api_key}
-        self.params = {'email': email}
+        params = {'email': email}
 
-        response = self._has_avatar(email)
+        if not self.api_url:
+            return None
 
-        if response and self._is_only_one_avatar(response):
-            avatar_url = self._get_image_url()
-        else:
-            avatar_url = None
+        try:
+            mozillians_response = requests.get(self.api_url, headers=self.headers,
+                                               params=params, timeout=5)
+        except:
+            return None
 
-        return avatar_url
+        if mozillians_response.status_code is not 200:
+            return None
+
+        try:
+            response = mozillians_response.json()
+        except:
+            return None
+
+        return response
+
+    def user_detail(self, email, field='photo'):
+        response = self._get_user_info(email)
+
+        ctx = {
+            'avatar': None,
+            'full_name': None
+        }
+
+        if response:
+            if response['photo']['privacy'] == 'Public':
+                ctx['avatar'] = response['photo']['value']
+            if response['full_name']['privacy'] == 'Public':
+                ctx['full_name'] = response['full_name']['value']
+
+        return ctx
 
 
 class User(object):
@@ -77,6 +91,8 @@ class User(object):
         """Constructor takes user session."""
         self.userinfo = session.get('userinfo', None)
         self.app_config = app_config
+        m = Mozillians(self.app_config)
+        self.profile = m.user_detail(self.userinfo.get('email'))
 
     def apps(self, app_list):
         """Return a list of the apps a user is allowed to see in dashboard."""
@@ -92,8 +108,7 @@ class User(object):
 
     @property
     def avatar(self):
-        m = Mozillians(self.app_config)
-        return m.avatar(self.userinfo.get('email'))
+        return self.profile['avatar']
 
     def group_membership(self):
         """Return list of group membership if user is asserted from ldap."""
@@ -109,7 +124,7 @@ class User(object):
         try:
             return self.userinfo['given_name']
         except KeyError:
-            return None
+            return self.profile['full_name']
 
     @property
     def last_name(self):

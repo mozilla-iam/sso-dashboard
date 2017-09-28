@@ -576,6 +576,7 @@ footer {
     h1 {
         color: black;
         font-size: 4em;
+        margin-top: 60px;
     }
 
     .panel {
@@ -636,6 +637,27 @@ footer {
             img {
                 display: block;
                 max-width: 100%;
+            }
+        }
+    }
+}
+
+.forbidden {
+
+    .panel {
+        max-width: calc(100% - 60px);
+    }
+
+    .section {
+
+        .mui-btn {
+            max-width: calc(100% - 100px);
+            float: none;
+            margin: 0 auto;
+
+            &.return {
+                margin-left: auto;
+                margin-top: 5px;
             }
         }
     }

@@ -159,6 +159,18 @@ def page_not_found(error):
     return render_template('404.html'), 404
 
 
+@app.route('/forbidden')
+def forbidden():
+    """Route to render error page."""
+    reason = None
+    if 'reason' in request.args:
+        reason = request.args['reason']
+        logger.error(
+            "An error has been generated with reason: {0}".format(reason)
+        )
+    return render_template('forbidden.html', reason=reason)
+
+
 @app.route('/logout')
 @oidc.oidc_logout
 def logout():

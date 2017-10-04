@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block content_class %}error-page forbidden{% endblock %}
+
+{% block content %}
+  <div class="mui-row">
+    <div class="mui-col-md-6 mui-col-md-offset-3">
+      <h1>Error</h1>
+
+      <div class="panel">
+        <div class="pointer"></div>
+        <h2>
+          {% if reason %}
+            {{ reason }}
+          {% else %}
+            Oye, something went wrong.
+          {% endif %}
+        </h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="mui-row section">
+    <div class="mui-col-md-6 mui-col-md-offset-3">
+      <a href="https://mozilla.service-now.com/sp?id=sc_cat_item&sys_id=ca46b2794fcc2200f004ef6d0210c77c" class="mui-btn help">Need Help?</a>
+
+      <a href="/dashboard" class="mui-btn return">Return to dashboard</a>
+    </div>
+  </div>
+{% endblock %}

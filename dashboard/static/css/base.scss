@@ -569,13 +569,14 @@ footer {
     }
 }
 
-.p404 {
+.error-page {
     background-color: white;
-    padding-top: 60px;
+    margin-top: 60px;
 
     h1 {
         color: black;
         font-size: 4em;
+        margin-top: 60px;
     }
 
     .panel {
@@ -641,9 +642,30 @@ footer {
     }
 }
 
+.forbidden {
+
+    .panel {
+        max-width: calc(100% - 60px);
+    }
+
+    .section {
+
+        .mui-btn {
+            max-width: calc(100% - 100px);
+            float: none;
+            margin: 0 auto;
+
+            &.return {
+                margin-left: auto;
+                margin-top: 5px;
+            }
+        }
+    }
+}
+
 @media all and (max-width: 991px) {
 
-    .p404 {
+    .error-page {
 
         .section {
 
@@ -661,7 +683,7 @@ footer {
         width: 240px;
     }
 
-    .p404 {
+    .error-page {
 
         .panel {
             max-width: calc(100% - 60px);
@@ -692,6 +714,12 @@ footer {
                     width: 100%;
                     height: 100%;
                 }
+            }
+
+            .error-img {
+                display: block;
+                max-width: 100%;
+                margin: auto;
             }
         }
     }
@@ -947,7 +975,7 @@ footer {
         }
     }
 
-    .p404 {
+    .error-page {
         padding-top: 10px;
 
         .panel {

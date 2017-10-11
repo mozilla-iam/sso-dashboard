@@ -15,7 +15,7 @@ jsmin
 cssmin
 pytest-flask
 pyjwt
-cryptography
+cryptography==2.0
 pycrypto
 ecdsa
 gunicorn

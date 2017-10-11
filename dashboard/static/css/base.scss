@@ -255,16 +255,20 @@ body {
             padding-left: 18px;
         }
 
+        &.alert-success {
+            background-color: #14c887;
+        }
+
         &.alert-medium {
-            background-color: #538195;
+            background-color: #009696;
         }
 
         &.alert-high {
-            background-color: #fbbc00;
+            background-color: #ffc300;
         }
 
         &.alert-maximum {
-            background-color: #d92529;
+            background-color: #ff4f5e;
         }
 
         &.alert-low {
@@ -274,6 +278,7 @@ body {
         p {
             display: inline;
             margin-bottom: 0;
+            font-weight: bold;
 
             img {
                 display: inline-block;
@@ -296,7 +301,7 @@ body {
 
             .btn-alert {
                 padding: 5px 10px;
-                background-color: #7499a9;
+                background: rgba(255, 255, 255, 0.2);
                 display: inline-block;
                 color: white;
                 text-decoration: none;

@@ -35,6 +35,9 @@
 {% block menu %}
   <div class="menu">
     {% with avatar = user.avatar, name = user.first_name %}
+      {% if user.alerts %}
+        <span class="alerts-count"></span>
+      {% endif %}
       <span class="name">{% if name %}{{ name }}{% endif %}</span>
       {% if avatar %}
         <img class="profile-icon" src="{{ avatar }}">
@@ -55,10 +58,10 @@
 
 {% block user_menu %}
   <div class="user-menu">
-    <a href="https://mozillians.org/user/edit/" target="_blank"><span>Settings</span> <img class="menu-icon"src="/static/img/settings.svg" alt="Settings"></a>
+    <a href="https://mozillians.org/user/edit/" target="_blank"><span>Settings</span> <img class="menu-icon" src="/static/img/settings.svg" alt="Settings"></a>
+    <a {% if user.alerts %}href="/notifications"{% else %}href="#" class="inactive"{% endif %}><span>Notifications</span> <img class="menu-icon" src="/static/img/alerts/notification-white.svg" alt="Notifications"></a>
     <a href="/logout"><span>Logout</span> <img class="menu-icon"src="/static/img/logout.svg" alt="Logout"></a>
     <div class="coming-soon"><span>coming soon</span></div>
-    <a href="#" class="inactive"><span>Notifications</span> <img class="menu-icon"src="/static/img/notification.svg" alt="Notifications"></a>
     <a href="#" class="inactive"><span>Access Request</span> <img class="menu-icon"src="/static/img/request.svg" alt="Access Request"></a>
   </div>
 {% endblock %}
@@ -66,7 +69,7 @@
 {% block messages %}
   <div class="messages">
     <div class="alert alert-medium" role="alert" id="alert-nightly">
-      <p><img src="/static/img/alert-white.svg" alt="alert-info">Want to help test Firefox? Give Firefox Beta a try!</p>
+      <p><img src="/static/img/alerts/alert-white.svg" alt="alert-info">Want to help test Firefox? Give Firefox Beta a try!</p>
       <div class="actions">
         <a href="https://beta.mozilla.org/" class="btn-alert" target="_blank"><img src="/static/img/arrow-right-white.svg" alt="alert-info"> Download</a>
         <span id="close-alert" class="closebtn">&times;</span>
@@ -79,7 +82,7 @@
           <a href="{{ alert.url }}" class="btn-alert" target="_blank"><img src="/static/img/arrow-right-white.svg" alt="alert-info"> {{ alert.url_title }}</a>
           <span id="submit-alert" class="closebtn" data-alert-id="{{ alert.get('alert_id') }}">&times;</span>
         </div>
-        <p><img src="/static/img/alert-white.svg" alt="alert-info">{{ alert.summary }}</p>
+        <p><img src="/static/img/alerts/alert-white.svg" alt="alert-info">{{ alert.summary }}</p>
       </div>
     {% endfor %}
   </div>

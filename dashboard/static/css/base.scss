@@ -37,6 +37,12 @@ $yellow: #faba00;
 
 $appbar-height: 70px;
 
+$alert-low: #cccccc;
+$alert-medium: #4a6785;
+$alert-high: #ffd351;
+$alert-maximum: #d04437;
+$alert-success: #14c887;
+
 html,
 body {
     height: 100%;
@@ -159,6 +165,16 @@ body {
             background-color: #f8f8f8;
         }
 
+        .alerts-count {
+            background-color: black;
+            width: 10px;
+            height: 10px;
+            position: absolute;
+            top: 10px;
+            right: 51px;
+            transform: rotate(45deg);
+        }
+
         .profile-icon {
             margin: 15px;
             width: 40px;
@@ -186,6 +202,10 @@ body {
             height: calc(#{$appbar-height} - 1px);
             position: relative;
             z-index: 2;
+
+            .alerts-count {
+                display: none;
+            }
 
             .name {
                 display: inline-block;
@@ -256,23 +276,23 @@ body {
         }
 
         &.alert-success {
-            background-color: #14c887;
+            background-color: $alert-success;
         }
 
         &.alert-medium {
-            background-color: #00458b;
+            background-color: $alert-medium;
         }
 
         &.alert-high {
-            background-color: #ffc300;
+            background-color: $alert-high;
         }
 
         &.alert-maximum {
-            background-color: #ff4f5e;
+            background-color: $alert-maximum;
         }
 
         &.alert-low {
-            background-color: #000000;
+            background-color: $alert-low;
         }
 
         p {
@@ -380,6 +400,111 @@ body {
 
             .app-name {
                 color: black;
+            }
+        }
+    }
+}
+
+.notifications {
+
+    h4 {
+        color: black;
+        display: inline-block;
+        margin-bottom: 40px;
+        text-align: center;
+        text-transform: uppercase;
+        width: 100%;
+
+        img {
+            vertical-align: text-top;
+            margin-right: 5px;
+        }
+
+        .alerts-count {
+            background-color: black;
+            border-radius: .25rem;
+            color: white;
+            display: inline-block;
+            font-weight: bold;
+            margin-left: 5px;
+            padding: 0 .4em;
+            text-align: center;
+        }
+    }
+
+    .alert-panel {
+        background-color: white;
+        box-shadow: 7px 7px 0 0 #d3d3d3;
+        margin: auto;
+        max-width: 100%;
+        width: 775px;
+
+        .alert-header {
+            font-weight: bold;
+            padding: 26px 32px;
+            text-transform: uppercase;
+
+            &.alert-success {
+                --alert-bg-color: white;
+                --alert-color: $alert-success;
+            }
+
+            &.alert-medium {
+                --alert-bg-color: $alert-medium;
+                --alert-color: white;
+            }
+
+            &.alert-high {
+                --alert-bg-color: $alert-high;
+                --alert-color: black;
+            }
+
+            &.alert-maximum {
+                --alert-bg-color: $alert-maximum;
+                --alert-color: white;
+            }
+
+            &.alert-low {
+                --alert-bg-color: $alert-low;
+                --alert-color: black;
+            }
+
+            .alert-risk {
+                color: var(--alert-color);
+                background-color: var(--alert-bg-color);
+                padding: 5px 35px;
+            }
+
+            border-bottom: 4px solid var(--alert-bg-color);
+        }
+
+        .alert-body {
+            padding: 32px;
+
+            .alert-datetime {
+                font-size: .9em;
+            }
+
+            .alert-summary {
+                color: black;
+                font-size: 1.2em;
+                padding-bottom: 10px;
+                padding-top: 10px;
+            }
+
+            .mui-btn {
+                border: 1px solid black;
+                font-weight: bold;
+                margin: 30px 0 0 10px;
+                text-transform: none;
+
+                @media all and (max-width: 543px) {
+                    margin: 20px 0 0 0;
+                }
+
+                img {
+                    margin-right: 10px;
+                }
             }
         }
     }
@@ -762,6 +887,11 @@ footer {
 
         .menu {
             height: $appbar-height;
+
+            .alerts-count {
+                top: 15px;
+                right: 56px;
+            }
 
             .profile-icon {
                 display: block;

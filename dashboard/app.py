@@ -225,6 +225,18 @@ def dashboard():
     )
 
 
+@app.route('/notifications')
+@sh.wrapper()
+@oidc.oidc_auth
+def notifications():
+    user = User(session, config.Config(app).settings)
+    return render_template(
+        'notifications.html',
+        config=app.config,
+        user=user,
+    )
+
+
 @sh.wrapper
 @oidc.oidc_auth
 @app.route('/alert/<alert_id>', methods=['POST'])

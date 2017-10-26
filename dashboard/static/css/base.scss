@@ -37,6 +37,12 @@ $yellow: #faba00;
 
 $appbar-height: 70px;
 
+$alert-low: #cccccc;
+$alert-medium: #4a6785;
+$alert-high: #ffd351;
+$alert-maximum: #d04437;
+$alert-success: #14c887;
+
 html,
 body {
     height: 100%;
@@ -159,6 +165,16 @@ body {
             background-color: #f8f8f8;
         }
 
+        .alerts-count {
+            background-color: black;
+            width: 10px;
+            height: 10px;
+            position: absolute;
+            top: 10px;
+            right: 51px;
+            transform: rotate(45deg);
+        }
+
         .profile-icon {
             margin: 15px;
             width: 40px;
@@ -186,6 +202,10 @@ body {
             height: calc(#{$appbar-height} - 1px);
             position: relative;
             z-index: 2;
+
+            .alerts-count {
+                display: none;
+            }
 
             .name {
                 display: inline-block;
@@ -233,7 +253,7 @@ body {
 
 .messages {
     margin-top: $appbar-height;
-    background-color: $bggray;
+    background-color: black;
 
     #alert-nightly {
         display: none;
@@ -246,58 +266,77 @@ body {
     }
 
     .alert {
-        padding: 18px 18px 18px 170px;
+        padding: 18px;
         text-align: center;
         border-top: 1px solid white;
         color: white;
-
-        @media all and (max-width: 767px) {
-            padding-left: 18px;
-        }
+        margin: 0;
 
         &.alert-success {
-            background-color: #14c887;
+            --alert-bg-color: white;
+            --alert-color: $alert-success;
         }
 
         &.alert-medium {
-            background-color: #00458b;
+            --alert-bg-color: $alert-medium;
+            --alert-color: white;
         }
 
         &.alert-high {
-            background-color: #ffc300;
+            --alert-bg-color: $alert-high;
+            --alert-color: black;
         }
 
         &.alert-maximum {
-            background-color: #ff4f5e;
+            --alert-bg-color: $alert-maximum;
+            --alert-color: white;
         }
 
         &.alert-low {
-            background-color: #000000;
+            --alert-bg-color: $alert-low;
+            --alert-color: black;
         }
 
-        p {
-            display: inline;
-            margin-bottom: 0;
-            font-weight: bold;
+        .alert-info {
+            text-align: left;
+            font-size: .8em;
 
-            img {
+            @media all and (max-width: 767px) {
+                margin-bottom: 10px;
+                text-align: center;
+            }
+
+            .alert-risk {
+                color: var(--alert-color);
+                background-color: var(--alert-bg-color);
+                padding: 5px 35px;
+                text-transform: uppercase;
                 display: inline-block;
-                margin-right: 15px;
+                font-weight: bold;
             }
         }
 
-        form {
-            display: inline;
-            height: 1px;
-            width: 1px;
+        .alert-message {
+
+            @media all and (max-width: 767px) {
+                margin-bottom: 10px;
+            }
+
+            p {
+                display: inline;
+                margin-bottom: 0;
+                font-weight: bold;
+                vertical-align: middle;
+            }
         }
 
-        .actions {
-            display: inline-block;
-            position: relative;
-            top: -3px;
-            right: -5px;
-            float: right;
+        .alert-actions {
+            text-align: right;
+            font-size: .8em;
+
+            @media all and (max-width: 767px) {
+                text-align: center;
+            }
 
             .btn-alert {
                 padding: 5px 10px;
@@ -305,22 +344,38 @@ body {
                 display: inline-block;
                 color: white;
                 text-decoration: none;
+                font-weight: bold;
+                text-transform: uppercase;
 
-                @media all and (max-width: 767px) {
-                    display: none;
+                .info-text {
+
+                    @media all and (max-width: 1300px) {
+                        display: none;
+                    }
+                }
+
+                img {
+                    vertical-align: middle;
                 }
             }
 
             .closebtn {
                 color: white;
                 opacity: .8;
-                font-weight: bold;
-                font-size: 22px;
+                font-size: 2em;
                 line-height: 20px;
                 cursor: pointer;
                 transition: 0.3s;
                 margin-left: 5px;
                 padding: 5px;
+                vertical-align: text-top;
+
+                @media all and (max-width: 543px) {
+                    position: absolute;
+                    margin-top: 25px;
+                    top: $appbar-height;
+                    right: 10px;
+                }
             }
 
             .closebtn:hover {
@@ -380,6 +435,111 @@ body {
 
             .app-name {
                 color: black;
+            }
+        }
+    }
+}
+
+.notifications {
+
+    h4 {
+        color: black;
+        display: inline-block;
+        margin-bottom: 40px;
+        text-align: center;
+        text-transform: uppercase;
+        width: 100%;
+
+        img {
+            vertical-align: text-top;
+            margin-right: 5px;
+        }
+
+        .alerts-count {
+            background-color: black;
+            border-radius: .25rem;
+            color: white;
+            display: inline-block;
+            font-weight: bold;
+            margin-left: 5px;
+            padding: 0 .4em;
+            text-align: center;
+        }
+    }
+
+    .alert-panel {
+        background-color: white;
+        box-shadow: 7px 7px 0 0 #d3d3d3;
+        margin: 0 auto 40px auto;
+        max-width: 100%;
+        width: 775px;
+
+        .alert-header {
+            font-weight: bold;
+            padding: 26px 32px;
+            text-transform: uppercase;
+
+            &.alert-success {
+                --alert-bg-color: white;
+                --alert-color: $alert-success;
+            }
+
+            &.alert-medium {
+                --alert-bg-color: $alert-medium;
+                --alert-color: white;
+            }
+
+            &.alert-high {
+                --alert-bg-color: $alert-high;
+                --alert-color: black;
+            }
+
+            &.alert-maximum {
+                --alert-bg-color: $alert-maximum;
+                --alert-color: white;
+            }
+
+            &.alert-low {
+                --alert-bg-color: $alert-low;
+                --alert-color: black;
+            }
+
+            .alert-risk {
+                color: var(--alert-color);
+                background-color: var(--alert-bg-color);
+                padding: 5px 35px;
+            }
+
+            border-bottom: 4px solid var(--alert-bg-color);
+        }
+
+        .alert-body {
+            padding: 32px;
+
+            .alert-datetime {
+                font-size: .9em;
+            }
+
+            .alert-summary {
+                color: black;
+                font-size: 1.2em;
+                padding-bottom: 10px;
+                padding-top: 10px;
+            }
+
+            .mui-btn {
+                border: 1px solid black;
+                font-weight: bold;
+                margin: 30px 0 0 10px;
+                text-transform: none;
+
+                @media all and (max-width: 543px) {
+                    margin: 20px 0 0 0;
+                }
+
+                img {
+                    margin-right: 10px;
+                }
             }
         }
     }
@@ -762,6 +922,11 @@ footer {
 
         .menu {
             height: $appbar-height;
+
+            .alerts-count {
+                top: 15px;
+                right: 56px;
+            }
 
             .profile-icon {
                 display: block;

@@ -10,8 +10,25 @@
       <div class="panel">
         <div class="pointer"></div>
         <h2>
-          {% if reason %}
-            {{ reason }}
+          {% if error_code is defined %}
+            {% if error_code is equalto githubrequiremfa %}
+              You must setup a security device ("MFA", "2FA") for your GitHub
+account in order to access this service. Please follow the
+<a href="https://help.github.com/articles/securing-your-account-with-two-factor-authentication-2fa/">GitHub documentation</a>
+to setup your device, then try logging in again.
+            {% elif error_code is equalto notingroup %}
+              Sorry, you do not have permission to access {{ client_name }}.
+Please contact mailtothisthing eus@mozilla.com if you should have access.
+            {% elif error_code is equalto primarynotverified %}
+              You primary email address is not yet verified. Please verify your
+email address with {{ connection_name }} in order to use this service.
+            {% elif error_code is equalto incorrectaccount %}
+              Sorry, you may not login using {{ connection_name }}. Please instead
+always login with {{ preferred_connection_name }}.
+            {% endif %}
+            {% if redirect_uri is defined %}
+              <a href="{{ redirect_uri }}">Go back</a>
+            {% endif %}
           {% else %}
             Oye, something went wrong.
           {% endif %}

@@ -16,6 +16,9 @@ from flask_secure_headers.core import Secure_Headers
 import auth
 import config
 import vanity
+import json
+from josepy.jwk import JWK
+from josepy.jws import JWS
 from models.user import User
 from op.yaml_loader import Application
 from models.alert import Rules
@@ -162,13 +165,41 @@ def page_not_found(error):
 @app.route('/forbidden')
 def forbidden():
     """Route to render error page."""
-    reason = None
-    if 'reason' in request.args:
-        reason = request.args['reason']
-        logger.error(
-            "An error has been generated with reason: {0}".format(reason)
-        )
-    return render_template('forbidden.html', reason=reason)
+    def _get_connection_name(connection):
+        CONNECTION_NAMES = {
+            'google-oauth2': 'Google',
+            'github': 'GitHub',
+            'Mozilla-LDAP-Dev': 'LDAP',
+            'Mozilla-LDAP': 'LDAP',
+            'email': 'passwordless email'
+        }
+        return (
+            CONNECTION_NAMES[connection]
+            if connection in CONNECTION_NAMES else connection)
+
+    if 'error' not in request.args:
+        return render_template('forbidden.html')
+    try:
+        jws = JWS.from_compact(request.args['error'])
+        jwk = JWK.load(app.config['FORBIDDEN_PAGE_PUBLIC_KEY'])
+        if jws.signature.combined.alg.name != 'RS256' or not jws.verify(jwk):
+            logger.warning('foo')
+            return render_template('forbidden.html')
+        data = json.loads(jws.payload)
+    except:
+        logger.warning('foobar')
+        return render_template('forbidden.html')
+
+    data['connection_name'] = _get_connection_name(data['connection'])
+    if 'preferred_connection' in data:
+        data['preferred_connection_name'] = _get_connection_name(
+            data['preferred_connection'])
+    return render_template(
+        'forbidden.html',
+        **{k: data[k] for k in data
+           if k in ['client_name', 'connection_name', 'error_code',
+                    'redirect_uri', 'preferred_connection_name']}
+    )
 
 
 @app.route('/logout')

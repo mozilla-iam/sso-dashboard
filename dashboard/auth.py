@@ -87,7 +87,7 @@ class tokenVerification(object):
 
     @property
     def redirect_uri(self):
-        self.jws_data.get('redirect_uri')
+        return self.jws_data.get('redirect_uri')
 
     def _get_connection_name(self, connection):
         CONNECTION_NAMES = {

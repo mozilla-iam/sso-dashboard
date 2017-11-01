@@ -1,4 +1,5 @@
 """Configuration loader for different environments."""
+import base64
 import os
 import watchtower
 
@@ -44,7 +45,9 @@ class DefaultConfig(object):
 
     CDN = 'https://cdn.{SERVER_NAME}'.format(SERVER_NAME=SERVER_NAME)
 
-    FORBIDDEN_PAGE_PUBLIC_KEY = get_secret('sso-dashboard.forbidden_page_public_key', {'app': 'sso-dashboard'})
+    FORBIDDEN_PAGE_PUBLIC_KEY = base64.b64decode(
+        get_secret('sso-dashboard.forbidden_page_public_key', {'app': 'sso-dashboard'})
+    )
 
 
 class ProductionConfig(DefaultConfig):

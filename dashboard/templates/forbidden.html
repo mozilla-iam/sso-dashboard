@@ -10,7 +10,7 @@
       <div class="panel">
         <div class="pointer"></div>
         <h2>
-            {% if token_verifier and token_verifier.verified == True %}
+            {% if token_verifier %}
                 {{ token_verifier.error_message()|safe }}
                 {% if token_verifier.redirect_uri %}
                   <a href="{{ token_verifier.redirect_uri }}">Go back</a>

@@ -13,6 +13,7 @@
             {% if token_verifier %}
                 {{ token_verifier.error_message()|safe }}
                 {% if token_verifier.redirect_uri %}
+                    <br></br>
                   <a href="{{ token_verifier.redirect_uri }}">Go back</a>
                 {% endif %}
             {% else %}

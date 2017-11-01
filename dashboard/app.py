@@ -171,6 +171,7 @@ def forbidden():
 
     token_verifier = auth.tokenVerification(jws=jws, public_key=app.config['FORBIDDEN_PAGE_PUBLIC_KEY'])
     token_verifier.verify
+
     return render_template(
         'forbidden.html',token_verifier=token_verifier
     )

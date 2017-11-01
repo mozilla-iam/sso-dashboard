@@ -79,11 +79,11 @@ class tokenVerification(object):
 
     @property
     def error_code(self):
-        return self.jws_data.get('code')
+        return self.jws_data.get('code', None)
 
     @property
     def preferred_connection_name(self):
-        return self.jws_data.get('preferred_connection_name')
+        return self.jws_data.get('preferred_connection_name', None)
 
     @property
     def redirect_uri(self):
@@ -140,14 +140,14 @@ class tokenVerification(object):
             Please contact eus@mozilla.com if you should have access.".format(client=self.data.get('client'))
         elif error_code == 'primarynotverified':
             "You primary email address is not yet verified. Please verify your \
-            email address with {{ connection_name }} in order to use this service.".format(
-                connection_name=self.jws_data.get('connection_name')
+            email address with {connection_name} in order to use this service.".format(
+                connection_name=self._get_connection_name(self.jws_data.get('connection', ''))
             )
         elif error_code == 'incorrectaccount':
             error_text = "Sorry, you may not login using {connection_name}.  \
-             Please instead always login with {preferred_connection_name }.".format(
-                connection_name=self.jws_data.get('connection_name'),
-                preferred_connection_name=self.jws_data.get('preferred_connection_name')
+             Please instead always login with {preferred_connection_name}.".format(
+                connection_name=self._get_connection_name(self.jws_data.get('connection', '')),
+                preferred_connection_name=self._get_connection_name(self.preferred_connection_name)
             )
         else:
             error_text = "Oye, something went wrong."

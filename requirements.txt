@@ -14,7 +14,7 @@ rq
 jsmin
 cssmin
 pytest-flask
-pyjwt
+josepy
 cryptography==2.0
 pycrypto
 ecdsa

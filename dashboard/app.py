@@ -16,6 +16,7 @@ from flask_secure_headers.core import Secure_Headers
 import auth
 import config
 import vanity
+import json
 from models.user import User
 from op.yaml_loader import Application
 from models.alert import Rules
@@ -162,13 +163,17 @@ def page_not_found(error):
 @app.route('/forbidden')
 def forbidden():
     """Route to render error page."""
-    reason = None
-    if 'reason' in request.args:
-        reason = request.args['reason']
-        logger.error(
-            "An error has been generated with reason: {0}".format(reason)
-        )
-    return render_template('forbidden.html', reason=reason)
+
+    if 'error' not in request.args:
+        return render_template('forbidden.html')
+    else:
+        jws = request.args['error']
+
+    token_verifier = auth.tokenVerification(jws=jws, public_key=app.config['FORBIDDEN_PAGE_PUBLIC_KEY'])
+    token_verifier.verify
+    return render_template(
+        'forbidden.html',token_verifier=token_verifier
+    )
 
 
 @app.route('/logout')

@@ -10,11 +10,14 @@
       <div class="panel">
         <div class="pointer"></div>
         <h2>
-          {% if reason %}
-            {{ reason }}
-          {% else %}
-            Oye, something went wrong.
-          {% endif %}
+            {% if token_verifier %}
+                {{ token_verifier.error_message()|safe }}
+                {% if token_verifier.redirect_uri %}
+                  <a href="{{ token_verifier.redirect_uri }}">Go back</a>
+                {% endif %}
+            {% else %}
+                 Oye, something went wrong.
+            {% endif %}
         </h2>
       </div>
     </div>

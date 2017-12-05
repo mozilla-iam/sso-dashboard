@@ -6,7 +6,7 @@ Mappings:
         branch: "git checkout master"
         CertificateARN: "arn:aws:acm:us-east-1:656532927350:certificate/af98d466-2099-4d99-b1d1-dc222b8e59b0"
       us-west-2:
-        AMI: ami-983daaf8
+        AMI: ami-435f853b
         branch: "git checkout master"
         CertificateARN: "arn:aws:acm:us-west-2:656532927350:certificate/ade32b62-e360-4ecd-8c3c-f44671dba94f"
       eu-west-1:
@@ -24,11 +24,9 @@ Mappings:
         branch: "git checkout production"
         CertificateARN: "arn:aws:acm:eu-central-1:371522382791:certificate/82bcf762-ea43-4f32-b78e-4bbabe2f6fe4"
 Parameters:
-  SSHKeyName:
-    Description: Name of the existing ssh key that should have access
-    Type: String
-    MinLength: "1"
-    Default: akrug-key
+  KeyName:
+    Description: The EC2 Key Pair to allow SSH access to the instance
+    Type: 'AWS::EC2::KeyPair::KeyName'
   EnvType:
     Description: Environment type.
     Default: dev
@@ -42,6 +40,21 @@ Conditions:
   UseDevCondition:
     !Equals [!Ref EnvType, dev]
 Resources:
+  AlertFeedbackSQS:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: "SSODashboardAlertFeedback"
+  AlertFeedbackSNSTopic:
+    Type: "AWS::SNS::Topic"
+    Properties:
+      Subscription:
+        -
+          Endpoint:
+            Fn::GetAtt:
+              - "AlertFeedbackSQS"
+              - "Arn"
+          Protocol: "sqs"
+      TopicName: "SSODashboardAlertFeedback"
   SSODashboardInternetGateway:
     Type: "AWS::EC2::InternetGateway"
     Properties:
@@ -88,7 +101,10 @@ Resources:
     Type: "AWS::EC2::Subnet"
     DependsOn: SSODashboardRouteTable
     Properties:
-      AvailabilityZone: "us-west-2a"
+      AvailabilityZone:
+        Fn::Select:
+          - 0
+          - Fn::GetAZs: ""
       CidrBlock: "10.0.0.0/24"
       MapPublicIpOnLaunch: True
       VpcId:
@@ -100,7 +116,10 @@ Resources:
     Type: "AWS::EC2::Subnet"
     DependsOn: SSODashboardRouteTable
     Properties:
-      AvailabilityZone: "us-west-2b"
+      AvailabilityZone:
+        Fn::Select:
+          - 1
+          - Fn::GetAZs: ""
       CidrBlock: "10.0.1.0/24"
       MapPublicIpOnLaunch: True
       VpcId:
@@ -112,7 +131,10 @@ Resources:
     Type: "AWS::EC2::Subnet"
     DependsOn: SSODashboardRouteTable
     Properties:
-      AvailabilityZone: "us-west-2c"
+      AvailabilityZone:
+        Fn::Select:
+          - 2
+          - Fn::GetAZs: ""
       CidrBlock: "10.0.2.0/24"
       MapPublicIpOnLaunch: True
       VpcId:
@@ -160,10 +182,6 @@ Resources:
           FromPort: '80'
           ToPort: '80'
           CidrIp: 10.0.0.0/8
-        - IpProtocol: tcp
-          FromPort: '22'
-          ToPort: '22'
-          CidrIp: 0.0.0.0/0
       Tags:
         - Key: Name
           Value: SSO-Dashboard
@@ -182,10 +200,6 @@ Resources:
         - IpProtocol: tcp
           FromPort: '80'
           ToPort: '80'
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: '22'
-          ToPort: '22'
           CidrIp: 0.0.0.0/0
       Tags:
         - Key: Name
@@ -269,7 +283,7 @@ Resources:
     Type: "AWS::AutoScaling::LaunchConfiguration"
     Condition: UseProdCondition
     Properties:
-      KeyName: !Ref SSHKeyName
+      KeyName: !Ref KeyName
       ImageId: !FindInMap [!Ref EnvType, !Ref "AWS::Region", AMI]
       IamInstanceProfile: "sso-dashboard-instance-profile"
       UserData:
@@ -279,15 +293,14 @@ Resources:
           repo_upgrade: all
           runcmd:
             - REGION=$(curl 169.254.169.254/latest/meta-data/placement/availability-zone/ | sed 's/[a-z]$//')
+            - sudo start amazon-ssm-agent
             - yum update -y
-            - yum install ruby wget -y
-            - cd /home/ec2-user
-            - pip install boto3 --upgrade
             - wget https://aws-codedeploy-$REGION.s3.amazonaws.com/latest/install
             - chmod +x ./install
             - ./install auto
             - cd /home/ec2-user
-            - aws ecr get-login --region us-west-2 | bash
+            - sudo pip install awscli --upgrade
+            - aws ecr get-login --region us-west-2 --no-include-email | bash
             - docker run -d -e SQS_QUEUE=sso-dashboard-fluentd-sqs -v /var/log:/var/log 371522382791.dkr.ecr.us-west-2.amazonaws.com/sqs-fluentd:latest td-agent -c /etc/td-agent/td-agent.conf
             - rm -rf /home/ec2-user/app
             - mkdir -p /home/ec2-user/app
@@ -306,7 +319,7 @@ Resources:
     Condition: UseDevCondition
     DependsOn: [ SSODashboardSubnet1, SSODashboardSubnet2, SSODashboardSubnet3 ]
     Properties:
-      KeyName: !Ref SSHKeyName
+      KeyName: !Ref KeyName
       ImageId: !FindInMap [!Ref EnvType, !Ref "AWS::Region", AMI]
       IamInstanceProfile: "sso-dashboard-instance-profile"
       UserData:
@@ -316,24 +329,19 @@ Resources:
           repo_upgrade: all
           runcmd:
             - REGION=$(curl 169.254.169.254/latest/meta-data/placement/availability-zone/ | sed 's/[a-z]$//')
+            - sudo start amazon-ssm-agent
             - yum update -y
-            - yum install ruby wget -y
             - cd /home/ec2-user
-            - pip install boto3 --upgrade
-            - wget https://aws-codedeploy-$REGION.s3.amazonaws.com/latest/install
-            - chmod +x ./install
-            - ./install auto
-            - aws ecr get-login --region us-west-2 | bash
+            - sudo pip install awscli --upgrade
+            - aws ecr get-login --region us-west-2 --no-include-email | bash
             - docker run -d -e SQS_QUEUE=sso-dashboard-fluentd-sqs -v /var/log:/var/log 656532927350.dkr.ecr.us-west-2.amazonaws.com/sqs-fluentd:latest td-agent -c /etc/td-agent/td-agent.conf
-            - cd /home/ec2-user
             - rm -rf /home/ec2-user/app
             - mkdir -p /home/ec2-user/app
             - git clone https://github.com/mozilla-iam/sso-dashboard.git /home/ec2-user/app
             - cd /home/ec2-user/app
             - chmod +x /home/ec2-user/app/scripts/*
-            - cp /home/ec2-user/app/conf/supervisor-ansible.ini /etc/supervisord.d/
             - /home/ec2-user/app/scripts/build-environment.sh
-            - service supervisord restart
+            - /usr/local/bin/docker-compose up -d
       SecurityGroups:
         - Ref: SSODashboardSecGroup
       InstanceType: "t2.medium"
@@ -382,7 +390,7 @@ Resources:
          - Ref: ALBTargetGroup
          - Ref: ALBTargetGroup1
       MaxSize: "5"
-      MinSize: "3"
+      MinSize: "2"
       VPCZoneIdentifier:
         - Ref: SSODashboardSubnet1
         - Ref: SSODashboardSubnet2

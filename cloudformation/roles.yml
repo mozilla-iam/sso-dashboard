@@ -12,8 +12,11 @@ Resources:
             Principal:
               Service:
                 - "ec2.amazonaws.com"
+                - "ssm.amazonaws.com"
             Action:
               - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
       RoleName: SSO-Dashboard-Role
   SSOInstanceProfile:
     Type: "AWS::IAM::InstanceProfile"
@@ -163,8 +166,25 @@ Resources:
               - "sqs:SendMessage"
               - "sqs:SendMessageBatch"
               - "sqs:SetQueueAttributes"
-            Resource: "arn:aws:sqs:us-west-2:*:sso-dashboard-fluentd-sqs"
+            Resource: "arn:aws:sqs:*:*:sso-dashboard-fluentd-sqs"
       PolicyName: sso-dashboard-sqs-send
+      Roles:
+        -
+          Ref: SSODashboardRole
+  SSODashboardSNSNotify:
+    Type: "AWS::IAM::Policy"
+    DependsOn: SSODashboardRole
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Action:
+              - "SNS:Publish"
+
+            Resource: "arn:aws:sns:*:*:sso-dashboard-*"
+      PolicyName: sso-dashboard-sns-send
       Roles:
         -
           Ref: SSODashboardRole
@@ -183,6 +203,65 @@ Resources:
               - "dynamodb:Scan"
             Resource: "arn:aws:dynamodb:*:*:table/credential-store"
       PolicyName: sso-dashboard-credstash
+      Roles:
+        -
+          Ref: SSODashboardRole
+  SSODashboardAlertWrite:
+    Type: "AWS::IAM::Policy"
+    DependsOn: SSODashboardRole
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Action:
+                - "dynamodb:DeleteItem"
+                - "dynamodb:DescribeLimits"
+                - "dynamodb:DescribeReservedCapacity"
+                - "dynamodb:DescribeReservedCapacityOfferings"
+                - "dynamodb:DescribeStream"
+                - "dynamodb:DescribeTable"
+                - "dynamodb:GetItem"
+                - "dynamodb:GetRecords"
+                - "dynamodb:GetShardIterator"
+                - "dynamodb:ListTables"
+                - "dynamodb:PutItem"
+                - "dynamodb:Query"
+                - "dynamodb:Scan"
+                - "dynamodb:UpdateItem"
+            Resource: "arn:aws:dynamodb:*:*:table/sso-dashboard-alert"
+      PolicyName: sso-dashboard-alert-write
+      Roles:
+        -
+          Ref: SSODashboardRole
+  SSODashboardConfigurationRead:
+    Type: "AWS::IAM::Policy"
+    DependsOn: SSODashboardRole
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Action:
+                - "dynamodb:DeleteItem"
+                - "dynamodb:DescribeLimits"
+                - "dynamodb:DescribeReservedCapacity"
+                - "dynamodb:DescribeReservedCapacityOfferings"
+                - "dynamodb:DescribeStream"
+                - "dynamodb:DescribeTable"
+                - "dynamodb:GetItem"
+                - "dynamodb:GetRecords"
+                - "dynamodb:GetShardIterator"
+                - "dynamodb:ListTables"
+                - "dynamodb:PutItem"
+                - "dynamodb:Query"
+                - "dynamodb:Scan"
+                - "dynamodb:UpdateItem"
+                - "dynamodb:UpdateItem"
+            Resource: "arn:aws:dynamodb:*:*:table/sso-dashboard-apps"
+      PolicyName: sso-dashboard-configuration-read
       Roles:
         -
           Ref: SSODashboardRole

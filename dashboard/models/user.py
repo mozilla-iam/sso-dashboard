@@ -1,10 +1,11 @@
 """User class that governs maniuplation of session['userdata']"""
 import logging
 import requests
+from faker import Faker
 
 from . import alert
 
-
+fake = Faker()
 logger = logging.getLogger(__name__)
 
 
@@ -184,3 +185,65 @@ class User(object):
         except Exception:
             return False
 
+
+class FakeUser(object):
+    def __init__(self, app_config):
+        """Constructor takes user session."""
+        self.app_config = app_config
+        m = Mozillians(self.app_config)
+        self.profile = m.user_detail(self.email())
+
+    def email(self):
+        return fake.email()
+
+    def apps(self, app_list):
+        authorized_apps = {
+            'apps': []
+        }
+
+        for app in app_list['apps']:
+            if self._is_valid_yaml(app):
+                if self._is_authorized(app):
+                    authorized_apps['apps'].append(app)
+        return authorized_apps.get('apps', [])
+
+    @property
+    def avatar(self):
+        return self.profile['avatar']
+
+    def group_membership(self):
+            return []
+
+    @property
+    def first_name(self):
+        return fake.first_name_male()
+
+    @property
+    def last_name(self):
+        return fake.last_name()
+
+    @property
+    def alerts(self):
+        return [
+            {
+                'alert_code': '416c65727447656f6d6f64656c',
+                'alert_id': '4053bd6a9e9a6bb03095f479c0fab2',
+                'date': '2017-10-27',
+                'description': 'This alert is created based on geo ip information about the last login of a user.',
+                'duplicate': True,
+                'risk': 'medium',
+                'summary': 'Did you recently login from Unknown, {}?'.format(fake.country()),
+                'url': 'https://mana.mozilla.org/wiki/display/SECURITY/Alert%3A+Change+in+Country',
+                'url_title': 'Get Help',
+                'user_id': 'ad|Mozilla-LDAP|fakeuser'
+            }
+        ]
+
+    def _is_valid_yaml(self, app):
+        return True
+
+    def _is_authorized(self, app):
+        if 'everyone' in app['application']['authorized_groups']:
+            return True
+        else:
+            return False

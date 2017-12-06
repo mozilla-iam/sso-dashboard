@@ -30,11 +30,12 @@ class Application(object):
         return stream
 
     def _render_data(self):
-        for app in self.apps['apps']:
-            app['application']['alt_text'] = app['application']['name']
-            app['application']['name'] = self._truncate(
-                app['application']['name']
-            )
+        if self.apps is not None:
+            for app in self.apps['apps']:
+                app['application']['alt_text'] = app['application']['name']
+                app['application']['name'] = self._truncate(
+                    app['application']['name']
+                )
 
     def _alphabetize(self):
         try:
@@ -67,12 +68,13 @@ class Application(object):
 
     def vanity_urls(self):
         redirects = []
-        for app in self.apps['apps']:
-            if self._has_vanity(app):
-                for redirect in app['application']['vanity_url']:
-                    redirects.append(
-                        {
-                            redirect: app['application']['url']
-                        }
-                    )
-        return redirects
+        if self.apps is not None:
+            for app in self.apps['apps']:
+                if self._has_vanity(app):
+                    for redirect in app['application']['vanity_url']:
+                        redirects.append(
+                            {
+                                redirect: app['application']['url']
+                            }
+                        )
+            return redirects

@@ -71,7 +71,7 @@ class S3Transfer(object):
         filename = os.path.join(this_dir, '../data/{name}').format(
             name='apps.yml'
         )
-        c = open(filename, 'w+')
+        c = open(filename, 'wb')
         c.write(config['Body'].read())
         c.close()
         self._update_etag(config['ETag'])

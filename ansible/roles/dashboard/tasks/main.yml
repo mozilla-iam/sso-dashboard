@@ -57,7 +57,7 @@
 - name: Install requirements
   pip:
     requirements: '/sso-dashboard/requirements.txt'
-    executable: pip-3.4
+    executable: pip3
 
 - name: Copy The Application
   copy:
@@ -112,4 +112,4 @@
   pip:
     name: git+git://github.com/mozilla-iam/pyoidc.git@hotfix_unicode#egg=pyoidc
     state: forcereinstall
-    executable: pip-3.4
+    executable: pip3

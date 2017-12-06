@@ -21,6 +21,7 @@ import vanity
 
 from csp import DASHBOARD_CSP
 from models.user import User
+from models.user import FakeUser
 from op.yaml_loader import Application
 from models.alert import Rules
 from models.tile import S3Transfer
@@ -35,16 +36,17 @@ with open('logging.yml', 'r') as log_config:
 logger = logging.getLogger('sso-dashboard')
 
 app = Flask(__name__)
-talisman = Talisman(app, content_security_policy=DASHBOARD_CSP)
-app.config.from_object(config.Config(app).settings)
 
+talisman = Talisman(
+    app, content_security_policy=DASHBOARD_CSP,
+)
+
+app.config.from_object(config.Config(app).settings)
 S3Transfer(config.Config(app).settings).sync_config()
 
 assets = Environment(app)
-
 js = Bundle('js/base.js', filters='jsmin', output='js/gen/packed.js')
 assets.register('js_all', js)
-
 
 sass = Bundle('css/base.scss', filters='scss')
 css = Bundle(sass, filters='cssmin', output='css/gen/all.css')
@@ -54,17 +56,13 @@ assets.register('css_all', css)
 mimetypes.add_type('image/svg+xml', '.svg')
 
 oidc_config = config.OIDCConfig()
-
 authentication = auth.OpenIDConnect(
     oidc_config
 )
-
 oidc = authentication.auth(app)
-
 person_api = person.API()
 
 vanity_router = vanity.Router(app=app).setup()
-# Add secure Headers to satify observatory checks
 
 
 @app.route('/favicon.ico')
@@ -169,6 +167,20 @@ def dashboard():
     Rules(userinfo=session['userinfo'], request=request).run()
 
     user = User(session, config.Config(app).settings)
+    apps = user.apps(Application().apps)
+
+    return render_template(
+        'dashboard.html',
+        config=app.config,
+        user=user,
+        apps=apps,
+        alerts=None
+    )
+
+
+@app.route('/styleguide')
+def styleguide():
+    user = FakeUser(config.Config(app).settings)
     apps = user.apps(Application().apps)
 
     return render_template(

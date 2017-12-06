@@ -25,7 +25,7 @@ class Feedback(object):
         message = {
             'category': 'user_feedback',
             'details': {
-                'action': self.action, # (escalate|acknowledge|false-positive)
+                'action': self.action,  # (escalate|acknowledge|false-positive)
                 'alert_information': self.alert
             }
         }
@@ -40,7 +40,6 @@ class Feedback(object):
         self._construct_alert()
 
         pass
-
 
 
 class Alert(object):

@@ -33,7 +33,8 @@ class Mozillians(object):
             results = response.get('results', -1)
             user_url = results[0].get('_url')
             user_info = requests.get(user_url, headers=self.headers, timeout=5)
-        except:
+        except Exception as e:
+            logger.error('Userinfo could not be retreived due to: {}'.format(e))
             return None
 
         if user_info.status_code is not 200:
@@ -41,7 +42,8 @@ class Mozillians(object):
 
         try:
             info = user_info.json()
-        except:
+        except Exception as e:
+            logger.error('Userinfo could not be retreived due to: {}'.format(e))
             return None
 
         return info
@@ -56,7 +58,8 @@ class Mozillians(object):
         try:
             mozillians_response = requests.get(self.api_url, headers=self.headers,
                                                params=params, timeout=5)
-        except:
+        except Exception as e:
+            logger.error('Mozillians info could not be retreived due to: {}'.format(e))
             return None
 
         if mozillians_response.status_code is not 200:
@@ -64,7 +67,8 @@ class Mozillians(object):
 
         try:
             response = mozillians_response.json()
-        except:
+        except Exception as e:
+            logger.error('Mozillians info could not be retreived due to: {}'.format(e))
             return None
 
         return response
@@ -122,9 +126,11 @@ class User(object):
 
     def group_membership(self):
         """Return list of group membership if user is asserted from ldap."""
-        if 'https://sso.mozilla.com/claim/groups' in self.userinfo.keys() \
-            and len(self.userinfo['https://sso.mozilla.com/claim/groups']) > 0:
-            return self.userinfo['https://sso.mozilla.com/claim/groups']
+        if self.userinfo.get('https://sso.mozilla.com/claim/groups', None):
+            group_count = len(self.userinfo.get('https://sso.mozilla.com/claim/groups', None))
+
+        if 'https://sso.mozilla.com/claim/groups' in self.userinfo.keys() and group_count > 0:
+                return self.userinfo['https://sso.mozilla.com/claim/groups']
         else:
             # This could mean a user is authing with non-ldap
             return []

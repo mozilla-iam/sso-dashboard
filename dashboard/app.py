@@ -67,7 +67,7 @@ vanity_router = vanity.Router(app=app).setup()
 
 @app.route('/favicon.ico')
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static/img'),'favicon.ico')
+    return send_from_directory(os.path.join(app.root_path, 'static/img'), 'favicon.ico')
 
 
 @app.route('/')
@@ -114,7 +114,7 @@ def forbidden():
     token_verifier.verify
 
     return render_template(
-        'forbidden.html',token_verifier=token_verifier
+        'forbidden.html', token_verifier=token_verifier
     )
 
 
@@ -153,12 +153,12 @@ def dashboard():
     """Primary dashboard the users will interact with."""
     logger.info("User: {} authenticated proceeding to dashboard.".format(session.get('id_token')['sub']))
 
-    #if "Mozilla-LDAP" in session.get('userinfo')['sub']:
-    #    logger.info("Mozilla IAM user detected. Attempt enriching with ID-Vault data.")
-    #    try:
-    #       session['idvault_userinfo'] = person_api.get_userinfo(session.get('id_token')['sub'])
-    #    except Exception as e:
-    #        logger.error("Could not enrich profile.  Perhaps it doesn't exist?")
+    if "Mozilla-LDAP" in session.get('userinfo')['sub']:
+        logger.info("Mozilla IAM user detected. Attempt enriching with ID-Vault data.")
+        try:
+            session['idvault_userinfo'] = person_api.get_userinfo(session.get('id_token')['sub'])
+        except Exception as e:
+            logger.error("Could not enrich profile.  Perhaps it doesn't exist?")
 
     # Transfer any updates in to the app_tiles.
     S3Transfer(config.Config(app).settings).sync_config()

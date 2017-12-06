@@ -37,7 +37,7 @@ class API(object):
         conn = http.client.HTTPSConnection("{}".format(self.person_api_url))
         token = "Bearer {}".format(self.get_bearer().get('access_token'))
 
-        headers = { 'authorization': token }
+        headers = {'authorization': token}
 
         conn.request("GET", "/prod/profile/{}".format(user_id), headers=headers)
 

@@ -7,6 +7,9 @@
     mode: 0775
     validate_certs: no
 
+- name: Install credstash depends
+  yum: name=gcc,libffi-devel,python-devel,openssl-devel,curl-devel,python34,python34-devel state=latest
+
 - name: Install EPEL
   yum: name=epel-release state=latest
 
@@ -27,14 +30,11 @@
 - name: Install git
   yum: name=git state=latest
 
-- name: Install credstash depends
-  yum: name=gcc,libffi-devel,python-devel,openssl-devel,curl-devel,python34,python34-devel state=latest
-
 - name: Install Pip
   yum: name=python-pip state=latest
 
-- name: Install PyDevel
-  yum: name=python-devel state=latest
+- name: Install Pip
+  yum: name=python34-pip state=latest
 
 - name: Install rubygems sass compiler
   yum: name=rubygem-sass state=latest

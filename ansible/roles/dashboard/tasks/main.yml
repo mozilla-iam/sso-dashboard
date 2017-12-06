@@ -111,9 +111,3 @@
   pip:
     name: git+git://github.com/mozilla-iam/pyoidc.git@hotfix_unicode#egg=pyoidc
     state: forcereinstall
-
-- name: Force cryptography 2pointo
-  pip:
-    name: cryptography
-    version: 2.0
-    state: forcereinstall

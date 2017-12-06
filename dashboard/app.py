@@ -1,6 +1,7 @@
-import logging
+import logging.config
 import mimetypes
 import os
+import yaml
 
 from flask import Flask
 from flask import jsonify
@@ -15,16 +16,22 @@ from flask_secure_headers.core import Secure_Headers
 
 import auth
 import config
+import person
 import vanity
-import json
+
 from models.user import User
 from op.yaml_loader import Application
 from models.alert import Rules
 from models.tile import S3Transfer
 
-logger = logging.getLogger(__name__)
-logging.getLogger(__name__).addHandler(logging.StreamHandler())
-logging.basicConfig(level=logging.CRITICAL)
+logging.basicConfig(level=logging.INFO)
+
+with open('logging.yml', 'r') as log_config:
+    config_yml = log_config.read()
+    config_dict = yaml.load(config_yml)
+    logging.config.dictConfig(config_dict)
+
+logger = logging.getLogger('sso-dashboard')
 
 app = Flask(__name__)
 app.config.from_object(config.Config(app).settings)
@@ -51,6 +58,8 @@ authentication = auth.OpenIDConnect(
 )
 
 oidc = authentication.auth(app)
+
+person_api = person.API()
 
 vanity_router = vanity.Router(app=app).setup()
 # Add secure Headers to satify observatory checks
@@ -138,6 +147,12 @@ def home():
     return redirect('/dashboard', code=302)
 
 
+@app.route('/csp_report', methods=['POST'])
+@sh.wrapper()
+def csp_report():
+    return '200'
+
+
 # XXX This needs to load the schema from a better location
 # See also https://github.com/mozilla/iam-project-backlog/issues/161
 @app.route('/claim')
@@ -211,7 +226,14 @@ def signout():
 @oidc.oidc_auth
 def dashboard():
     """Primary dashboard the users will interact with."""
-    logger.info("User authenticated proceeding to dashboard.")
+    logger.info("User: {} authenticated proceeding to dashboard.".format(session.get('id_token')['sub']))
+
+    if "Mozilla-LDAP" in session.get('userinfo')['sub']:
+        logger.info("Mozilla IAM user detected. Attempt enriching with ID-Vault data.")
+        try:
+            session['idvault_userinfo'] = person_api.get_userinfo(session.get('id_token')['sub'])
+        except Exception as e:
+            logger.error("Could not enrich profile.  Perhaps it doesn't exist?")
 
     # Transfer any updates in to the app_tiles.
     S3Transfer(config.Config(app).settings).sync_config()

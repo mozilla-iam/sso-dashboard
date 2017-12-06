@@ -17,7 +17,7 @@ Mappings:
         branch: "git checkout production"
         CertificateARN: "arn:aws:acm:us-east-1:371522382791:certificate/12dd7f1a-177c-4a11-8b62-ca098d3ee40c"
       us-west-2:
-        AMI: ami-983daaf8
+        AMI: ami-51568c29
         branch: "git checkout production"
         CertificateARN: "arn:aws:acm:us-west-2:371522382791:certificate/8f0dfce8-88c1-4b9c-b3bd-850af8dcc0a5"
       eu-west-1:

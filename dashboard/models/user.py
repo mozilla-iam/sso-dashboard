@@ -2,7 +2,6 @@
 import logging
 import requests
 
-
 from . import alert
 
 
@@ -89,10 +88,20 @@ class Mozillians(object):
 class User(object):
     def __init__(self, session, app_config):
         """Constructor takes user session."""
-        self.userinfo = session.get('userinfo', None)
+        self.id_token = session.get('id_token', None)
         self.app_config = app_config
         m = Mozillians(self.app_config)
-        self.profile = m.user_detail(self.userinfo.get('email'))
+        self.userinfo = session.get('userinfo')
+        self.idvault_info = session.get('idvault_userinfo')
+        self.profile = m.user_detail(self.email())
+
+    def email(self):
+        try:
+            email = self.userinfo.get('email')
+        except Exception as e:
+            logger.error('The email attribute does no exists falling back to OIDC Conformant.')
+            email = self.userinfo.get('https://sso.mozilla.com/claim/emails')[0]['emails']
+        return email
 
     def apps(self, app_list):
         """Return a list of the apps a user is allowed to see in dashboard."""
@@ -112,8 +121,9 @@ class User(object):
 
     def group_membership(self):
         """Return list of group membership if user is asserted from ldap."""
-        if 'groups' in self.userinfo.keys() and len(self.userinfo['groups']) > 0:
-            return self.userinfo['groups']
+        if 'https://sso.mozilla.com/claim/groups' in self.userinfo.keys() \
+            and len(self.userinfo['https://sso.mozilla.com/claim/groups']) > 0:
+            return self.userinfo['https://sso.mozilla.com/claim/groups']
         else:
             # This could mean a user is authing with non-ldap
             return []
@@ -136,19 +146,19 @@ class User(object):
 
     def user_identifiers(self):
         """Construct a list of potential user identifiers to match on."""
-        return [self.userinfo['email'], self.userinfo['user_id']]
+        return [self.email(), self.userinfo['sub']]
 
     @property
     def alerts(self):
-        alerts = alert.Alert().find(user_id=self.userinfo['user_id'])
+        alerts = alert.Alert().find(user_id=self.userinfo['sub'])
         return alerts
 
     def acknowledge_alert(self, alert_id):
         a = alert.Alert()
 
         """ Future home of the code that pushes an alert back to MozDef """
-        logger.info('An alert was acked for {uid}.'.format(uid=self.userinfo['user_id']))
-        return a.destroy(alert_id=alert_id, user_id=self.userinfo['user_id'])
+        logger.info('An alert was acked for {uid}.'.format(uid=self.userinfo['sub']))
+        return a.destroy(alert_id=alert_id, user_id=self.userinfo['sub'])
 
     def _is_authorized(self, app):
         if app['application']['display'] == 'False':
@@ -173,3 +183,4 @@ class User(object):
             return True
         except Exception:
             return False
+

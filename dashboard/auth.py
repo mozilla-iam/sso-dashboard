@@ -26,7 +26,7 @@ class OpenIDConnect(object):
             issuer="https://{DOMAIN}/".format(DOMAIN=self.oidc_config.OIDC_DOMAIN),
             authorization_endpoint=self.oidc_config.auth_endpoint(),
             token_endpoint=self.oidc_config.token_endpoint(),
-            userinfo_endpoint=self.oidc_config.userinfo_endpoint(),
+            userinfo_endpoint=self.oidc_config.userinfo_endpoint()
 
         )
 

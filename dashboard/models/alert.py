@@ -9,11 +9,54 @@ import requests
 from boto3.dynamodb.conditions import Attr
 
 
+class Feedback(object):
+    """Send user data back to MozDef or other subscribers via an SNS Topic"""
+    def __init__(self, alert, action, sns_topic_arn):
+        self.alert = alert
+        self.action = action
+        self.mozdef_standard_event = None
+        self.sns_topic_arn = sns_topic_arn
+        self.sns = None
+
+    def connect_sns(self):
+        pass
+
+    def _construct_alert(self):
+        message = {
+            'category': 'user_feedback',
+            'details': {
+                'action': self.action, # (escalate|acknowledge|false-positive)
+                'alert_information': self.alert
+            }
+        }
+
+        return message
+
+    def send(self):
+        """Send the event to the SNS Topic."""
+        if self.sns is None:
+            self.connect_sns()
+
+        self._construct_alert()
+
+        pass
+
+
+
 class Alert(object):
     """Primary object containing alert functions."""
     def __init__(self):
         self.alert_table_name = 'sso-dashboard-alert'
         self.dynamodb = None
+
+    def has_actions(self, alert_dict):
+        """Let's the view know if it should render actions for the alert."""
+
+        # Whitelist the firefox out of date alert.  It should not get buttons.
+        if self.alert_dict.get('alert_code') is not '63f675d8896f4fb2b3caa204c8c2761e':
+            return True
+        else:
+            return False
 
     def connect_dynamodb(self):
         if self.dynamodb is None:
@@ -23,7 +66,6 @@ class Alert(object):
 
     def find_or_create_by(self, alert_dict, user_id):
         """
-
         :param alert_dict: takes a dictionary of alert information
         :param user_id: the session info user_id
         :return: dynamodb response or none

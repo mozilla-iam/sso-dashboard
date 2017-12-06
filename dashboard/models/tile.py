@@ -16,6 +16,7 @@ class S3Transfer(object):
         self.app_config = app_config
         self.client = None
         self.s3_bucket = self.app_config.S3_BUCKET
+        self.apps_yml = None
 
     def connect_s3(self):
         if not self.client:
@@ -62,8 +63,10 @@ class S3Transfer(object):
 
     def _get_config(self):
         self.connect_s3()
-        with open('data/apps.yml', 'wb') as data:
-            self.client.download_fileobj(self.s3_bucket, 'apps.yml', data)
+        apps_yml = self.client.get_object(
+            Bucket=self.s3_bucket,
+            Key='apps.yml'
+        )
 
         response = self.client.head_object(
             Bucket=self.s3_bucket,
@@ -71,6 +74,7 @@ class S3Transfer(object):
         )
 
         self._update_etag(response.get('ETag'))
+        self.apps_yml = apps_yml.get('Body').read()
 
     def _touch(self):
         fname = 'app.py'
@@ -90,6 +94,7 @@ class S3Transfer(object):
                 self._touch()
                 return True
             else:
+                self._get_config()
                 return False
                 # Do nothing
         except Exception as e:

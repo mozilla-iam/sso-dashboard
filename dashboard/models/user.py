@@ -160,12 +160,14 @@ class User(object):
         alerts = alert.Alert().find(user_id=self.userinfo['sub'])
         return alerts
 
-    def acknowledge_alert(self, alert_id):
+    def acknowledge_alert(self, alert_id, alert_action):
         a = alert.Alert()
 
-        """ Future home of the code that pushes an alert back to MozDef """
-        logger.info('An alert was acked for {uid}.'.format(uid=self.userinfo['sub']))
-        return a.destroy(alert_id=alert_id, user_id=self.userinfo['sub'])
+        if alert_action == 'acknowledge':
+            logger.info('An alert was acked for {uid}.'.format(uid=self.userinfo['sub']))
+            return a.destroy(alert_id=alert_id, user_id=self.userinfo['sub'])
+
+
 
     def _is_authorized(self, app):
         if app['application']['display'] == 'False':

@@ -10,8 +10,8 @@ logger = logging.getLogger(__name__)
 
 
 class Application(object):
-    def __init__(self):
-        self.config_file = self._find("apps.yml", ".")
+    def __init__(self, app_dict):
+        self.app_dict = app_dict
         self.apps = self._load_data()
         self._render_data()
         self._alphabetize()
@@ -20,16 +20,15 @@ class Application(object):
         pass
 
     def _load_data(self):
-        with open(self.config_file, 'r') as stream:
-            try:
-                stream = yaml.safe_load(stream)
-            except yaml.YAMLError as e:
-                logger.info(e)
-                pass
+        try:
+            stream = yaml.safe_load(self.app_dict)
+        except yaml.YAMLError as e:
+            stream = None
+            logger.info(e)
+            pass
         return stream
 
     def _render_data(self):
-
         for app in self.apps['apps']:
             app['application']['alt_text'] = app['application']['name']
             app['application']['name'] = self._truncate(

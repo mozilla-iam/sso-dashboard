@@ -42,7 +42,8 @@ talisman = Talisman(
 )
 
 app.config.from_object(config.Config(app).settings)
-S3Transfer(config.Config(app).settings).sync_config()
+app_list = S3Transfer(config.Config(app).settings)
+app_list.sync_config()
 
 assets = Environment(app)
 js = Bundle('js/base.js', filters='jsmin', output='js/gen/packed.js')
@@ -62,7 +63,7 @@ authentication = auth.OpenIDConnect(
 oidc = authentication.auth(app)
 person_api = person.API()
 
-vanity_router = vanity.Router(app=app).setup()
+vanity_router = vanity.Router(app, app_list).setup()
 
 
 @app.route('/favicon.ico')
@@ -167,7 +168,7 @@ def dashboard():
     Rules(userinfo=session['userinfo'], request=request).run()
 
     user = User(session, config.Config(app).settings)
-    apps = user.apps(Application().apps)
+    apps = user.apps(Application(app_list.apps_yml).apps)
 
     return render_template(
         'dashboard.html',
@@ -181,7 +182,7 @@ def dashboard():
 @app.route('/styleguide')
 def styleguide():
     user = FakeUser(config.Config(app).settings)
-    apps = user.apps(Application().apps)
+    apps = user.apps(Application(app_list.apps_yml).apps)
 
     return render_template(
         'dashboard.html',
@@ -208,7 +209,14 @@ def notifications():
 def alert_operation(alert_id):
     if request.method == 'POST':
         user = User(session, config.Config(app).settings)
-        result = user.acknowledge_alert(alert_id)
+
+        if request.data is not None:
+            data = json.loads(data)
+            alert_action = data.get('alert_action')
+        else:
+            alert_action = 'acknowledge' # (escalate|acknowledge|false-positive)
+
+        result = user.acknowledge_alert(alert_id, alert_action)
 
         if result['ResponseMetadata']['HTTPStatusCode'] == 200:
             return '200'

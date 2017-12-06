@@ -11,11 +11,11 @@ from boto3.dynamodb.conditions import Attr
 
 class Feedback(object):
     """Send user data back to MozDef or other subscribers via an SNS Topic"""
-    def __init__(self, alert, action, sns_topic_arn):
+    def __init__(self, alert, action):
         self.alert = alert
         self.action = action
         self.mozdef_standard_event = None
-        self.sns_topic_arn = sns_topic_arn
+        self.sns_topic_arn = 'arn:aws:sns:us-west-2:656532927350:SSODashboardAlertFeedback'
         self.sns = None
 
     def connect_sns(self):
@@ -37,7 +37,8 @@ class Feedback(object):
         if self.sns is None:
             self.connect_sns()
 
-        self._construct_alert()
+        message = self._construct_alert()
+        print(message)
 
         pass
 

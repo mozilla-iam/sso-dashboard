@@ -6,9 +6,9 @@ from op import yaml_loader
 
 
 class Router(object):
-    def __init__(self, app):
+    def __init__(self, app, app_list):
         self.app = app
-        self.url_list = yaml_loader.Application().vanity_urls()
+        self.url_list = yaml_loader.Application(app_list.apps_yml).vanity_urls()
 
     def setup(self):
         for url in self.url_list:

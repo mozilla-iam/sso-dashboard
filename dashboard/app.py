@@ -12,13 +12,14 @@ from flask import send_from_directory
 from flask import session
 from flask_assets import Bundle
 from flask_assets import Environment
-from flask_secure_headers.core import Secure_Headers
+from flask_talisman import Talisman, ALLOW_FROM
 
 import auth
 import config
 import person
 import vanity
 
+from csp import DASHBOARD_CSP
 from models.user import User
 from op.yaml_loader import Application
 from models.alert import Rules
@@ -34,6 +35,7 @@ with open('logging.yml', 'r') as log_config:
 logger = logging.getLogger('sso-dashboard')
 
 app = Flask(__name__)
+talisman = Talisman(app, content_security_policy=DASHBOARD_CSP)
 app.config.from_object(config.Config(app).settings)
 
 S3Transfer(config.Config(app).settings).sync_config()
@@ -64,91 +66,18 @@ person_api = person.API()
 vanity_router = vanity.Router(app=app).setup()
 # Add secure Headers to satify observatory checks
 
-sh = Secure_Headers()
-sh.update(
-    {
-        'CSP': {
-            'default-src': [
-                'self',
-            ],
-            'script-src': [
-                'self',
-                'data:',
-                'ajax.googleapis.com',
-                'fonts.googleapis.com',
-                'https://*.googletagmanager.com',
-                'https://tagmanager.google.com',
-                'https://*.google-analytics.com',
-                'https://cdn.sso.mozilla.com',
-                'https://cdn.sso.allizom.org',
-                'https://dhjrqi6qcwjfu.cloudfront.net'
-            ],
-            'style-src': [
-                'self',
-                'ajax.googleapis.com',
-                'fonts.googleapis.com',
-                'https://cdn.sso.mozilla.com',
-                'https://cdn.sso.allizom.org',
-                'https://dhjrqi6qcwjfu.cloudfront.net'
-            ],
-            'img-src': [
-                'self',
-                'https://mozillians.org',
-                'https://media.mozillians.org',
-                'https://cdn.mozillians.org',
-                'https://cdn.sso.mozilla.com',
-                'https://cdn.sso.allizom.org',
-                'https://*.google-analytics.com',
-                'https://*.gravatar.com',
-                'https://cdn.sso.mozilla.com',
-                'https://cdn.sso.allizom.org',
-                'https://dhjrqi6qcwjfu.cloudfront.net'
-            ],
-            'font-src': [
-                'self',
-                'fonts.googleapis.com',
-                'fonts.gstatic.com',
-                'https://cdn.sso.mozilla.com',
-                'https://cdn.sso.allizom.org',
-                'https://dhjrqi6qcwjfu.cloudfront.net'
-            ]
-        }
-    }
-)
-
-sh.update(
-    {
-        'HSTS':
-            {
-                'max-age': 15768000,
-                'includeSubDomains': True,
-                'preload': False
-            }
-    }
-)
-
-sh.update(
-    {
-        'HPKP': {}
-    }
-)
-
 
 @app.route('/favicon.ico')
-@sh.wrapper()
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static/img'),
-                               'favicon.ico')
+    return send_from_directory(os.path.join(app.root_path, 'static/img'),'favicon.ico')
 
 
 @app.route('/')
-@sh.wrapper()
 def home():
     return redirect('/dashboard', code=302)
 
 
 @app.route('/csp_report', methods=['POST'])
-@sh.wrapper()
 def csp_report():
     return '200'
 
@@ -156,7 +85,6 @@ def csp_report():
 # XXX This needs to load the schema from a better location
 # See also https://github.com/mozilla/iam-project-backlog/issues/161
 @app.route('/claim')
-@sh.wrapper()
 def claim():
     """Show the user schema - this path is refered to by
     our OIDC Claim namespace, i.e.: https://sso.mozilla.com/claim/*"""
@@ -222,18 +150,17 @@ def signout():
 
 
 @app.route('/dashboard')
-@sh.wrapper()
 @oidc.oidc_auth
 def dashboard():
     """Primary dashboard the users will interact with."""
     logger.info("User: {} authenticated proceeding to dashboard.".format(session.get('id_token')['sub']))
 
-    if "Mozilla-LDAP" in session.get('userinfo')['sub']:
-        logger.info("Mozilla IAM user detected. Attempt enriching with ID-Vault data.")
-        try:
-            session['idvault_userinfo'] = person_api.get_userinfo(session.get('id_token')['sub'])
-        except Exception as e:
-            logger.error("Could not enrich profile.  Perhaps it doesn't exist?")
+    #if "Mozilla-LDAP" in session.get('userinfo')['sub']:
+    #    logger.info("Mozilla IAM user detected. Attempt enriching with ID-Vault data.")
+    #    try:
+    #       session['idvault_userinfo'] = person_api.get_userinfo(session.get('id_token')['sub'])
+    #    except Exception as e:
+    #        logger.error("Could not enrich profile.  Perhaps it doesn't exist?")
 
     # Transfer any updates in to the app_tiles.
     S3Transfer(config.Config(app).settings).sync_config()
@@ -254,7 +181,6 @@ def dashboard():
 
 
 @app.route('/notifications')
-@sh.wrapper()
 @oidc.oidc_auth
 def notifications():
     user = User(session, config.Config(app).settings)
@@ -265,7 +191,6 @@ def notifications():
     )
 
 
-@sh.wrapper
 @oidc.oidc_auth
 @app.route('/alert/<alert_id>', methods=['POST'])
 def alert_operation(alert_id):
@@ -280,7 +205,6 @@ def alert_operation(alert_id):
 
 
 @app.route('/info')
-@sh.wrapper()
 @oidc.oidc_auth
 def info():
     """Return the JSONified user session for debugging."""
@@ -292,7 +216,6 @@ def info():
 
 
 @app.route('/about')
-@sh.wrapper()
 def about():
     return render_template(
         'about.html'

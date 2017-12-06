@@ -114,17 +114,16 @@
     state: forcereinstall
     executable: pip3
 
-- name: Force cryptography 2pointo
-  pip:
-    name: cryptography
-    version: 2.0
-    state: forcereinstall
-    executable: pip3
-
-
 - name: Force python openssl
   pip:
     name: pyOpenSSL
     version: 17.3.0
+    state: forcereinstall
+    executable: pip3
+
+- name: Force cryptography 2pointo
+  pip:
+    name: cryptography
+    version: 2.0
     state: forcereinstall
     executable: pip3

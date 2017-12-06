@@ -7,11 +7,11 @@
     mode: 0775
     validate_certs: no
 
-- name: Install credstash depends
-  yum: name=gcc,libffi-devel,python-devel,openssl-devel,curl-devel,python34,python34-devel state=latest
-
 - name: Install EPEL
   yum: name=epel-release state=latest
+
+- name: Install Build Dependencies
+  yum: name=gcc,libffi-devel,python-devel,openssl-devel,curl-devel,python34,python34-devel state=latest
 
 - name: Install nginx
   yum: name=nginx
@@ -57,6 +57,7 @@
 - name: Install requirements
   pip:
     requirements: '/sso-dashboard/requirements.txt'
+    executable: pip-3.4
 
 - name: Copy The Application
   copy:
@@ -111,3 +112,4 @@
   pip:
     name: git+git://github.com/mozilla-iam/pyoidc.git@hotfix_unicode#egg=pyoidc
     state: forcereinstall
+    executable: pip-3.4

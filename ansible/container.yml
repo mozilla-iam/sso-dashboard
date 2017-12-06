@@ -4,7 +4,7 @@ settings:
     ../:/dashboard
 services:
   web:
-    from: centos:7
+    from: amazonlinux:latest
     expose:
       - "8000/tcp"
     ports:

@@ -242,6 +242,20 @@ class FakeUser(object):
                 'url': 'https://mana.mozilla.org/wiki/display/SECURITY/Alert%3A+Change+in+Country',
                 'url_title': 'Get Help',
                 'user_id': 'ad|Mozilla-LDAP|fakeuser'
+            },
+            {
+                'alert_code': '63f675d8896f4fb2b3caa204c8c2761e',
+                'user_id': 'ad|Mozilla-LDAP|fakeuser',
+                'risk': 'medium',
+                'summary': 'Your version of Firefox is older than the current stable release.',
+                'description': 'Running the latest version of your browser is key to keeping your '
+                               'computer secure and your private data private. Older browsers may '
+                               'have known security vulnerabilities that attackers can exploit to '
+                               'steal your data or load malware, which can put you and Mozilla at risk. ',
+                'date': '2017-10-27',
+                'url': 'https://www.mozilla.org/firefox/',
+                'url_title': 'Download',
+                'duplicate': False
             }
         ]
 

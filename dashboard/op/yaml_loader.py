@@ -20,7 +20,6 @@ class Application(object):
         pass
 
     def _load_data(self):
-        stream = dict()
         with open(self.config_file, 'r') as stream:
             try:
                 stream = yaml.safe_load(stream)
@@ -30,12 +29,12 @@ class Application(object):
         return stream
 
     def _render_data(self):
-        if self.apps is not None:
-            for app in self.apps['apps']:
-                app['application']['alt_text'] = app['application']['name']
-                app['application']['name'] = self._truncate(
-                    app['application']['name']
-                )
+
+        for app in self.apps['apps']:
+            app['application']['alt_text'] = app['application']['name']
+            app['application']['name'] = self._truncate(
+                app['application']['name']
+            )
 
     def _alphabetize(self):
         try:
@@ -68,13 +67,12 @@ class Application(object):
 
     def vanity_urls(self):
         redirects = []
-        if self.apps is not None:
-            for app in self.apps['apps']:
-                if self._has_vanity(app):
-                    for redirect in app['application']['vanity_url']:
-                        redirects.append(
-                            {
-                                redirect: app['application']['url']
-                            }
-                        )
-            return redirects
+        for app in self.apps['apps']:
+            if self._has_vanity(app):
+                for redirect in app['application']['vanity_url']:
+                    redirects.append(
+                        {
+                            redirect: app['application']['url']
+                        }
+                    )
+        return redirects

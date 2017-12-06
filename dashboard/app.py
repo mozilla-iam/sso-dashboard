@@ -158,7 +158,7 @@ def dashboard():
         try:
             session['idvault_userinfo'] = person_api.get_userinfo(session.get('id_token')['sub'])
         except Exception as e:
-            logger.error("Could not enrich profile.  Perhaps it doesn't exist?")
+            logger.error("Could not enrich profile due to: {}.  Perhaps it doesn't exist?".format(e))
 
     # Transfer any updates in to the app_tiles.
     S3Transfer(config.Config(app).settings).sync_config()

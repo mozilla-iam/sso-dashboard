@@ -39,6 +39,7 @@ app = Flask(__name__)
 
 talisman = Talisman(
     app, content_security_policy=DASHBOARD_CSP,
+    force_https=False
 )
 
 app.config.from_object(config.Config(app).settings)

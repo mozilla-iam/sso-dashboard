@@ -181,8 +181,8 @@ def dashboard():
     )
 
 
-@app.route('/styleguide')
-def styleguide():
+@app.route('/styleguide/dashboard')
+def styleguide_dashboard():
     user = FakeUser(config.Config(app).settings)
     apps = user.apps(Application(app_list.apps_yml).apps)
 
@@ -192,6 +192,17 @@ def styleguide():
         user=user,
         apps=apps,
         alerts=None
+    )
+
+
+@app.route('/styleguide/notifications')
+@oidc.oidc_auth
+def styleguide_notifications():
+    user = FakeUser(config.Config(app).settings)
+    return render_template(
+        'notifications.html',
+        config=app.config,
+        user=user,
     )
 
 

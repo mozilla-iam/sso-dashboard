@@ -133,8 +133,35 @@ $(document).ready(function(){
     $('#submit-alert').click(function() {
         var alert_id = $('#submit-alert').data('alert-id');
         $.ajax({
+            url: '/alert/' + alert_id,
             type: 'POST',
-            url: '/alert/' + alert_id
+            dataType   : 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({ 'alert_action': 'acknowledge' })
+        });
+    });
+
+    // Escalate alert
+    $('#escalate-alert').click(function() {
+        var alert_id = $('#submit-alert').data('alert-id');
+        $.ajax({
+            url: '/alert/' + alert_id,
+            type: 'POST',
+            dataType   : 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({ 'alert_action': 'escalate' })
+        });
+    });
+
+    // False Positive alert
+    $('#false-positive-alert').click(function() {
+        var alert_id = $('#submit-alert').data('alert-id');
+        $.ajax({
+            url: '/alert/' + alert_id,
+            type: 'POST',
+            dataType   : 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({ 'alert_action': 'false-positive' })
         });
     });
 

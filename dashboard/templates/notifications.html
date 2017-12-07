@@ -18,10 +18,10 @@
     <h4>
       <img src="/static/img/alerts/notification-black.svg" alt="alerts">
       Notification Center
-      <span class="alerts-count">{{ user.alerts|count }}</span>
+      <span class="alerts-count">{{ user.alerts['visible_alerts']|count }}</span>
     </h4>
 
-    {% for alert in user.alerts %}
+    {% for alert in user.alerts['visible_alerts'] %}
       <div class="alert-panel">
         <div class="alert-header alert-{{ alert.risk }}">
           <span class="alert-risk">
@@ -44,6 +44,12 @@
           </a>
           <span class="mui-btn" id="dismiss-alert" data-alert-id="{{ alert.get('alert_id') }}">
             Dismiss
+          </span>
+          <span class="mui-btn" id="escalate-alert" data-alert-id="{{ alert.get('alert_id') }}">
+            Escalate to Security
+          </span>
+          <span class="mui-btn" id="false-positive-alert" data-alert-id="{{ alert.get('alert_id') }}">
+            False Positive
           </span>
         </div>
       </div>

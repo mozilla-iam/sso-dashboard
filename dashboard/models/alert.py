@@ -2,6 +2,7 @@
 import binascii
 import boto3
 import datetime
+import json
 import os
 import requests
 
@@ -11,22 +12,22 @@ from boto3.dynamodb.conditions import Attr
 
 class Feedback(object):
     """Send user data back to MozDef or other subscribers via an SNS Topic"""
-    def __init__(self, alert, action):
-        self.alert = alert
-        self.action = action
-        self.mozdef_standard_event = None
+    def __init__(self, alert_dict, alert_action):
+        self.alert_dict = alert_dict
+        self.alert_action = alert_action
         self.sns_topic_arn = 'arn:aws:sns:us-west-2:656532927350:SSODashboardAlertFeedback'
         self.sns = None
 
     def connect_sns(self):
-        pass
+        if self.sns is None:
+            self.sns = boto3.client('sns', region_name='us-west-2')
 
     def _construct_alert(self):
         message = {
             'category': 'user_feedback',
             'details': {
-                'action': self.action,  # (escalate|acknowledge|false-positive)
-                'alert_information': self.alert
+                'action': self.alert_action,  # (escalate|acknowledge|false-positive)
+                'alert_information': self.alert_dict
             }
         }
 
@@ -34,13 +35,14 @@ class Feedback(object):
 
     def send(self):
         """Send the event to the SNS Topic."""
-        if self.sns is None:
-            self.connect_sns()
-
+        self.connect_sns()
         message = self._construct_alert()
-        print(message)
-
-        pass
+        response = self.sns.publish(
+            TopicArn=self.sns_topic_arn,
+            Message=json.dumps(message),
+            Subject='sso-dashboard-user-feedback'
+        )
+        return response
 
 
 class Alert(object):
@@ -144,7 +146,41 @@ class Alert(object):
             FilterExpression=Attr('user_id').eq(user_id)
         )
 
-        return response.get('Items')
+        inactive_alerts = []
+        visible_alerts = []
+        false_positives = []
+        escalations = []
+
+        for alert in response.get('Items'):
+            if alert.get('status', '') == 'acknowledged':
+                inactive_alerts.append(alert)
+            elif alert.get('status', '') == 'false-positive':
+                false_positives.append(alert)
+            elif alert.get('status', '') == 'escalate':
+                escalations.append(alert)
+            else:
+                visible_alerts.append(alert)
+
+        return {
+            'visible_alerts': visible_alerts,
+            'false_positives': false_positives,
+            'escalations': escalations,
+            'inactive_alerts': inactive_alerts
+        }
+
+    def find_by_id(self, alert_id):
+        """
+        Search dynamodb for all non-expired alerts for a given user.
+        :param alert_id: The guid of the alert.
+        :return: List of alerts
+        """
+        self.connect_dynamodb()
+
+        response = self.dynamodb.scan(
+            FilterExpression=Attr('alert_id').eq(alert_id)
+        )
+
+        return response.get('Items')[0]
 
     def _create_alert_id(self):
         """

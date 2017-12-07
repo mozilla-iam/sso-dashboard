@@ -81,7 +81,7 @@
       </div>
     </div>
 
-    {% for alert in user.alerts %}
+    {% for alert in user.alerts['visible_alerts'] %}
       <div class="mui-row alert alert-{{ alert.risk }}" role="alert">
         <div class="mui-col-md-3 alert-info">
           <div class="alert-risk">{{ alert.risk }} risk</div>
@@ -91,7 +91,10 @@
         </div>
         <div class="mui-col-md-3 alert-actions">
           <a href="/notifications" class="btn-alert"><img src="/static/img/alerts/info-white.svg" alt="alert-info"> <span class="info-text">More Info</span></a>
+          <a href="#" id="escalate-alert" class="btn-alert"><img src="/static/img/alerts/info-white.svg" alt="alert-info"> <span class="info-text">Escalate to Security</span></a>
+          <a href="#" id="escalate-alert" class="btn-alert"><img src="/static/img/alerts/info-white.svg" alt="alert-info"> <span class="info-text">Mark False Positive</span></a>
           <a href="{{ alert.url }}" class="btn-alert" target="_blank"><img src="/static/img/alerts/arrow-right-white.svg" alt="alert-info"> {{ alert.url_title }}</a>
+
           <span id="submit-alert" class="closebtn" data-alert-id="{{ alert.get('alert_id') }}">&times;</span>
         </div>
       </div>

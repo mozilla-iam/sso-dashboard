@@ -1,3 +1,4 @@
+import json
 import logging.config
 import mimetypes
 import os
@@ -210,14 +211,11 @@ def notifications():
 def alert_operation(alert_id):
     if request.method == 'POST':
         user = User(session, config.Config(app).settings)
-
         if request.data is not None:
-            data = json.loads(data)
+            data = json.loads(request.data)
             alert_action = data.get('alert_action')
-        else:
-            alert_action = 'acknowledge' # (escalate|acknowledge|false-positive)
 
-        result = user.acknowledge_alert(alert_id, alert_action)
+        result = user.take_alert_action(alert_id, alert_action)
 
         if result['ResponseMetadata']['HTTPStatusCode'] == 200:
             return '200'

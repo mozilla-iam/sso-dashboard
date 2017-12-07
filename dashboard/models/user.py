@@ -160,14 +160,33 @@ class User(object):
         alerts = alert.Alert().find(user_id=self.userinfo['sub'])
         return alerts
 
-    def acknowledge_alert(self, alert_id, alert_action):
+    def take_alert_action(self, alert_id, alert_action):
         a = alert.Alert()
+
+        alert_dict = a.find_by_id(alert_id)
 
         if alert_action == 'acknowledge':
             logger.info('An alert was acked for {uid}.'.format(uid=self.userinfo['sub']))
-            return a.destroy(alert_id=alert_id, user_id=self.userinfo['sub'])
+            alert_dict['state'] = alert_action
+            res = a.update(alert_id=alert_id, alert_dict=alert_dict)
+        elif alert_action == 'escalate':
+            logger.info('An alert was escalated for {uid}.'.format(uid=self.userinfo['sub']))
+            alert_dict['state'] = alert_action
+            res = a.update(alert_id=alert_id, alert_dict=alert_dict)
+        elif alert_action == 'false-positive':
+            logger.info('An alert was marked false-positive for {uid}.'.format(uid=self.userinfo['sub']))
+            alert_dict['state'] = alert_action
+            res = a.update(alert_id=alert_id, alert_dict=alert_dict)
+        else:
+            res = {'ResponseMetadata': {'HTTPStatusCode': 200}}
 
+        m = alert.Feedback(
+            alert_dict=alert_dict,
+            alert_action=alert_action
+        )
 
+        m.send()
+        return res
 
     def _is_authorized(self, app):
         if app['application']['display'] == 'False':
@@ -232,34 +251,36 @@ class FakeUser(object):
 
     @property
     def alerts(self):
-        return [
-            {
-                'alert_code': '416c65727447656f6d6f64656c',
-                'alert_id': '4053bd6a9e9a6bb03095f479c0fab2',
-                'date': '2017-10-27',
-                'description': 'This alert is created based on geo ip information about the last login of a user.',
-                'duplicate': True,
-                'risk': 'medium',
-                'summary': 'Did you recently login from Unknown, {}?'.format(fake.country()),
-                'url': 'https://mana.mozilla.org/wiki/display/SECURITY/Alert%3A+Change+in+Country',
-                'url_title': 'Get Help',
-                'user_id': 'ad|Mozilla-LDAP|fakeuser'
-            },
-            {
-                'alert_code': '63f675d8896f4fb2b3caa204c8c2761e',
-                'user_id': 'ad|Mozilla-LDAP|fakeuser',
-                'risk': 'medium',
-                'summary': 'Your version of Firefox is older than the current stable release.',
-                'description': 'Running the latest version of your browser is key to keeping your '
-                               'computer secure and your private data private. Older browsers may '
-                               'have known security vulnerabilities that attackers can exploit to '
-                               'steal your data or load malware, which can put you and Mozilla at risk. ',
-                'date': '2017-10-27',
-                'url': 'https://www.mozilla.org/firefox/',
-                'url_title': 'Download',
-                'duplicate': False
-            }
-        ]
+        return {
+            'visible_alerts': [
+                {
+                    'alert_code': '416c65727447656f6d6f64656c',
+                    'alert_id': '4053bd6a9e9a6bb03095f479c0fab2',
+                    'date': '2017-10-27',
+                    'description': 'This alert is created based on geo ip information about the last login of a user.',
+                    'duplicate': True,
+                    'risk': 'medium',
+                    'summary': 'Did you recently login from Unknown, {}?'.format(fake.country()),
+                    'url': 'https://mana.mozilla.org/wiki/display/SECURITY/Alert%3A+Change+in+Country',
+                    'url_title': 'Get Help',
+                    'user_id': 'ad|Mozilla-LDAP|fakeuser'
+                },
+                {
+                    'alert_code': '63f675d8896f4fb2b3caa204c8c2761e',
+                    'user_id': 'ad|Mozilla-LDAP|fakeuser',
+                    'risk': 'medium',
+                    'summary': 'Your version of Firefox is older than the current stable release.',
+                    'description': 'Running the latest version of your browser is key to keeping your '
+                                   'computer secure and your private data private. Older browsers may '
+                                   'have known security vulnerabilities that attackers can exploit to '
+                                   'steal your data or load malware, which can put you and Mozilla at risk. ',
+                    'date': '2017-10-27',
+                    'url': 'https://www.mozilla.org/firefox/',
+                    'url_title': 'Download',
+                    'duplicate': False
+                }
+            ]
+        }
 
     def _is_valid_yaml(self, app):
         return True

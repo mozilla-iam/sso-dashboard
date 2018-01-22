@@ -77,7 +77,7 @@
       </div>
       <div class="mui-col-md-3 alert-actions">
         <a href="https://beta.mozilla.org/" class="btn-alert" target="_blank"><img src="/static/img/alerts/arrow-right-white.svg" alt="alert-info"> Download</a>
-        <span id="close-alert" class="closebtn">&times;</span>
+        <button type="button" id="close-alert" class="closebtn"><span aria-hidden="true">&times;</span><span class="visually-hidden">Dismiss</button>
       </div>
     </div>
 
@@ -95,7 +95,7 @@
           <a href="#" id="escalate-alert" class="btn-alert"><img src="/static/img/alerts/info-white.svg" alt="alert-info"> <span class="info-text">Mark False Positive</span></a>
           <a href="{{ alert.url }}" class="btn-alert" target="_blank"><img src="/static/img/alerts/arrow-right-white.svg" alt="alert-info"> {{ alert.url_title }}</a>
 
-          <span id="submit-alert" class="closebtn" data-alert-id="{{ alert.get('alert_id') }}">&times;</span>
+          <button type="button" id="submit-alert" class="closebtn" data-alert-id="{{ alert.get('alert_id') }}"><span aria-hidden="true">&times;</span><span class="visually-hidden">Dismiss</button>
         </div>
       </div>
     {% endfor %}

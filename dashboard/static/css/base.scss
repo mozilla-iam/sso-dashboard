@@ -58,6 +58,11 @@ body {
     font-family: 'Open Sans', sans-serif;
 }
 
+.visually-hidden {
+    position: absolute;
+    left: -9999em;
+}
+
 .yellow-border {
     border-color: $yellow;
 }
@@ -371,6 +376,9 @@ body {
                 margin-left: 5px;
                 padding: 5px;
                 vertical-align: text-top;
+                background-color: transparent;
+                border: 0;
+                font-weight: 100;
 
                 @media all and (max-width: 543px) {
                     position: absolute;

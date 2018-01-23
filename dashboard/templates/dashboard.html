@@ -82,21 +82,28 @@
     </div>
 
     {% for alert in user.alerts['visible_alerts'] %}
-      <div class="mui-row alert alert-{{ alert.risk }}" role="alert">
-        <div class="mui-col-md-3 alert-info">
-          <div class="alert-risk">{{ alert.risk }} risk</div>
+      <div class="alert alert-{{ alert.risk }}" role="alert">
+        <div class="alert-risk"><span>{{ alert.risk }} risk</span></div>
+        <p>{{ alert.summary }}</p>
+        <div class="alert-actions">
+          <a href="/notifications" class="btn-alert">
+            {% include 'icons/alert.svg' %}
+            <span class="info-text">More Info</span>
+          </a>
+          <a href="#" id="escalate-alert" class="btn-alert">
+            {% include 'icons/info.svg' %}
+            <span class="info-text">Escalate to Security</span>
+          </a>
+          <a href="#" id="escalate-alert" class="btn-alert">
+            {% include 'icons/alert.svg' %}
+            <span class="info-text">Mark False Positive</span>
+          </a>
+          <a href="{{ alert.url }}" class="btn-alert" target="_blank">
+            {% include 'icons/alert.svg' %}
+            {{ alert.url_title }}
+          </a>
         </div>
-        <div class="mui-col-md-6 alert-message">
-          <p>{{ alert.summary }}</p>
-        </div>
-        <div class="mui-col-md-3 alert-actions">
-          <a href="/notifications" class="btn-alert"><img src="/static/img/alerts/info-white.svg" alt="alert-info"> <span class="info-text">More Info</span></a>
-          <a href="#" id="escalate-alert" class="btn-alert"><img src="/static/img/alerts/info-white.svg" alt="alert-info"> <span class="info-text">Escalate to Security</span></a>
-          <a href="#" id="escalate-alert" class="btn-alert"><img src="/static/img/alerts/info-white.svg" alt="alert-info"> <span class="info-text">Mark False Positive</span></a>
-          <a href="{{ alert.url }}" class="btn-alert" target="_blank"><img src="/static/img/alerts/arrow-right-white.svg" alt="alert-info"> {{ alert.url_title }}</a>
-
-          <button type="button" id="submit-alert" class="closebtn" data-alert-id="{{ alert.get('alert_id') }}"><span aria-hidden="true">&times;</span><span class="visually-hidden">Dismiss</button>
-        </div>
+        <button type="button" id="submit-alert" class="closebtn" data-alert-id="{{ alert.get('alert_id') }}"><span aria-hidden="true">&times;</span><span class="visually-hidden">Dismiss</button>
       </div>
     {% endfor %}
   </div>

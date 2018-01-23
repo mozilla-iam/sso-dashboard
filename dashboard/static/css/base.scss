@@ -32,8 +32,10 @@
 
 $gray: #808080;
 $lightgray: #cfcfcf;
+$lightergray: #f4f4f4;
 $bggray: #f8f8f8;
 $yellow: #faba00;
+$blue: #229DC4;
 
 $appbar-height: 70px;
 
@@ -49,13 +51,13 @@ body {
 }
 
 body {
-    background-color: white;
     color: $gray;
     padding: 0;
     margin: 0;
     font-size: 16px;
     line-height: 1.4;
     font-family: 'Open Sans', sans-serif;
+    letter-spacing: 0.03em;
 }
 
 .visually-hidden {
@@ -271,11 +273,18 @@ body {
     }
 
     .alert {
-        padding: 18px;
+        padding: 0.5em;
         text-align: center;
         border-top: 1px solid white;
         color: white;
         margin: 0;
+        position: relative;
+        overflow: hidden; // establish a new block formatting context
+
+        // this is the width which comfortably fits a risk indicator and text content
+        @media ( min-width: 40em ) {
+            padding: 0.5em 11em;
+        }
 
         &.alert-success {
             --alert-bg-color: white;
@@ -302,25 +311,31 @@ body {
             --alert-color: black;
         }
 
-        .alert-info {
-            text-align: left;
-            font-size: .8em;
+        .alert-risk {
+            color: var(--alert-color);
+            background-color: var(--alert-bg-color);
+            padding: 0.125em;
+            width: 9em;
+            text-transform: uppercase;
+            display: inline-block;
+            font-weight: bold;
+            text-align: center;
+            margin: 1em 0;
 
-            @media all and (max-width: 767px) {
-                margin-bottom: 10px;
-                text-align: center;
+            @media ( min-width: 40em ) {
+                position: absolute;
+                left: 1em;
+                top: 1em;
+                margin: 0;
             }
 
-            .alert-risk {
-                color: var(--alert-color);
-                background-color: var(--alert-bg-color);
-                padding: 5px;
-                width: 140px;
-                text-transform: uppercase;
-                display: inline-block;
-                font-weight: bold;
-                text-align: center;
+            span {
+                font-size: .8em;
             }
+        }
+
+        > p {
+            margin: 1em 0;
         }
 
         .alert-message {
@@ -338,59 +353,77 @@ body {
         }
 
         .alert-actions {
-            text-align: right;
-            font-size: .8em;
-
-            @media all and (max-width: 767px) {
-                text-align: center;
-            }
+            text-align: center;
+            margin: 1.5em 0;
 
             .btn-alert {
-                padding: 5px 10px;
-                background: rgba(255, 255, 255, 0.2);
+                padding: .5em 1em;
+                background: white;
                 display: inline-block;
-                color: white;
+                color: black;
                 text-decoration: none;
+                border-radius: 1.5em;
+                margin: .5em;
                 font-weight: bold;
-                text-transform: uppercase;
 
-                .info-text {
+                &:focus {
+                    background-color: $lightergray;
+                    color: $blue;
+                    outline: none;
+                }
 
-                    @media all and (max-width: 1300px) {
-                        display: none;
+                &:hover {
+                    background: black;
+                    color: white;
+
+                    svg path {
+                        fill: #fff;
                     }
                 }
 
-                img {
+                svg {
+                    display: inline-block;
                     vertical-align: middle;
+                    margin-right: .5em;
+
+                    path {
+                        fill: #000;
+                    }
                 }
             }
+        }
+    }
 
-            .closebtn {
-                color: white;
-                opacity: .8;
-                font-size: 2em;
-                line-height: 20px;
-                cursor: pointer;
-                transition: 0.3s;
-                margin-left: 5px;
-                padding: 5px;
-                vertical-align: text-top;
-                background-color: transparent;
-                border: 0;
-                font-weight: 100;
+    .closebtn {
+        color: white;
+        opacity: .8;
+        font-size: 2em;
+        line-height: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+        border: 1px solid transparent;
+        margin-left: 5px;
+        padding: 5px;
+        vertical-align: text-top;
+        background-color: transparent;
+        border: 0;
+        font-weight: 100;
+        position: absolute;
+        top: 0.5em;
+        right: 0.5em;
 
-                @media all and (max-width: 543px) {
-                    position: absolute;
-                    margin-top: 25px;
-                    top: $appbar-height;
-                    right: 10px;
-                }
-            }
+        &::-moz-focus-inner {
+            border: 1px solid transparent;
+        }
 
-            .closebtn:hover {
-                opacity: 1;
-            }
+        &:focus {
+            outline: none;
+            border: 1px solid white;
+            border-radius: 2em;
+        }
+
+        &:hover {
+            opacity: 1;
         }
     }
 }

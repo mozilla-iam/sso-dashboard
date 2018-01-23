@@ -4,6 +4,7 @@
   <div class="mui-form--inline filter">
     <img src="/static/img/search.svg">
     <div class="mui-textfield">
+      <label for="filter" class="visually-hidden">Search for an app by name</label>
       <input type="text" name="filter" id="filter" placeholder="Search for an app by name" autocomplete="off">
       <svg class="clear" width="26px" height="26px" viewBox="0 0 26 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <defs></defs>
@@ -26,7 +27,8 @@
 {% block search_mobile %}
   <div class="search-mobile">
     <div class="mui-textfield">
-      <input type="text" name="filter" id="filter" placeholder="Search for an app by name">
+      <label for="filter2" class="visually-hidden">Search for an app by name</label>
+      <input type="text" name="filter2" id="filter2" placeholder="Search for an app by name">
     </div>
   </div>
 {% endblock %}

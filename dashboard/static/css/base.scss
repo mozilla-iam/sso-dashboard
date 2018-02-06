@@ -448,11 +448,14 @@ body {
     min-height: 100%;
     padding: 20px;
 
-    .app-grid {
+    .app-grid ul {
+        padding-left: 0;
+        list-style: none;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
+
 
         @media all and (max-width: 767px) {
             width: 100%;
@@ -493,6 +496,7 @@ body {
 
             .app-name {
                 color: black;
+                margin: 10px 0;
             }
         }
     }

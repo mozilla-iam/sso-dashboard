@@ -166,10 +166,25 @@ body {
         width: auto;
         float: right;
         height: $appbar-height;
-        cursor: pointer;
+        position: relative;
 
         &:hover {
             background-color: #f8f8f8;
+        }
+
+        .menu-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: $appbar-height;
+            height: $appbar-height;
+            border: 1px solid transparent;
+            background-color: transparent;
+
+            &:focus {
+                outline: none;
+                border: 1px solid $yellow;
+            }
         }
 
         .alerts-count {

@@ -111,9 +111,16 @@ $(document).ready(function(){
     });
 
     // Toggle user menu
-    $('.menu').click(function() {
-        $('.user-menu').toggle();
-        $('.menu').toggleClass('enabled');
+    $('.menu .menu-toggle').click(function() {
+        if ( $('.menu').hasClass('enabled')) {
+            $('.user-menu').hide();
+            $('.menu').removeClass('enabled');
+        }
+        else {
+            $('.user-menu').show();
+            $('.user-menu a:first').focus();
+            $('.menu').addClass('enabled');
+        }
 
         // If search-button is visible it's mobile viewport
         if ($('.search-button').is(':visible')) {

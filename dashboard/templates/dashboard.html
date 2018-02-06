@@ -35,6 +35,7 @@
 
 {% block menu %}
   <div class="menu">
+    <button type="button" class="menu-toggle"><span class="visually-hidden">Toggle user options</span></button>
     {% with avatar = user.avatar, name = user.first_name %}
       {% if user.alerts %}
         <span class="alerts-count"></span>

@@ -98,8 +98,16 @@ $(document).ready(function(){
         $('.mui-appbar').removeClass('menu-enabled');
         $('.search-button').removeClass('menu-enabled');
         // Show search input and invert button
-        $('.search-mobile').fadeToggle();
-        $('.search-button').toggleClass('invert');
+        if ( $('.search-mobile').is(':visible')) {
+            $('.search-mobile').fadeOut();
+            $('.search-button').removeClass('invert');
+            $('.search-button button:first').focus();
+        }
+        else {
+            $('.search-mobile').fadeIn();
+            $('.search-button').addClass('invert');
+            $('.search-mobile input:first').focus();
+        }
     });
 
     // Toggle user menu

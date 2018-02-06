@@ -88,7 +88,7 @@ $(document).ready(function(){
     );
 
     // Mobile search toggle
-    $('.search-button a').click(function() {
+    $('.search-button button').click(function() {
         // Make sure user menu is hidden
         $('.user-menu').hide();
         $('.menu').removeClass('enabled');

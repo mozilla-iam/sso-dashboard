@@ -633,6 +633,10 @@ body {
     border-top: 2px solid $darkgray;
     text-align: left;
 
+    .notifications & {
+        border-top-color: $bggray;
+    }
+
     fieldset {
         border: 0;
         padding-top: 1em;
@@ -667,6 +671,11 @@ body {
         font-family: inherit;
         display: inline-block;
         vertical-align: middle;
+
+        .notifications & {
+            background-color: $bggray;
+            color: $darkgray;
+        }
 
         &:hover {
             background-color: #fff;

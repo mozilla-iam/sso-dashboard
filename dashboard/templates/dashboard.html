@@ -84,7 +84,7 @@
     </div>
 
     {% for alert in user.alerts['visible_alerts'] %}
-      <div class="alert alert-{{ alert.risk }}" role="alert">
+      <div class="alert alert-{{ alert.risk }}">
         <div class="alert-risk"><span>{{ alert.risk }} risk</span></div>
         <p>{{ alert.summary }}</p>
         <div class="alert-actions">

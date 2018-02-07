@@ -434,6 +434,10 @@ body {
         font-weight: bold;
         transition: background-color 0.2s ease-in-out;
 
+        &:first-of-type {
+            margin-left: 0;
+        }
+
         &:focus {
             background-color: $lightergray;
             color: $blue;
@@ -592,6 +596,7 @@ body {
                 color: var(--alert-color);
                 background-color: var(--alert-bg-color);
                 padding: 5px 35px;
+                font-size: .875em;
             }
 
             border-bottom: 4px solid var(--alert-bg-color);
@@ -678,8 +683,8 @@ body {
         }
 
         &:hover {
-            background-color: #fff;
-            color: $darkgray;
+            color: #fff;
+            background-color: $gray;
         }
 
         &:focus {

@@ -662,9 +662,11 @@ body {
         color: #fff;
         border: 0;
         padding: 0.5em 1em;
-        margin: 2px 0;
+        margin: 2px 1px 2px 0;
         transition: background-color 0.2s ease-in-out;
         font-family: inherit;
+        display: inline-block;
+        vertical-align: middle;
 
         &:hover {
             background-color: #fff;

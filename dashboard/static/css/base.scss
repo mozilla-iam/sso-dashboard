@@ -33,6 +33,7 @@
 $gray: #808080;
 $lightgray: #cfcfcf;
 $lightergray: #f4f4f4;
+$darkgray: #303030;
 $bggray: #f8f8f8;
 $yellow: #faba00;
 $blue: #229DC4;
@@ -298,7 +299,7 @@ body {
 
         // this is the width which comfortably fits a risk indicator and text content
         @media ( min-width: 40em ) {
-            padding: 0.5em 11em;
+            padding: 0.5em 1em;
         }
 
         &.alert-success {
@@ -351,6 +352,13 @@ body {
 
         > p {
             margin: 1em 0;
+            max-width: 35em;
+
+            @media ( min-width: 40em ) {
+                margin: 1em auto;
+                padding-left: 11em; /* always have space for abs pos risk indicator */
+                padding-right: 11em; /* balance space on left*/
+            }
         }
 
         .alert-message {
@@ -602,6 +610,66 @@ body {
                 img {
                     margin-right: 10px;
                 }
+            }
+        }
+    }
+}
+
+.alert-survey {
+    border-top: 2px solid $darkgray;
+    text-align: left;
+
+    fieldset {
+        border: 0;
+        padding-top: 1em;
+        padding-right: 1em;
+        position: relative;
+        margin: 0 auto;
+        max-width: 30em;
+
+        @media ( min-width: 50em ) {
+            padding-left: 16em;
+        }
+    }
+
+    legend {
+        margin: 1em 0 0;
+
+        @media ( min-width: 50em ) {
+            margin: 1.5em 0;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+    }
+
+    input {
+        background-color: $darkgray;
+        color: #fff;
+        border: 0;
+        padding: 0.5em 1em;
+        margin: 2px 0;
+        transition: background-color 0.2s ease-in-out;
+        font-family: inherit;
+
+        &:hover {
+            background-color: #fff;
+            color: $darkgray;
+        }
+
+        &:focus {
+            outline: 1px solid $yellow;
+        }
+
+        &:first-of-type {
+            @media ( min-width: 50em ) {
+                border-radius: 2em 0 0 2em;
+            }
+        }
+
+        &:last-of-type {
+            @media ( min-width: 50em ) {
+                border-radius: 0 2em 2em 0;
             }
         }
     }

@@ -101,7 +101,7 @@
             {{ alert.url_title }}
           </a>
         </div>
-        <form action="/alert/{{ alert.id }}" class="alert-survey">
+        <form action="/alert/{{ alert.id }}" method="POST" class="alert-survey">
           <fieldset>
             <legend>Was this alert helpful?</legend>
             <input type="submit" value="Yes" name="helpfulness" />

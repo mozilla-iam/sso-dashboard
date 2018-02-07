@@ -376,49 +376,6 @@ body {
             }
         }
 
-        .alert-actions {
-            text-align: center;
-            margin: 1.5em 0;
-
-            .btn-alert {
-                padding: .5em 1em;
-                background: white;
-                border: 0;
-                font-family: inherit;
-                display: inline-block;
-                color: black;
-                text-decoration: none;
-                border-radius: 1.5em;
-                margin: .5em;
-                font-weight: bold;
-                transition: background-color 0.2s ease-in-out;
-
-                &:focus {
-                    background-color: $lightergray;
-                    color: $blue;
-                    outline: none;
-                }
-
-                &:hover {
-                    background: black;
-                    color: white;
-
-                    svg path {
-                        fill: #fff;
-                    }
-                }
-
-                svg {
-                    display: inline-block;
-                    vertical-align: middle;
-                    margin-right: .5em;
-
-                    path {
-                        fill: #000;
-                    }
-                }
-            }
-        }
     }
 
     .closebtn {
@@ -451,6 +408,55 @@ body {
 
         &:hover {
             opacity: 1;
+        }
+    }
+}
+
+
+.alert-actions {
+    text-align: center;
+    margin: 1.5em 0;
+
+    .notifications & {
+        text-align: left;
+    }
+
+    .btn-alert {
+        padding: .5em 1em;
+        background: white;
+        border: 1px solid black;
+        font-family: inherit;
+        display: inline-block;
+        color: black;
+        text-decoration: none;
+        border-radius: 1.5em;
+        margin: .5em;
+        font-weight: bold;
+        transition: background-color 0.2s ease-in-out;
+
+        &:focus {
+            background-color: $lightergray;
+            color: $blue;
+            outline: none;
+        }
+
+        &:hover {
+            background: black;
+            color: white;
+
+            svg path {
+                fill: #fff;
+            }
+        }
+
+        svg {
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: .5em;
+
+            path {
+                fill: #000;
+            }
         }
     }
 }

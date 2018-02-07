@@ -382,12 +382,15 @@ body {
             .btn-alert {
                 padding: .5em 1em;
                 background: white;
+                border: 0;
+                font-family: inherit;
                 display: inline-block;
                 color: black;
                 text-decoration: none;
                 border-radius: 1.5em;
                 margin: .5em;
                 font-weight: bold;
+                transition: background-color 0.2s ease-in-out;
 
                 &:focus {
                     background-color: $lightergray;

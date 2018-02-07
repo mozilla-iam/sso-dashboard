@@ -92,14 +92,14 @@
             {% include 'icons/alert.svg' %}
             <span class="info-text">More Info</span>
           </a>
-          <a href="#" id="escalate-alert" class="btn-alert">
+          <button type="button" id="escalate-alert" class="btn-alert">
             {% include 'icons/info.svg' %}
             <span class="info-text">Escalate to Security</span>
-          </a>
-          <a href="#" id="escalate-alert" class="btn-alert">
+          </button>
+          <button type="button" id="escalate-alert" class="btn-alert">
             {% include 'icons/alert.svg' %}
             <span class="info-text">Mark False Positive</span>
-          </a>
+          </button>
           <a href="{{ alert.url }}" class="btn-alert" target="_blank">
             {% include 'icons/alert.svg' %}
             {{ alert.url_title }}

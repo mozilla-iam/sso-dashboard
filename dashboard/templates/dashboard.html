@@ -38,7 +38,7 @@
     <button type="button" class="menu-toggle"><span class="visually-hidden">Toggle user options</span></button>
     {% with avatar = user.avatar, name = user.first_name %}
       {% if user.alerts %}
-        <span class="alerts-count"></span>
+        <span class="alerts-count"><span class="visually-hidden">You have unread alerts</span></span>
       {% endif %}
       <span class="name">{% if name %}{{ name }}{% endif %}</span>
       {% if avatar %}

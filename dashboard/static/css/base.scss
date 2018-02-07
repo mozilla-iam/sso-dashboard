@@ -37,6 +37,7 @@ $darkgray: #303030;
 $bggray: #f8f8f8;
 $yellow: #faba00;
 $blue: #229DC4;
+$red: #d04437;
 
 $appbar-height: 70px;
 
@@ -189,13 +190,13 @@ body {
         }
 
         .alerts-count {
-            background-color: black;
-            width: 10px;
-            height: 10px;
+            background-color: $red;
+            width: .8em;
+            height: .8em;
+            border-radius: .8em;
             position: absolute;
             top: 10px;
-            right: 51px;
-            transform: rotate(45deg);
+            right: 50px;
         }
 
         .profile-icon {

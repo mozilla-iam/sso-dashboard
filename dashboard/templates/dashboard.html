@@ -105,6 +105,16 @@
             {{ alert.url_title }}
           </a>
         </div>
+        <form action="/alert/{{ alert.id }}" class="alert-survey">
+          <fieldset>
+            <legend>Was this alert helpful?</legend>
+            <input type="submit" value="Yes" name="helpfulness" />
+            <input type="submit" value="Very" name="helpfulness" />
+            <input type="submit" value="Moderately" name="helpfulness" />
+            <input type="submit" value="Slightly" name="helpfulness" />
+            <input type="submit" value="No" name="helpfulness" />
+          </fieldset>
+        </form>
         <button type="button" id="submit-alert" class="closebtn" data-alert-id="{{ alert.get('alert_id') }}"><span aria-hidden="true">&times;</span><span class="visually-hidden">Dismiss</button>
       </div>
     {% endfor %}

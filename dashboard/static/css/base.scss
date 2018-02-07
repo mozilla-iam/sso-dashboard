@@ -516,13 +516,14 @@ body {
 
 .notifications {
 
-    h4 {
+    h1 {
         color: black;
         display: inline-block;
         margin-bottom: 40px;
         text-align: center;
         text-transform: uppercase;
         width: 100%;
+        font-size: 1em;
 
         img {
             vertical-align: text-top;
@@ -530,14 +531,17 @@ body {
         }
 
         .alerts-count {
-            background-color: black;
-            border-radius: .25rem;
+            background-color: $red;
+            border-radius: 100%;
+            min-width: 1.5em;
+            min-height: 1.5em;
             color: white;
             display: inline-block;
             font-weight: bold;
-            margin-left: 5px;
-            padding: 0 .4em;
+            margin-left: .5em;
             text-align: center;
+            font-size: .875em;
+            line-height: 1.4;
         }
     }
 

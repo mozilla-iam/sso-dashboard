@@ -15,11 +15,11 @@
 
 {% block content %}
   <div class="notifications">
-    <h4>
-      <img src="/static/img/alerts/notification-black.svg" alt="alerts">
+    <h1>
+      <img src="/static/img/alerts/notification-black.svg" alt="" role="presentation">
       Notification Center
-      <span class="alerts-count">{{ user.alerts['visible_alerts']|count }}</span>
-    </h4>
+      <span class="alerts-count">{{ user.alerts['visible_alerts']|count }}<span class="visually-hidden"> notifications</span></span>
+    </h1>
 
     {% for alert in user.alerts['visible_alerts'] %}
       <div class="alert-panel">

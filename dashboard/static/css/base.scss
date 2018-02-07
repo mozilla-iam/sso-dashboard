@@ -655,6 +655,10 @@ body {
         @media ( min-width: 50em ) {
             padding-left: 14em;
         }
+
+        .notifications & {
+            margin: 0;
+        }
     }
 
     legend {

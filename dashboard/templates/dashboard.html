@@ -60,11 +60,11 @@
 
 {% block user_menu %}
   <div class="user-menu">
-    <a href="https://mozillians.org/user/edit/" target="_blank"><span>Settings</span> <img class="menu-icon" src="/static/img/settings.svg" alt="Settings"></a>
-    <a {% if user.alerts %}href="/notifications"{% else %}href="#" class="inactive"{% endif %}><span>Notifications</span> <img class="menu-icon" src="/static/img/alerts/notification-white.svg" alt="Notifications"></a>
-    <a href="/logout"><span>Logout</span> <img class="menu-icon"src="/static/img/logout.svg" alt="Logout"></a>
+    <a href="https://mozillians.org/user/edit/" target="_blank"><span>Settings</span> <img class="menu-icon" src="/static/img/settings.svg" alt=""></a>
+    <a {% if user.alerts %}href="/notifications"{% else %}href="#" class="inactive"{% endif %}><span>Notifications</span> <img class="menu-icon" src="/static/img/alerts/notification-white.svg" alt=""></a>
+    <a href="/logout"><span>Logout</span> <img class="menu-icon"src="/static/img/logout.svg" alt=""></a>
     <div class="coming-soon"><span>coming soon</span></div>
-    <a href="#" class="inactive"><span>Access Request</span> <img class="menu-icon"src="/static/img/request.svg" alt="Access Request"></a>
+    <a href="#" class="inactive"><span>Access Request</span> <img class="menu-icon"src="/static/img/request.svg" alt=""></a>
   </div>
 {% endblock %}
 
@@ -78,7 +78,7 @@
         <p>Want to help test Firefox? Give Firefox Beta a try!</p>
       </div>
       <div class="mui-col-md-3 alert-actions">
-        <a href="https://beta.mozilla.org/" class="btn-alert" target="_blank"><img src="/static/img/alerts/arrow-right-white.svg" alt="alert-info"> Download</a>
+        <a href="https://beta.mozilla.org/" class="btn-alert" target="_blank"><img src="/static/img/alerts/arrow-right-white.svg" alt=""> Download</a>
         <button type="button" id="close-alert" class="closebtn"><span aria-hidden="true">&times;</span><span class="visually-hidden">Dismiss</button>
       </div>
     </div>

@@ -168,18 +168,6 @@ $(document).ready(function(){
         });
     });
 
-    // False Positive alert
-    $('#false-positive-alert').click(function() {
-        var alert_id = $('#submit-alert').data('alert-id');
-        $.ajax({
-            url: '/alert/' + alert_id,
-            type: 'POST',
-            dataType   : 'json',
-            contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify({ 'alert_action': 'false-positive' })
-        });
-    });
-
     // Alerts close button
     $('.closebtn').click(function() {
         $(this).parent('div').parent('.alert').slideUp();

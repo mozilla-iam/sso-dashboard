@@ -88,7 +88,7 @@ $(document).ready(function(){
     );
 
     // Mobile search toggle
-    $('.search-button a').click(function() {
+    $('.search-button button').click(function() {
         // Make sure user menu is hidden
         $('.user-menu').hide();
         $('.menu').removeClass('enabled');
@@ -98,14 +98,29 @@ $(document).ready(function(){
         $('.mui-appbar').removeClass('menu-enabled');
         $('.search-button').removeClass('menu-enabled');
         // Show search input and invert button
-        $('.search-mobile').fadeToggle();
-        $('.search-button').toggleClass('invert');
+        if ( $('.search-mobile').is(':visible')) {
+            $('.search-mobile').fadeOut();
+            $('.search-button').removeClass('invert');
+            $('.search-button button:first').focus();
+        }
+        else {
+            $('.search-mobile').fadeIn();
+            $('.search-button').addClass('invert');
+            $('.search-mobile input:first').focus();
+        }
     });
 
     // Toggle user menu
-    $('.menu').click(function() {
-        $('.user-menu').toggle();
-        $('.menu').toggleClass('enabled');
+    $('.menu .menu-toggle').click(function() {
+        if ( $('.menu').hasClass('enabled')) {
+            $('.user-menu').hide();
+            $('.menu').removeClass('enabled');
+        }
+        else {
+            $('.user-menu').show();
+            $('.user-menu a:first').focus();
+            $('.menu').addClass('enabled');
+        }
 
         // If search-button is visible it's mobile viewport
         if ($('.search-button').is(':visible')) {
@@ -150,18 +165,6 @@ $(document).ready(function(){
             dataType   : 'json',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify({ 'alert_action': 'escalate' })
-        });
-    });
-
-    // False Positive alert
-    $('#false-positive-alert').click(function() {
-        var alert_id = $('#submit-alert').data('alert-id');
-        $.ajax({
-            url: '/alert/' + alert_id,
-            type: 'POST',
-            dataType   : 'json',
-            contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify({ 'alert_action': 'false-positive' })
         });
     });
 

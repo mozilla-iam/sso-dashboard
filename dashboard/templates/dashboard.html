@@ -20,7 +20,7 @@
 
 {% block search_button %}
   <div class="search-button">
-    <a href="#"></a>
+    <button type="button"><span class="visually-hidden">Toggle search field</span></button>
   </div>
 {% endblock %}
 
@@ -35,9 +35,10 @@
 
 {% block menu %}
   <div class="menu">
+    <button type="button" class="menu-toggle"><span class="visually-hidden">Toggle user options</span></button>
     {% with avatar = user.avatar, name = user.first_name %}
       {% if user.alerts %}
-        <span class="alerts-count"></span>
+        <span class="alerts-count"><span class="visually-hidden">You have unread alerts</span></span>
       {% endif %}
       <span class="name">{% if name %}{{ name }}{% endif %}</span>
       {% if avatar %}
@@ -59,11 +60,11 @@
 
 {% block user_menu %}
   <div class="user-menu">
-    <a href="https://mozillians.org/user/edit/" target="_blank"><span>Settings</span> <img class="menu-icon" src="/static/img/settings.svg" alt="Settings"></a>
-    <a {% if user.alerts %}href="/notifications"{% else %}href="#" class="inactive"{% endif %}><span>Notifications</span> <img class="menu-icon" src="/static/img/alerts/notification-white.svg" alt="Notifications"></a>
-    <a href="/logout"><span>Logout</span> <img class="menu-icon"src="/static/img/logout.svg" alt="Logout"></a>
+    <a href="https://mozillians.org/user/edit/" target="_blank"><span>Settings</span> <img class="menu-icon" src="/static/img/settings.svg" alt=""></a>
+    <a {% if user.alerts %}href="/notifications"{% else %}href="#" class="inactive"{% endif %}><span>Notifications</span> <img class="menu-icon" src="/static/img/alerts/notification-white.svg" alt=""></a>
+    <a href="/logout"><span>Logout</span> <img class="menu-icon"src="/static/img/logout.svg" alt=""></a>
     <div class="coming-soon"><span>coming soon</span></div>
-    <a href="#" class="inactive"><span>Access Request</span> <img class="menu-icon"src="/static/img/request.svg" alt="Access Request"></a>
+    <a href="#" class="inactive"><span>Access Request</span> <img class="menu-icon"src="/static/img/request.svg" alt=""></a>
   </div>
 {% endblock %}
 
@@ -77,13 +78,13 @@
         <p>Want to help test Firefox? Give Firefox Beta a try!</p>
       </div>
       <div class="mui-col-md-3 alert-actions">
-        <a href="https://beta.mozilla.org/" class="btn-alert" target="_blank"><img src="/static/img/alerts/arrow-right-white.svg" alt="alert-info"> Download</a>
+        <a href="https://beta.mozilla.org/" class="btn-alert" target="_blank"><img src="/static/img/alerts/arrow-right-white.svg" alt=""> Download</a>
         <button type="button" id="close-alert" class="closebtn"><span aria-hidden="true">&times;</span><span class="visually-hidden">Dismiss</button>
       </div>
     </div>
 
     {% for alert in user.alerts['visible_alerts'] %}
-      <div class="alert alert-{{ alert.risk }}" role="alert">
+      <div class="alert alert-{{ alert.risk }}">
         <div class="alert-risk"><span>{{ alert.risk }} risk</span></div>
         <p>{{ alert.summary }}</p>
         <div class="alert-actions">
@@ -91,19 +92,25 @@
             {% include 'icons/alert.svg' %}
             <span class="info-text">More Info</span>
           </a>
-          <a href="#" id="escalate-alert" class="btn-alert">
+          <button type="button" id="escalate-alert" class="btn-alert">
             {% include 'icons/info.svg' %}
             <span class="info-text">Escalate to Security</span>
-          </a>
-          <a href="#" id="escalate-alert" class="btn-alert">
-            {% include 'icons/alert.svg' %}
-            <span class="info-text">Mark False Positive</span>
-          </a>
+          </button>
           <a href="{{ alert.url }}" class="btn-alert" target="_blank">
             {% include 'icons/alert.svg' %}
             {{ alert.url_title }}
           </a>
         </div>
+        <form action="/alert/{{ alert.id }}" method="POST" class="alert-survey">
+          <fieldset>
+            <legend>Was this alert helpful?</legend>
+            <input type="submit" value="Yes" name="helpfulness" /><!--
+            --><input type="submit" value="Very" name="helpfulness" /><!--
+            --><input type="submit" value="Moderately" name="helpfulness" /><!--
+            --><input type="submit" value="Slightly" name="helpfulness" /><!--
+            --><input type="submit" value="No" name="helpfulness" />
+          </fieldset>
+        </form>
         <button type="button" id="submit-alert" class="closebtn" data-alert-id="{{ alert.get('alert_id') }}"><span aria-hidden="true">&times;</span><span class="visually-hidden">Dismiss</button>
       </div>
     {% endfor %}
@@ -112,15 +119,18 @@
 
 {% block content %}
   <div id="app-grid" class="mui-row app-grid">
+    <ul>
     {% for app in apps %}
-      <a href="{{ app['application']['url'] }}" data-id="{{ app['application']['name'] }}"
-         class="app-tile" target="_blank">
-        <div class="mui--text-center app-logo">
-          <img src="{{ config.CDN }}/images/{{ app['application']['logo'] }}" alt={{ app['application']['name'] }}>
-        </div>
-        <h4 class="mui--text-center app-name">{{ app['application']['name'] }}</h4>
-      </a>
+      <li>
+        <a href="{{ app['application']['url'] }}" data-id="{{ app['application']['name'] }}" class="app-tile" target="_blank">
+          <div class="mui--text-center app-logo">
+            <img src="{{ config.CDN }}/images/{{ app['application']['logo'] }}" role="presentation" alt="">
+          </div>
+          <p class="mui--text-center app-name">{{ app['application']['name'] }}</p>
+        </a>
+      </li>
     {% endfor %}
+    </ul>
   </div>
 {% endblock %}
 

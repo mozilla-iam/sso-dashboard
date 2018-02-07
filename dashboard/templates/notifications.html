@@ -15,11 +15,11 @@
 
 {% block content %}
   <div class="notifications">
-    <h4>
-      <img src="/static/img/alerts/notification-black.svg" alt="alerts">
+    <h1>
+      <img src="/static/img/alerts/notification-black.svg" alt="" role="presentation">
       Notification Center
-      <span class="alerts-count">{{ user.alerts['visible_alerts']|count }}</span>
-    </h4>
+      <span class="alerts-count">{{ user.alerts['visible_alerts']|count }}<span class="visually-hidden"> notifications</span></span>
+    </h1>
 
     {% for alert in user.alerts['visible_alerts'] %}
       <div class="alert-panel">
@@ -38,19 +38,30 @@
           <div class="alert-description">
             {{ alert.description }}
           </div>
-          <a href="{{ alert.url }}" class="mui-btn">
-            <img src="/static/img/alerts/arrow-right-black.svg" alt="">
-            {{ alert.url_title }}
-          </a>
-          <span class="mui-btn" id="dismiss-alert" data-alert-id="{{ alert.get('alert_id') }}">
-            Dismiss
-          </span>
-          <span class="mui-btn" id="escalate-alert" data-alert-id="{{ alert.get('alert_id') }}">
-            Escalate to Security
-          </span>
-          <span class="mui-btn" id="false-positive-alert" data-alert-id="{{ alert.get('alert_id') }}">
-            False Positive
-          </span>
+
+          <div class="alert-actions">
+            <a href="{{ alert.url }}" class="btn-alert" target="_blank">
+              {% include 'icons/alert.svg' %}
+              {{ alert.url_title }}
+            </a>
+            <button type="button" id="escalate-alert" class="btn-alert" data-alert-id="{{ alert.get('alert_id') }}">
+              {% include 'icons/info.svg' %}
+              <span class="info-text">Escalate to Security</span>
+            </button>
+            <button type="button" class="btn-alert" id="dismiss-alert" data-alert-id="{{ alert.get('alert_id') }}">
+              Dismiss
+            </button>
+          </div>
+          <form action="/alert/{{ alert.id }}" method="POST" class="alert-survey">
+            <fieldset>
+              <legend>Was this alert helpful?</legend>
+              <input type="submit" value="Yes" name="helpfulness" /><!--
+              --><input type="submit" value="Very" name="helpfulness" /><!--
+              --><input type="submit" value="Moderately" name="helpfulness" /><!--
+              --><input type="submit" value="Slightly" name="helpfulness" /><!--
+              --><input type="submit" value="No" name="helpfulness" />
+            </fieldset>
+          </form>
         </div>
       </div>
     {% endfor %}

@@ -173,8 +173,8 @@ class User(object):
             logger.info('An alert was escalated for {uid}.'.format(uid=self.userinfo['sub']))
             alert_dict['state'] = alert_action
             res = a.update(alert_id=alert_id, alert_dict=alert_dict)
-        elif alert_action == 'false-positive':
-            logger.info('An alert was marked false-positive for {uid}.'.format(uid=self.userinfo['sub']))
+        elif alert_action == 'indicate-helpfulness':
+            logger.info('Alert helpfulness was set for {uid}.'.format(uid=self.userinfo['sub']))
             alert_dict['state'] = alert_action
             res = a.update(alert_id=alert_id, alert_dict=alert_dict)
         else:

@@ -70,15 +70,14 @@
 
 {% block messages %}
   <div class="messages">
-    <div class="mui-row alert alert-low" role="alert" id="alert-nightly">
-      <div class="mui-col-md-3 alert-info">
-        <div class="alert-risk">low risk</div>
-      </div>
-      <div class="mui-col-md-6 alert-message">
-        <p>Want to help test Firefox? Give Firefox Beta a try!</p>
-      </div>
-      <div class="mui-col-md-3 alert-actions">
-        <a href="https://beta.mozilla.org/" class="btn-alert" target="_blank"><img src="/static/img/alerts/arrow-right-white.svg" alt=""> Download</a>
+    <div class="alert alert-low" id="alert-nightly">
+      <div class="alert-risk"><span>low risk</span></div>
+      <p>Want to help test Firefox? Give Firefox Beta a try!</p>
+      <div class="alert-actions">
+        <a href="https://beta.mozilla.org/" class="btn-alert" target="_blank">
+          {% include 'icons/alert.svg' %}
+          <span class="info-text">Download</span>
+        </a>
         <button type="button" id="close-alert" class="closebtn"><span aria-hidden="true">&times;</span><span class="visually-hidden">Dismiss</button>
       </div>
     </div>

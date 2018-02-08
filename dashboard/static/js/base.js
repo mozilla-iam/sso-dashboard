@@ -77,16 +77,6 @@ $(document).ready(function(){
         }
     });
 
-    // Highlight app tiles
-    $('a.app-tile').hover(
-        function() {
-            $(this).find('.app-logo').addClass('yellow-border');
-        },
-        function() {
-            $(this).find('.app-logo').removeClass('yellow-border');
-        }
-    );
-
     // Mobile search toggle
     $('.search-button button').click(function() {
         // Make sure user menu is hidden

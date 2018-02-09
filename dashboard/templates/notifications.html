@@ -22,7 +22,7 @@
     </h1>
 
     {% for alert in user.alerts['visible_alerts'] %}
-      <div class="alert-panel">
+      <div class="alert alert-panel" id="{{ alert.get('alert_id') }}">
         <div class="alert-header alert-{{ alert.risk }}">
           <span class="alert-risk">
             {{ alert.risk }} risk
@@ -44,15 +44,15 @@
               {% include 'icons/alert.svg' %}
               {{ alert.url_title }}
             </a>
-            <button type="button" id="escalate-alert" class="btn-alert" data-alert-id="{{ alert.get('alert_id') }}">
+            <button type="button" data-process-action="escalate" class="btn-alert">
               {% include 'icons/info.svg' %}
               <span class="info-text">Escalate to Security</span>
             </button>
-            <button type="button" class="btn-alert" id="dismiss-alert" data-alert-id="{{ alert.get('alert_id') }}">
+            <button type="button" class="btn-alert" data-process-action="acknowledge">
               Dismiss
             </button>
           </div>
-          <form action="/alert/{{ alert.id }}" method="POST" class="alert-survey">
+          <form action="/alert/{{ alert.get('alert_id') }}" data-helpfulness method="POST" class="alert-survey">
             <fieldset>
               <legend>Was this alert helpful?</legend>
               <input type="submit" value="Yes" name="helpfulness" /><!--

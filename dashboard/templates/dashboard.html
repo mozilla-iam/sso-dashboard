@@ -70,21 +70,20 @@
 
 {% block messages %}
   <div class="messages">
-    <div class="mui-row alert alert-low" role="alert" id="alert-nightly">
-      <div class="mui-col-md-3 alert-info">
-        <div class="alert-risk">low risk</div>
-      </div>
-      <div class="mui-col-md-6 alert-message">
-        <p>Want to help test Firefox? Give Firefox Beta a try!</p>
-      </div>
-      <div class="mui-col-md-3 alert-actions">
-        <a href="https://beta.mozilla.org/" class="btn-alert" target="_blank"><img src="/static/img/alerts/arrow-right-white.svg" alt=""> Download</a>
-        <button type="button" id="close-alert" class="closebtn"><span aria-hidden="true">&times;</span><span class="visually-hidden">Dismiss</button>
+    <div class="alert alert-low" id="alert-nightly">
+      <div class="alert-risk"><span>low risk</span></div>
+      <p>Want to help test Firefox? Give Firefox Beta a try!</p>
+      <div class="alert-actions">
+        <a href="https://beta.mozilla.org/" class="btn-alert" target="_blank">
+          {% include 'icons/alert.svg' %}
+          <span class="info-text">Download</span>
+        </a>
+        <button type="button" data-action="close-alert" class="closebtn"><span aria-hidden="true">&times;</span><span class="visually-hidden">Dismiss</button>
       </div>
     </div>
 
     {% for alert in user.alerts['visible_alerts'] %}
-      <div class="alert alert-{{ alert.risk }}">
+      <div class="alert alert-{{ alert.risk }}" id="{{ alert.get('alert_id') }}">
         <div class="alert-risk"><span>{{ alert.risk }} risk</span></div>
         <p>{{ alert.summary }}</p>
         <div class="alert-actions">
@@ -92,7 +91,7 @@
             {% include 'icons/alert.svg' %}
             <span class="info-text">More Info</span>
           </a>
-          <button type="button" id="escalate-alert" class="btn-alert">
+          <button type="button" data-process-action="escalate" class="btn-alert">
             {% include 'icons/info.svg' %}
             <span class="info-text">Escalate to Security</span>
           </button>
@@ -101,7 +100,7 @@
             {{ alert.url_title }}
           </a>
         </div>
-        <form action="/alert/{{ alert.id }}" method="POST" class="alert-survey">
+        <form action="/alert/{{ alert.get('alert_id') }}" data-helpfulness method="POST" class="alert-survey">
           <fieldset>
             <legend>Was this alert helpful?</legend>
             <input type="submit" value="Yes" name="helpfulness" /><!--
@@ -111,7 +110,7 @@
             --><input type="submit" value="No" name="helpfulness" />
           </fieldset>
         </form>
-        <button type="button" id="submit-alert" class="closebtn" data-alert-id="{{ alert.get('alert_id') }}"><span aria-hidden="true">&times;</span><span class="visually-hidden">Dismiss</button>
+        <button type="button" data-process-action="acknowledge" class="closebtn"><span aria-hidden="true">&times;</span><span class="visually-hidden">Dismiss</button>
       </div>
     {% endfor %}
   </div>

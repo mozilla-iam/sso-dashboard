@@ -77,16 +77,6 @@ $(document).ready(function(){
         }
     });
 
-    // Highlight app tiles
-    $('a.app-tile').hover(
-        function() {
-            $(this).find('.app-logo').addClass('yellow-border');
-        },
-        function() {
-            $(this).find('.app-logo').removeClass('yellow-border');
-        }
-    );
-
     // Mobile search toggle
     $('.search-button button').click(function() {
         // Make sure user menu is hidden
@@ -144,32 +134,43 @@ $(document).ready(function(){
         $('#alert-nightly').show();
     }
 
-    // Alerts ack
-    $('#submit-alert').click(function() {
-        var alert_id = $('#submit-alert').data('alert-id');
+    $('[data-process-action]').click(function(){
+        var $button = $(this);
+        var alert_id = $button.closest('.alert').attr('id');
+        var alert_action = $button.attr('data-process-action');
+
         $.ajax({
             url: '/alert/' + alert_id,
             type: 'POST',
             dataType   : 'json',
             contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify({ 'alert_action': 'acknowledge' })
+            data: JSON.stringify({ 'alert_action': alert_action })
+        }).done(function(){
+            if( alert_action === 'acknowledge' ) {
+                $button.closest('.alert').slideUp();
+            }
         });
     });
 
-    // Escalate alert
-    $('#escalate-alert').click(function() {
-        var alert_id = $('#submit-alert').data('alert-id');
+    $('[data-helpfulness]').submit(function(e){
+        var $form = $(e.target);
+        var alert_id = $form.closest('.alert').attr('id');
+        var helpfulness = document.activeElement.value; // document.activeElement is currently focused element, which will at this time be the submit button
+
         $.ajax({
             url: '/alert/' + alert_id,
             type: 'POST',
             dataType   : 'json',
             contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify({ 'alert_action': 'escalate' })
+            data: JSON.stringify({
+                'alert_action': 'indicate-helpfulness',
+                'helpfulness' : helpfulness
+            })
+        }).done(function(){
+            $form.slideUp();
         });
-    });
 
-    // Alerts close button
-    $('.closebtn').click(function() {
-        $(this).parent('div').parent('.alert').slideUp();
-    });
+        e.preventDefault();
+
+    })
 });

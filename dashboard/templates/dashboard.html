@@ -82,6 +82,7 @@
       </div>
     </div>
 
+
     {% for alert in user.alerts['visible_alerts'] %}
       <div class="alert alert-{{ alert.risk }}" id="{{ alert.get('alert_id') }}">
         <div class="alert-risk"><span>{{ alert.risk }} risk</span></div>
@@ -99,6 +100,7 @@
             {% include 'icons/alert.svg' %}
             {{ alert.url_title }}
           </a>
+
         </div>
         <form action="/alert/{{ alert.get('alert_id') }}" data-helpfulness method="POST" class="alert-survey">
           <fieldset>

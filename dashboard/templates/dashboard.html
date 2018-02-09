@@ -2,11 +2,11 @@
 
 {% block search %}
   <div class="mui-form--inline filter">
-    <img src="static/img/search.svg" alt="search">
+    <img src="/static/img/search.svg">
     <div class="mui-textfield">
+      <label for="filter" class="visually-hidden">Search for an app by name</label>
       <input type="text" name="filter" id="filter" placeholder="Search for an app by name" autocomplete="off">
       <svg class="clear" width="26px" height="26px" viewBox="0 0 26 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-        <title>clear</title>
         <defs></defs>
         <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g id="icons-/-clear" fill="#000000">
@@ -20,23 +20,25 @@
 
 {% block search_button %}
   <div class="search-button">
-    <a href="#"></a>
+    <button type="button"><span class="visually-hidden">Toggle search field</span></button>
   </div>
 {% endblock %}
 
 {% block search_mobile %}
   <div class="search-mobile">
     <div class="mui-textfield">
-      <input type="text" name="filter" id="filter" placeholder="Search for an app by name">
+      <label for="filter2" class="visually-hidden">Search for an app by name</label>
+      <input type="text" name="filter2" id="filter2" placeholder="Search for an app by name">
     </div>
   </div>
 {% endblock %}
 
 {% block menu %}
   <div class="menu">
+    <button type="button" class="menu-toggle"><span class="visually-hidden">Toggle user options</span></button>
     {% with avatar = user.avatar, name = user.first_name %}
       {% if user.alerts %}
-        <span class="alerts-count"></span>
+        <span class="alerts-count"><span class="visually-hidden">You have unread alerts</span></span>
       {% endif %}
       <span class="name">{% if name %}{{ name }}{% endif %}</span>
       {% if avatar %}
@@ -58,42 +60,59 @@
 
 {% block user_menu %}
   <div class="user-menu">
-    <a href="https://mozillians.org/user/edit/" target="_blank"><span>Settings</span> <img class="menu-icon" src="/static/img/settings.svg" alt="Settings"></a>
-    <a {% if user.alerts %}href="/notifications"{% else %}href="#" class="inactive"{% endif %}><span>Notifications</span> <img class="menu-icon" src="/static/img/alerts/notification-white.svg" alt="Notifications"></a>
-    <a href="/logout"><span>Logout</span> <img class="menu-icon"src="/static/img/logout.svg" alt="Logout"></a>
+    <a href="https://mozillians.org/user/edit/" target="_blank"><span>Settings</span> <img class="menu-icon" src="/static/img/settings.svg" alt=""></a>
+    <a {% if user.alerts %}href="/notifications"{% else %}href="#" class="inactive"{% endif %}><span>Notifications</span> <img class="menu-icon" src="/static/img/alerts/notification-white.svg" alt=""></a>
+    <a href="/logout"><span>Logout</span> <img class="menu-icon"src="/static/img/logout.svg" alt=""></a>
     <div class="coming-soon"><span>coming soon</span></div>
-    <a href="#" class="inactive"><span>Access Request</span> <img class="menu-icon"src="/static/img/request.svg" alt="Access Request"></a>
+    <a href="#" class="inactive"><span>Access Request</span> <img class="menu-icon"src="/static/img/request.svg" alt=""></a>
   </div>
 {% endblock %}
 
 {% block messages %}
   <div class="messages">
-    <div class="mui-row alert alert-low" role="alert" id="alert-nightly">
-      <div class="mui-col-md-3 alert-info">
-        <div class="alert-risk">low risk</div>
-      </div>
-      <div class="mui-col-md-6 alert-message">
-        <p>Want to help test Firefox? Give Firefox Beta a try!</p>
-      </div>
-      <div class="mui-col-md-3 alert-actions">
-        <a href="https://beta.mozilla.org/" class="btn-alert" target="_blank"><img src="/static/img/alerts/arrow-right-white.svg" alt="alert-info"> Download</a>
-        <span id="close-alert" class="closebtn">&times;</span>
+    <div class="alert alert-low" id="alert-nightly">
+      <div class="alert-risk"><span>low risk</span></div>
+      <p>Want to help test Firefox? Give Firefox Beta a try!</p>
+      <div class="alert-actions">
+        <a href="https://beta.mozilla.org/" class="btn-alert" target="_blank">
+          {% include 'icons/alert.svg' %}
+          <span class="info-text">Download</span>
+        </a>
+        <button type="button" data-action="close-alert" class="closebtn"><span aria-hidden="true">&times;</span><span class="visually-hidden">Dismiss</button>
       </div>
     </div>
 
-    {% for alert in user.alerts %}
-      <div class="mui-row alert alert-{{ alert.risk }}" role="alert">
-        <div class="mui-col-md-3 alert-info">
-          <div class="alert-risk">{{ alert.risk }} risk</div>
+
+    {% for alert in user.alerts['visible_alerts'] %}
+      <div class="alert alert-{{ alert.risk }}" id="{{ alert.get('alert_id') }}">
+        <div class="alert-risk"><span>{{ alert.risk }} risk</span></div>
+        <p>{{ alert.summary }}</p>
+        <div class="alert-actions">
+          <a href="/notifications" class="btn-alert">
+            {% include 'icons/alert.svg' %}
+            <span class="info-text">More Info</span>
+          </a>
+          <button type="button" data-process-action="escalate" class="btn-alert">
+            {% include 'icons/info.svg' %}
+            <span class="info-text">Escalate to Security</span>
+          </button>
+          <a href="{{ alert.url }}" class="btn-alert" target="_blank">
+            {% include 'icons/alert.svg' %}
+            {{ alert.url_title }}
+          </a>
+
         </div>
-        <div class="mui-col-md-6 alert-message">
-          <p>{{ alert.date }}: {{ alert.summary }}</p>
-        </div>
-        <div class="mui-col-md-3 alert-actions">
-          <a href="/notifications" class="btn-alert"><img src="/static/img/alerts/info-white.svg" alt="alert-info"> <span class="info-text">More Info</span></a>
-          <a href="{{ alert.url }}" class="btn-alert" target="_blank"><img src="/static/img/alerts/arrow-right-white.svg" alt="alert-info"> {{ alert.url_title }}</a>
-          <span id="submit-alert" class="closebtn" data-alert-id="{{ alert.get('alert_id') }}">&times;</span>
-        </div>
+        <form action="/alert/{{ alert.get('alert_id') }}" data-helpfulness method="POST" class="alert-survey">
+          <fieldset>
+            <legend>Was this alert helpful?</legend>
+            <input type="submit" value="Yes" name="helpfulness" /><!--
+            --><input type="submit" value="Very" name="helpfulness" /><!--
+            --><input type="submit" value="Moderately" name="helpfulness" /><!--
+            --><input type="submit" value="Slightly" name="helpfulness" /><!--
+            --><input type="submit" value="No" name="helpfulness" />
+          </fieldset>
+        </form>
+        <button type="button" data-process-action="acknowledge" class="closebtn"><span aria-hidden="true">&times;</span><span class="visually-hidden">Dismiss</button>
       </div>
     {% endfor %}
   </div>
@@ -101,15 +120,18 @@
 
 {% block content %}
   <div id="app-grid" class="mui-row app-grid">
+    <ul>
     {% for app in apps %}
-      <a href="{{ app['application']['url'] }}" data-id="{{ app['application']['name'] }}"
-         class="app-tile" target="_blank">
-        <div class="mui--text-center app-logo">
-          <img src="{{ config.CDN }}/images/{{ app['application']['logo'] }}" alt={{ app['application']['name'] }}>
-        </div>
-        <h4 class="mui--text-center app-name">{{ app['application']['name'] }}</h4>
-      </a>
+      <li>
+        <a href="{{ app['application']['url'] }}" data-id="{{ app['application']['name'] }}" class="app-tile" target="_blank">
+          <div class="mui--text-center app-logo">
+            <img src="{{ config.CDN }}/images/{{ app['application']['logo'] }}" role="presentation" alt="">
+          </div>
+          <p class="mui--text-center app-name">{{ app['application']['name'] }}</p>
+        </a>
+      </li>
     {% endfor %}
+    </ul>
   </div>
 {% endblock %}
 

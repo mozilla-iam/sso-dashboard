@@ -11,7 +11,7 @@ cffi==1.11.2
 chardet==3.0.4
 click==6.7
 credstash==1.14.0
-cryptography==2.0.3
+cryptography==2.0
 cssmin==0.2.0
 docutils==0.14
 execnet==1.5.0

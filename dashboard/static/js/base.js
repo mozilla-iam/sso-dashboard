@@ -77,18 +77,8 @@ $(document).ready(function(){
         }
     });
 
-    // Highlight app tiles
-    $('a.app-tile').hover(
-        function() {
-            $(this).find('.app-logo').addClass('yellow-border');
-        },
-        function() {
-            $(this).find('.app-logo').removeClass('yellow-border');
-        }
-    );
-
     // Mobile search toggle
-    $('.search-button a').click(function() {
+    $('.search-button button').click(function() {
         // Make sure user menu is hidden
         $('.user-menu').hide();
         $('.menu').removeClass('enabled');
@@ -98,14 +88,29 @@ $(document).ready(function(){
         $('.mui-appbar').removeClass('menu-enabled');
         $('.search-button').removeClass('menu-enabled');
         // Show search input and invert button
-        $('.search-mobile').fadeToggle();
-        $('.search-button').toggleClass('invert');
+        if ( $('.search-mobile').is(':visible')) {
+            $('.search-mobile').fadeOut();
+            $('.search-button').removeClass('invert');
+            $('.search-button button:first').focus();
+        }
+        else {
+            $('.search-mobile').fadeIn();
+            $('.search-button').addClass('invert');
+            $('.search-mobile input:first').focus();
+        }
     });
 
     // Toggle user menu
-    $('.menu').click(function() {
-        $('.user-menu').toggle();
-        $('.menu').toggleClass('enabled');
+    $('.menu .menu-toggle').click(function() {
+        if ( $('.menu').hasClass('enabled')) {
+            $('.user-menu').hide();
+            $('.menu').removeClass('enabled');
+        }
+        else {
+            $('.user-menu').show();
+            $('.user-menu a:first').focus();
+            $('.menu').addClass('enabled');
+        }
 
         // If search-button is visible it's mobile viewport
         if ($('.search-button').is(':visible')) {
@@ -129,17 +134,43 @@ $(document).ready(function(){
         $('#alert-nightly').show();
     }
 
-    // Alerts ack
-    $('#submit-alert').click(function() {
-        var alert_id = $('#submit-alert').data('alert-id');
+    $('[data-process-action]').click(function(){
+        var $button = $(this);
+        var alert_id = $button.closest('.alert').attr('id');
+        var alert_action = $button.attr('data-process-action');
+
         $.ajax({
+            url: '/alert/' + alert_id,
             type: 'POST',
-            url: '/alert/' + alert_id
+            dataType   : 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({ 'alert_action': alert_action })
+        }).done(function(){
+            if( alert_action === 'acknowledge' ) {
+                $button.closest('.alert').slideUp();
+            }
         });
     });
 
-    // Alerts close button
-    $('.closebtn').click(function() {
-        $(this).parent('div').parent('.alert').slideUp();
-    });
+    $('[data-helpfulness]').submit(function(e){
+        var $form = $(e.target);
+        var alert_id = $form.closest('.alert').attr('id');
+        var helpfulness = document.activeElement.value; // document.activeElement is currently focused element, which will at this time be the submit button
+
+        $.ajax({
+            url: '/alert/' + alert_id,
+            type: 'POST',
+            dataType   : 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({
+                'alert_action': 'indicate-helpfulness',
+                'helpfulness' : helpfulness
+            })
+        }).done(function(){
+            $form.slideUp();
+        });
+
+        e.preventDefault();
+
+    })
 });

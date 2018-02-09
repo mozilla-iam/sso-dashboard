@@ -10,6 +10,9 @@
 - name: Install EPEL
   yum: name=epel-release state=latest
 
+- name: Install Build Dependencies
+  yum: name=gcc,libffi-devel,python-devel,openssl-devel,curl-devel,python34,python34-devel state=latest
+
 - name: Install nginx
   yum: name=nginx
 
@@ -27,14 +30,11 @@
 - name: Install git
   yum: name=git state=latest
 
-- name: Install credstash depends
-  yum: name=gcc,libffi-devel,python-devel,openssl-devel,curl-devel,python34,python34-devel state=latest
-
 - name: Install Pip
   yum: name=python-pip state=latest
 
-- name: Install PyDevel
-  yum: name=python-devel state=latest
+- name: Install Pip
+  yum: name=python34-pip state=latest
 
 - name: Install rubygems sass compiler
   yum: name=rubygem-sass state=latest
@@ -57,6 +57,7 @@
 - name: Install requirements
   pip:
     requirements: '/sso-dashboard/requirements.txt'
+    executable: pip3
 
 - name: Copy The Application
   copy:
@@ -111,9 +112,18 @@
   pip:
     name: git+git://github.com/mozilla-iam/pyoidc.git@hotfix_unicode#egg=pyoidc
     state: forcereinstall
+    executable: pip3
+
+- name: Force python openssl
+  pip:
+    name: pyOpenSSL
+    version: 17.3.0
+    state: forcereinstall
+    executable: pip3
 
 - name: Force cryptography 2pointo
   pip:
     name: cryptography
     version: 2.0
     state: forcereinstall
+    executable: pip3

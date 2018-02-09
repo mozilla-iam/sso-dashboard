@@ -33,11 +33,11 @@ class API(object):
         return json.loads(data.decode('utf-8'))
 
     def get_userinfo(self, auth_zero_id):
-        user_id = urllib.quote(auth_zero_id)
+        user_id = urllib.parse.quote(auth_zero_id)
         conn = http.client.HTTPSConnection("{}".format(self.person_api_url))
         token = "Bearer {}".format(self.get_bearer().get('access_token'))
 
-        headers = { 'authorization': token }
+        headers = {'authorization': token}
 
         conn.request("GET", "/prod/profile/{}".format(user_id), headers=headers)
 

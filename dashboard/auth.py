@@ -8,6 +8,7 @@ from flask_pyoidc.flask_pyoidc import OIDCAuthentication
 
 logger = logging.getLogger(__name__)
 
+
 class OpenIDConnect(object):
     """Auth object for login, logout, and response validation."""
 

@@ -15,12 +15,27 @@ class Feedback(object):
     def __init__(self, alert_dict, alert_action):
         self.alert_dict = alert_dict
         self.alert_action = alert_action
-        self.sns_topic_arn = 'arn:aws:sns:us-west-2:656532927350:SSODashboardAlertFeedback'
+        self.ssm = None
         self.sns = None
+        self.sns_topic_arn = self.get_sns_arn()
 
     def connect_sns(self):
         if self.sns is None:
             self.sns = boto3.client('sns', region_name='us-west-2')
+
+    def connect_ssm(self):
+        if self.ssm is None:
+            self.ssm = boto3.client('ssm', region_name='us-west-2')
+
+    def get_sns_arn(self):
+        self.connect_ssm()
+
+        response = self.ssm.get_parameter(
+            Name='sso-dashboard-alerts-sns',
+            WithDecryption=False
+        )
+
+        return response.get('Parameter').get('Value')
 
     def _construct_alert(self):
         message = {
@@ -52,6 +67,15 @@ class Alert(object):
         self.dynamodb = None
 
     def has_actions(self, alert_dict):
+        """Let's the view know if it should render actions for the alert."""
+
+        # Whitelist the firefox out of date alert.  It should not get buttons.
+        if self.alert_dict.get('alert_code') is not '63f675d8896f4fb2b3caa204c8c2761e':
+            return True
+        else:
+            return False
+
+    def has_escalation(self, alert_dict):
         """Let's the view know if it should render actions for the alert."""
 
         # Whitelist the firefox out of date alert.  It should not get buttons.

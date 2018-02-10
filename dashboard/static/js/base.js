@@ -155,7 +155,7 @@ $(document).ready(function(){
     $('[data-helpfulness]').submit(function(e){
         var $form = $(e.target);
         var alert_id = $form.closest('.alert').attr('id');
-        var helpfulness = document.activeElement.value; // document.activeElement is currently focused element, which will at this time be the submit button
+        var helpfulness = e.originalEvent.explicitOriginalTarget.value; //swapped to parse event instead because of firefox / chrome bug
 
         $.ajax({
             url: '/alert/' + alert_id,

@@ -224,9 +224,10 @@ def alert_operation(alert_id):
         user = User(session, config.Config(app).settings)
         if request.data is not None:
             data = json.loads(request.data)
+            helpfulness = data.get('helpfulness')
             alert_action = data.get('alert_action')
 
-        result = user.take_alert_action(alert_id, alert_action)
+        result = user.take_alert_action(alert_id, alert_action, helpfulness)
 
         if result['ResponseMetadata']['HTTPStatusCode'] == 200:
             return '200'

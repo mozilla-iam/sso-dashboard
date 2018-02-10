@@ -148,22 +148,24 @@ class Alert(object):
 
         inactive_alerts = []
         visible_alerts = []
-        false_positives = []
+        ranked_alerts = []
         escalations = []
 
         for alert in response.get('Items'):
-            if alert.get('status', '') == 'acknowledged':
+            if alert.get('state', '') == 'acknowledge':
                 inactive_alerts.append(alert)
-            elif alert.get('status', '') == 'false-positive':
-                false_positives.append(alert)
-            elif alert.get('status', '') == 'escalate':
+            elif alert.get('helpfulness', '') != '':
+                ranked_alerts.append(alert)
+                visible_alerts.append(alert)
+            elif alert.get('state', '') == 'escalate':
                 escalations.append(alert)
+                visible_alerts.append(alert)
             else:
                 visible_alerts.append(alert)
 
         return {
             'visible_alerts': visible_alerts,
-            'false_positives': false_positives,
+            'ranked_alerts': ranked_alerts,
             'escalations': escalations,
             'inactive_alerts': inactive_alerts
         }

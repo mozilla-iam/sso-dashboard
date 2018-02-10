@@ -83,11 +83,12 @@
     </div>
 
 
-    {% for alert in user.alerts['visible_alerts'] %}
+    {% for alert in user.alerts.get('visible_alerts') %}
       <div class="alert alert-{{ alert.risk }}" id="{{ alert.get('alert_id') }}">
         <div class="alert-risk"><span>{{ alert.risk }} risk</span></div>
-        <p>{{ alert.summary }}</p>
+        <p>{{ alert.date }}: {{ alert.summary }}</p>
         <div class="alert-actions">
+        {% if alert.get('state') != 'escalate' %}
           <a href="/notifications" class="btn-alert">
             {% include 'icons/alert.svg' %}
             <span class="info-text">More Info</span>
@@ -100,8 +101,11 @@
             {% include 'icons/alert.svg' %}
             {{ alert.url_title }}
           </a>
-
+          {% else %}
+            <span class="info-text">This alert has been escalated to the Mozilla Operations Center.</span>
+          {% endif %}
         </div>
+        {% if alert.get('helpfulness') == None %}
         <form action="/alert/{{ alert.get('alert_id') }}" data-helpfulness method="POST" class="alert-survey">
           <fieldset>
             <legend>Was this alert helpful?</legend>
@@ -112,6 +116,9 @@
             --><input type="submit" value="No" name="helpfulness" />
           </fieldset>
         </form>
+        {% else %}
+          <span class="info-text">Thank you for providing us feedback on this alert!</span>
+        {% endif %}
         <button type="button" data-process-action="acknowledge" class="closebtn"><span aria-hidden="true">&times;</span><span class="visually-hidden">Dismiss</button>
       </div>
     {% endfor %}

@@ -239,7 +239,7 @@ def alert_operation(alert_id):
 @app.route('/alert/fake', methods=['GET'])
 def alert_faking():
     if request.method == 'GET':
-        if os.environ.get('ENVIRONMENT') != 'Production':
+        if config.SERVER_NAME != 'sso.mozilla.com':
             """Only allow alert faking in non production environment."""
             user = User(session, config.Config(app).settings)
             fake_alerts = FakeAlert(user_id=user.userinfo.get('sub'))

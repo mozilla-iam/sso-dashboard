@@ -13,7 +13,7 @@ phases:
   post_build:
     commands:
       - rm -rf /root/.docker/config.json
-      - aws ecr get-login --region us-west-2 | bash
+      - aws ecr get-login --region us-west-2 --no-include-email | bash
       - docker tag ansible-web ${DOCKER_REPO}:latest
       - docker push ${DOCKER_REPO}:latest
       - echo Build completed on `date`

@@ -222,7 +222,7 @@ class Alert(object):
 
         :return: random alertid
         """
-        return str(binascii.b2a_hex(os.urandom(15)))
+        return binascii.b2a_hex(os.urandom(15)).decode()
 
 
 class Rules(object):

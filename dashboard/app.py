@@ -24,6 +24,7 @@ from csp import DASHBOARD_CSP
 from models.user import User
 from models.user import FakeUser
 from op.yaml_loader import Application
+from models.alert import FakeAlert
 from models.alert import Rules
 from models.tile import S3Transfer
 
@@ -233,6 +234,18 @@ def alert_operation(alert_id):
             return '200'
         else:
             return '500'
+
+@oidc.oidc_auth
+@app.route('/alert/fake', methods=['GET'])
+def alert_faking():
+    if request.method == 'GET':
+        if os.environ.get('ENVIRONMENT') != 'Production':
+            """Only allow alert faking in non production environment."""
+            user = User(session, config.Config(app).settings)
+            fake_alerts = FakeAlert(user_id=user.userinfo.get('sub'))
+            fake_alerts.create_fake_alerts()
+
+    return redirect('/dashboard', code=302)
 
 
 @app.route('/info')

@@ -3,11 +3,17 @@ import binascii
 import boto3
 import datetime
 import json
+import logging
 import os
 import requests
 
 
 from boto3.dynamodb.conditions import Attr
+from faker import Faker
+
+
+fake = Faker()
+logger = logging.getLogger(__name__)
 
 
 class Feedback(object):
@@ -102,10 +108,13 @@ class Alert(object):
 
         # If the alert is duplicate false do not create another instance of it.
         for alert in current_alerts:
-            if alert.get('alert_code') == alert_dict.get('alert_code') and alert_dict.get('duplicate') is False:
-                return None
-            else:
-                continue
+            try:
+                if alert.get('alert_code') == alert_dict.get('alert_code') and alert_dict.get('duplicate') is False:
+                    return None
+                else:
+                    continue
+            except AttributeError as e:
+                logger.error('Bad data in alerts table for user: {}, exception was {}'.format(user_id, e))
 
         # Else create another alert.
         return self.create(alert_dict)
@@ -213,7 +222,7 @@ class Alert(object):
 
         :return: random alertid
         """
-        return binascii.b2a_hex(os.urandom(15))
+        return str(binascii.b2a_hex(os.urandom(15)))
 
 
 class Rules(object):
@@ -297,12 +306,12 @@ class Rules(object):
 class FakeAlert(object):
     """Class only fires in development mode.  Adds alerts to a given user for testing only."""
     def __init__(self, user_id):
-        self._user_id = user_id
+        self.user_id = user_id
         self.alert = Alert()
 
     def create_fake_alerts(self):
         self._create_fake_browser_alert()
-        self.create_fake_geolocation_alert()
+        self._create_fake_geolocation_alert()
 
     def _create_fake_browser_alert(self):
         alert_dict = {
@@ -314,7 +323,7 @@ class FakeAlert(object):
                            'computer secure and your private data private. Older browsers may '
                            'have known security vulnerabilities that attackers can exploit to '
                            'steal your data or load malware, which can put you and Mozilla at risk. ',
-            'date': str(datetime.date.today()),
+            'date': str(fake.date(pattern="%Y-%m-%d", end_datetime=None)),
             'url': 'https://www.mozilla.org/firefox/',
             'url_title': 'Download',
             'duplicate': False
@@ -322,4 +331,18 @@ class FakeAlert(object):
         self.alert.find_or_create_by(alert_dict=alert_dict, user_id=self.user_id)
 
     def _create_fake_geolocation_alert(self):
-        pass
+        alert_dict = {
+            'alert_code': '416c65727447656f6d6f64656c',
+            'user_id': self.user_id,
+            'risk': 'high',
+            'summary': 'Did you recently login from {}, {} (5.6.7.8)?'.format(
+                fake.state(),
+                fake.country()
+            ),
+            'description': 'This alert is created based on geo ip information about the last login of a user.',
+            'date': str(fake.date(pattern="%Y-%m-%d", end_datetime=None)),
+            'url': 'https://www.mozilla.org',
+            'url_title': 'Get Help',
+            'duplicate': False
+        }
+        self.alert.find_or_create_by(alert_dict=alert_dict, user_id=self.user_id)

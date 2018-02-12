@@ -292,3 +292,34 @@ class Rules(object):
                     return False
             else:
                 return False
+
+
+class FakeAlert(object):
+    """Class only fires in development mode.  Adds alerts to a given user for testing only."""
+    def __init__(self, user_id):
+        self._user_id = user_id
+        self.alert = Alert()
+
+    def create_fake_alerts(self):
+        self._create_fake_browser_alert()
+        self.create_fake_geolocation_alert()
+
+    def _create_fake_browser_alert(self):
+        alert_dict = {
+            'alert_code': '63f675d8896f4fb2b3caa204c8c2761e',
+            'user_id': self.user_id,
+            'risk': 'medium',
+            'summary': 'Your version of Firefox is older than the current stable release.',
+            'description': 'Running the latest version of your browser is key to keeping your '
+                           'computer secure and your private data private. Older browsers may '
+                           'have known security vulnerabilities that attackers can exploit to '
+                           'steal your data or load malware, which can put you and Mozilla at risk. ',
+            'date': str(datetime.date.today()),
+            'url': 'https://www.mozilla.org/firefox/',
+            'url_title': 'Download',
+            'duplicate': False
+        }
+        self.alert.find_or_create_by(alert_dict=alert_dict, user_id=self.user_id)
+
+    def _create_fake_geolocation_alert(self):
+        pass

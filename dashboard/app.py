@@ -224,7 +224,7 @@ def alert_operation(alert_id):
     if request.method == 'POST':
         user = User(session, config.Config(app).settings)
         if request.data is not None:
-            data = json.loads(request.data)
+            data = json.loads(request.data.decode())
             helpfulness = data.get('helpfulness')
             alert_action = data.get('alert_action')
 

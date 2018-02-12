@@ -6,7 +6,10 @@ phases:
       - echo Build started on `date`
       - echo Creating archive of python code.
       - echo installing ansible-container
-      - pip install ansible-container[docker]
+      - git clone https://github.com/ansible/ansible-container.git
+      - cd ansible-container
+      - pip install -e .[docker]
+      - cd ..
       - cd ansible && ansible-container build --with-volumes ../:/dashboard
   post_build:
     commands:

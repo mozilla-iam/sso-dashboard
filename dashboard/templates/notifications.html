@@ -60,6 +60,7 @@
             <span class="info-text">This alert has been escalated to the Mozilla Operations Center.</span>
           </div>
           {% endif %}
+          <div class="alert-feedback"><div class="loading-indicator">{% include 'icons/loading-black.svg' %}</div></div>
           {% if alert.get('helpfulness') == None %}
           <form action="/alert/{{ alert.get('alert_id') }}" data-helpfulness method="POST" class="alert-survey">
             <fieldset>

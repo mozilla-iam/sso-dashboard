@@ -103,6 +103,7 @@
           </a>
           {% else %}
             <span class="info-text">This alert has been escalated to the Mozilla Operations Center.</span>
+          <div class="loading-indicator">{% include 'icons/loading-white.svg' %}</div>
           {% endif %}
         </div>
         {% if alert.get('helpfulness') == None %}

@@ -44,7 +44,7 @@
               {% include 'icons/alert.svg' %}
               {{ alert.url_title }}
             </a>
-            <button type="button" data-process-action="escalate" class="btn-alert">
+            <button type="button" data-process-action="escalate" class="btn-alert" data-process-action-success="This alert has been escalated to the Mozilla Operations Center." data-process-action-error="An error has occurred, please try again later.">
               {% include 'icons/info.svg' %}
               <span class="info-text">Escalate to Security</span>
             </button>
@@ -57,23 +57,15 @@
             <button type="button" class="btn-alert" data-process-action="acknowledge">
               Dismiss
             </button>
-            <span class="info-text">This alert has been escalated to the Mozilla Operations Center.</span>
           </div>
           {% endif %}
-          {% if alert.get('helpfulness') == None %}
-          <form action="/alert/{{ alert.get('alert_id') }}" data-helpfulness method="POST" class="alert-survey">
-            <fieldset>
-              <legend>Was this alert helpful?</legend>
-              <input type="submit" value="Yes" name="helpfulness" /><!--
-              --><input type="submit" value="Very" name="helpfulness" /><!--
-              --><input type="submit" value="Moderately" name="helpfulness" /><!--
-              --><input type="submit" value="Slightly" name="helpfulness" /><!--
-              --><input type="submit" value="No" name="helpfulness" />
-            </fieldset>
-          </form>
-          {% else %}
-            <span class="info-text">Thank you for providing us feedback on this alert!</span>
-          {% endif %}
+          <div class="alert-feedback">
+            <div class="loading-indicator">{% include 'icons/loading-black.svg' %}</div>
+            {% if alert.get('state') == 'escalate' %}
+            <p>This alert has been escalated to the Mozilla Operations Center.</p>
+            {% endif %}
+          </div>
+          {% include 'partials/alert-feedback.html' %}
         </div>
       </div>
     {% endfor %}

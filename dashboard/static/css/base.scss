@@ -2,32 +2,32 @@
     font-family: 'Open Sans';
     font-weight: normal;
     font-style: normal;
-    src: url('../../fonts/opensans-light.woff2') format('woff2'),
-        url('../../fonts/opensans-light.woff') format('woff');
+    src: url('../../fonts/opensans-regular.woff2') format('woff2'),
+        url('../../fonts/opensans-regular.woff') format('woff');
 }
 
 @font-face {
     font-family: 'Open Sans';
     font-weight: bold;
     font-style: normal;
-    src: url('../../fonts/opensans-semibold.woff2') format('woff2'),
-        url('../../fonts/opensans-semibold.woff') format('woff');
+    src: url('../../fonts/opensans-bold.woff2') format('woff2'),
+        url('../../fonts/opensans-bold.woff') format('woff');
 }
 
 @font-face {
     font-family: 'Open Sans';
     font-weight: normal;
     font-style: italic;
-    src: url('../../fonts/opensans-lightitalic.woff2') format('woff2'),
-        url('../../fonts/opensans-lightitalic.woff') format('woff');
+    src: url('../../fonts/opensans-italic.woff2') format('woff2'),
+        url('../../fonts/opensans-italic.woff') format('woff');
 }
 
 @font-face {
     font-family: 'Open Sans';
     font-weight: bold;
     font-style: italic;
-    src: url('../../fonts/opensans-semibolditalic.woff2') format('woff2'),
-        url('../../fonts/opensans-semibolditalic.woff') format('woff');
+    src: url('../../fonts/opensans-bolditalic.woff2') format('woff2'),
+        url('../../fonts/opensans-bolditalic.woff') format('woff');
 }
 
 $gray: #808080;
@@ -413,6 +413,25 @@ body {
     }
 }
 
+.alert-feedback {
+    margin: 2em 0;
+
+    p {
+        font-style: italic;
+    }
+}
+
+.alert .loading-indicator {
+    display: none;
+    text-align: center;
+}
+
+.alert[data-loading] {
+
+    .loading-indicator {
+        display: block;
+    }
+}
 
 .alert-actions {
     text-align: center;
@@ -432,7 +451,6 @@ body {
         text-decoration: none;
         border-radius: 1.5em;
         margin: .5em;
-        font-weight: bold;
         transition: background-color 0.2s ease-in-out;
 
         &:first-of-type {
@@ -721,6 +739,14 @@ body {
                 border-radius: 0 2em 2em 0;
             }
         }
+    }
+}
+
+.alert-timing {
+    margin: .5em 0 1.5em;
+
+    time {
+        font-size: .75em;
     }
 }
 

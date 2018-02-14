@@ -13,7 +13,7 @@ from flask import send_from_directory
 from flask import session
 from flask_assets import Bundle
 from flask_assets import Environment
-from flask_talisman import Talisman, ALLOW_FROM
+from flask_talisman import Talisman
 
 import auth
 import config
@@ -234,6 +234,7 @@ def alert_operation(alert_id):
             return '200'
         else:
             return '500'
+
 
 @oidc.oidc_auth
 @app.route('/alert/fake', methods=['GET'])

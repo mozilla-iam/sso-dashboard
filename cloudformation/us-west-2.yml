@@ -6,7 +6,7 @@ Mappings:
         branch: "git checkout master"
         CertificateARN: "arn:aws:acm:us-east-1:656532927350:certificate/af98d466-2099-4d99-b1d1-dc222b8e59b0"
       us-west-2:
-        AMI: ami-435f853b
+        AMI: ami-069d1e7e
         branch: "git checkout master"
         CertificateARN: "arn:aws:acm:us-west-2:656532927350:certificate/ade32b62-e360-4ecd-8c3c-f44671dba94f"
       eu-west-1:
@@ -17,7 +17,7 @@ Mappings:
         branch: "git checkout production"
         CertificateARN: "arn:aws:acm:us-east-1:371522382791:certificate/12dd7f1a-177c-4a11-8b62-ca098d3ee40c"
       us-west-2:
-        AMI: ami-51568c29
+        AMI: ami-b99e1dc1
         branch: "git checkout production"
         CertificateARN: "arn:aws:acm:us-west-2:371522382791:certificate/8f0dfce8-88c1-4b9c-b3bd-850af8dcc0a5"
       eu-west-1:
@@ -40,21 +40,6 @@ Conditions:
   UseDevCondition:
     !Equals [!Ref EnvType, dev]
 Resources:
-  AlertFeedbackSQS:
-    Type: "AWS::SQS::Queue"
-    Properties:
-      QueueName: "SSODashboardAlertFeedback"
-  AlertFeedbackSNSTopic:
-    Type: "AWS::SNS::Topic"
-    Properties:
-      Subscription:
-        -
-          Endpoint:
-            Fn::GetAtt:
-              - "AlertFeedbackSQS"
-              - "Arn"
-          Protocol: "sqs"
-      TopicName: "SSODashboardAlertFeedback"
   SSODashboardInternetGateway:
     Type: "AWS::EC2::InternetGateway"
     Properties:
@@ -254,7 +239,7 @@ Resources:
       UnhealthyThresholdCount: 2
       HealthCheckPath: /health
       HealthCheckPort: 80
-      Name: DashboardWebServers-1
+      Name: DashboardWebServers-v1
       Port: 8000
       Protocol: HTTP
       VpcId:
@@ -271,7 +256,7 @@ Resources:
       UnhealthyThresholdCount: 2
       HealthCheckPath: /health
       HealthCheckPort: 80
-      Name: DashboardContentDelivery-1
+      Name: DashboardContentDelivery-v1
       Port: 80
       Protocol: HTTP
       VpcId:
@@ -285,7 +270,7 @@ Resources:
     Properties:
       KeyName: !Ref KeyName
       ImageId: !FindInMap [!Ref EnvType, !Ref "AWS::Region", AMI]
-      IamInstanceProfile: "sso-dashboard-instance-profile"
+      IamInstanceProfile: "sso-dashboard-instance-profile-v1"
       UserData:
         Fn::Base64: !Sub |
           #cloud-config
@@ -307,7 +292,6 @@ Resources:
             - git clone https://github.com/mozilla-iam/sso-dashboard.git /home/ec2-user/app
             - cd /home/ec2-user/app
             - git checkout production
-            - sed -i s/656532927350/371522382791/g docker-compose.yml
             - chmod +x /home/ec2-user/app/scripts/*
             - /home/ec2-user/app/scripts/build-environment.sh
             - /usr/local/bin/docker-compose up -d
@@ -385,6 +369,10 @@ Resources:
         -
           Key: Name
           Value: SSO-Dashboard-Worker
+          PropagateAtLaunch: true
+        -
+          Key: Owner
+          Value: akrug@mozilla.com
           PropagateAtLaunch: true
       TargetGroupARNs:
          - Ref: ALBTargetGroup

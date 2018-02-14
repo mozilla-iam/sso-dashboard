@@ -141,7 +141,7 @@ $(document).ready(function(){
         var alert_action = button.attr('data-process-action');
         var alert_success = $('<p/>', { 'html': button.attr('data-process-action-success') });
         var alert_error = $('<p/>', { 'html': button.attr('data-process-action-error') });
-        var alert_feedback = $('.alert-feedback', alert);
+        var alert_feedback = button.closest('.alert-actions').next('.alert-feedback');
 
         // if ack, just slide it up without waiting for server response
         // worst case it fails and shows again on next page load

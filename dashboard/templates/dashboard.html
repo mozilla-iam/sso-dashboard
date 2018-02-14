@@ -86,7 +86,8 @@
     {% for alert in user.alerts.get('visible_alerts') %}
       <div class="alert alert-{{ alert.risk }}" id="{{ alert.get('alert_id') }}">
         <div class="alert-risk"><span>{{ alert.risk }} risk</span></div>
-        <p>{{ alert.date }}: {{ alert.summary }}</p>
+        <p>{{ alert.summary }}</p>
+        <p class="alert-timing"><time>{{ alert.date }}</time></p>
         <div class="alert-actions">
           <a href="/notifications" class="btn-alert">
             {% include 'icons/alert.svg' %}

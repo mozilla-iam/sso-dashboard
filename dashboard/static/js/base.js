@@ -185,6 +185,7 @@ $(document).ready(function(){
         // always slide up, don't wait for post to be successful
         // have 200ms delay, to make it feel more like something is happening
         form.delay(200).slideUp();
+        form_feedback.hide();
 
         $.ajax({
             url: '/alert/' + alert_id,
@@ -197,8 +198,10 @@ $(document).ready(function(){
             })
         }).done(function(){
             form_feedback.html(helpfulness_success);
+            form_feedback.slideDown();
         }).fail(function(){
             form_feedback.html(helpfulness_error);
+            form_feedback.slideDown();
         });
 
         e.preventDefault();

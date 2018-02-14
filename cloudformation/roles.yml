@@ -17,12 +17,12 @@ Resources:
               - "sts:AssumeRole"
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
-      RoleName: SSO-Dashboard-Role
+      RoleName: sso-dashboard-delivery-server
   SSOInstanceProfile:
     Type: "AWS::IAM::InstanceProfile"
     DependsOn: SSODashboardRole
     Properties:
-      InstanceProfileName: "sso-dashboard-instance-profile"
+      InstanceProfileName: "sso-dashboard-instance-profile-v1"
       Roles:
         -
           Ref: SSODashboardRole
@@ -294,6 +294,22 @@ Resources:
               - "codedeploy:*"
             Resource: "arn:aws:codedeploy:*:*:application:sso-dashboard-*"
       PolicyName: sso-dashboard-code-deploy
+      Roles:
+        -
+          Ref: SSODashboardRole
+  SSODashboardParameterStore:
+    Type: "AWS::IAM::Policy"
+    DependsOn: SSODashboardRole
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Action:
+              - "ssm:GetParameter"
+            Resource: "arn:aws:ssm:*:*:parameter/sso-dashboard-alerts-sns"
+      PolicyName: sso-dashboard-parameter-store
       Roles:
         -
           Ref: SSODashboardRole

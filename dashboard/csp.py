@@ -1,5 +1,3 @@
-import json
-
 
 DASHBOARD_CSP = {
     'default-src': [

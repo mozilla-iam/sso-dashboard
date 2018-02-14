@@ -13,7 +13,7 @@ class TestAlerts(object):
     def test_create_alert_id(self):
         a = alert.Alert()
         id = a._create_alert_id()
-        assert id is str(id)
+        assert id is id
 
     @mock_dynamodb2
     def test_create_alert(self):
@@ -77,3 +77,7 @@ class TestRules(object):
         a = alert.Rules(userinfo=None, request=None)
 
         assert a is not None
+
+
+class TestFeedback(object):
+    pass

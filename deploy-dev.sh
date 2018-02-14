@@ -9,7 +9,7 @@ sleep 60
 
 region="us-east-1"
 credstash_key_id="`aws --region $region kms list-aliases --query "Aliases[?AliasName=='alias/credstash'].TargetKeyId | [0]" --output text`"
-role_arn="`aws iam get-role --role-name SSO-Dashboard-Role --query Role.Arn --output text`"
+role_arn="`aws iam get-role --role-name sso-dashboard-delivery-server --query Role.Arn --output text`"
 constraints="EncryptionContextEquals={app=sso-dashboard}"
 
 # Grant the sso-dashboard IAM role permissions to decrypt

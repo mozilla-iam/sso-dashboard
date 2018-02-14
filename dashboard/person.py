@@ -12,7 +12,7 @@ class API(object):
         :param session: the flask session to update with userinfo
         """
         self.config = config.OIDCConfig()
-        self.person_api_url = 'uhbz4h3wa8.execute-api.us-west-2.amazonaws.com'
+        self.person_api_url = 'person-api.sso.mozilla.com'
 
     def get_bearer(self):
         conn = http.client.HTTPSConnection(self.config.OIDC_DOMAIN)
@@ -39,7 +39,7 @@ class API(object):
 
         headers = {'authorization': token}
 
-        conn.request("GET", "/prod/profile/{}".format(user_id), headers=headers)
+        conn.request("GET", "/v1/profile/{}".format(user_id), headers=headers)
 
         res = conn.getresponse()
         data = res.read()

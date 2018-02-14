@@ -13,7 +13,7 @@ from flask import send_from_directory
 from flask import session
 from flask_assets import Bundle
 from flask_assets import Environment
-from flask_talisman import Talisman, ALLOW_FROM
+from flask_talisman import Talisman
 
 import auth
 import config
@@ -24,6 +24,7 @@ from csp import DASHBOARD_CSP
 from models.user import User
 from models.user import FakeUser
 from op.yaml_loader import Application
+from models.alert import FakeAlert
 from models.alert import Rules
 from models.tile import S3Transfer
 
@@ -223,15 +224,29 @@ def alert_operation(alert_id):
     if request.method == 'POST':
         user = User(session, config.Config(app).settings)
         if request.data is not None:
-            data = json.loads(request.data)
+            data = json.loads(request.data.decode())
+            helpfulness = data.get('helpfulness')
             alert_action = data.get('alert_action')
 
-        result = user.take_alert_action(alert_id, alert_action)
+        result = user.take_alert_action(alert_id, alert_action, helpfulness)
 
         if result['ResponseMetadata']['HTTPStatusCode'] == 200:
             return '200'
         else:
             return '500'
+
+
+@oidc.oidc_auth
+@app.route('/alert/fake', methods=['GET'])
+def alert_faking():
+    if request.method == 'GET':
+        if app.config.get('SERVER_NAME') != 'sso.mozilla.com':
+            """Only allow alert faking in non production environment."""
+            user = User(session, config.Config(app).settings)
+            fake_alerts = FakeAlert(user_id=user.userinfo.get('sub'))
+            fake_alerts.create_fake_alerts()
+
+    return redirect('/dashboard', code=302)
 
 
 @app.route('/info')

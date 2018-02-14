@@ -1,6 +1,7 @@
 """User class that governs maniuplation of session['userdata']"""
 import logging
 import requests
+import time
 from faker import Faker
 
 from . import alert
@@ -104,7 +105,9 @@ class User(object):
         try:
             email = self.userinfo.get('email')
         except Exception as e:
-            logger.error('The email attribute does no exists falling back to OIDC Conformant.')
+            logger.error(
+                'The email attribute does no exists falling back to OIDC Conformant: {}.'.format(e)
+            )
             email = self.userinfo.get('https://sso.mozilla.com/claim/emails')[0]['emails']
         return email
 
@@ -160,10 +163,11 @@ class User(object):
         alerts = alert.Alert().find(user_id=self.userinfo['sub'])
         return alerts
 
-    def take_alert_action(self, alert_id, alert_action):
+    def take_alert_action(self, alert_id, alert_action, helpfulness=None):
         a = alert.Alert()
-
         alert_dict = a.find_by_id(alert_id)
+
+        alert_dict['last_update'] = int(time.time())
 
         if alert_action == 'acknowledge':
             logger.info('An alert was acked for {uid}.'.format(uid=self.userinfo['sub']))
@@ -175,7 +179,7 @@ class User(object):
             res = a.update(alert_id=alert_id, alert_dict=alert_dict)
         elif alert_action == 'indicate-helpfulness':
             logger.info('Alert helpfulness was set for {uid}.'.format(uid=self.userinfo['sub']))
-            alert_dict['state'] = alert_action
+            alert_dict['helpfulness'] = helpfulness
             res = a.update(alert_id=alert_id, alert_dict=alert_dict)
         else:
             res = {'ResponseMetadata': {'HTTPStatusCode': 200}}

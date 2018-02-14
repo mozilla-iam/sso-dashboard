@@ -1,6 +1,8 @@
 dashboard/data/apps.yml-etag
 dump.rdb
 .env
+env3
+env
 dashboard/static/js/gen/
 dashboard/static/css/gen/
 dashboard/static/.webassets-cache/

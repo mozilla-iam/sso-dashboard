@@ -21,7 +21,7 @@
       <span class="alerts-count">{{ user.alerts['visible_alerts']|count }}<span class="visually-hidden"> notifications</span></span>
     </h1>
 
-    {% for alert in user.alerts['visible_alerts'] %}
+    {% for alert in user.alerts.get('visible_alerts') %}
       <div class="alert alert-panel" id="{{ alert.get('alert_id') }}">
         <div class="alert-header alert-{{ alert.risk }}">
           <span class="alert-risk">
@@ -38,13 +38,13 @@
           <div class="alert-description">
             {{ alert.description }}
           </div>
-
+          {% if alert.get('state') != 'escalate' %}
           <div class="alert-actions">
             <a href="{{ alert.url }}" class="btn-alert" target="_blank">
               {% include 'icons/alert.svg' %}
               {{ alert.url_title }}
             </a>
-            <button type="button" data-process-action="escalate" class="btn-alert">
+            <button type="button" data-process-action="escalate" class="btn-alert" data-process-action-success="This alert has been escalated to the Mozilla Operations Center." data-process-action-error="An error has occurred, please try again later.">
               {% include 'icons/info.svg' %}
               <span class="info-text">Escalate to Security</span>
             </button>
@@ -52,22 +52,22 @@
               Dismiss
             </button>
           </div>
-          <form action="/alert/{{ alert.get('alert_id') }}" data-helpfulness method="POST" class="alert-survey">
-            <fieldset>
-              <legend>Was this alert helpful?</legend>
-              <input type="submit" value="Yes" name="helpfulness" /><!--
-              --><input type="submit" value="Very" name="helpfulness" /><!--
-              --><input type="submit" value="Moderately" name="helpfulness" /><!--
-              --><input type="submit" value="Slightly" name="helpfulness" /><!--
-              --><input type="submit" value="No" name="helpfulness" />
-            </fieldset>
-          </form>
+          {% else %}
+          <div class="alert-actions">
+            <button type="button" class="btn-alert" data-process-action="acknowledge">
+              Dismiss
+            </button>
+          </div>
+          {% endif %}
+          <div class="alert-feedback">
+            <div class="loading-indicator">{% include 'icons/loading-black.svg' %}</div>
+            {% if alert.get('state') == 'escalate' %}
+            <p>This alert has been escalated to the Mozilla Operations Center.</p>
+            {% endif %}
+          </div>
+          {% include 'partials/alert-feedback.html' %}
         </div>
       </div>
     {% endfor %}
   </div>
-{% endblock %}
-
-{% block extra_js %}
-  <script type="text/javascript" src="/static/js/notifications.js"></script>
 {% endblock %}

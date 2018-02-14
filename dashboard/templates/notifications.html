@@ -44,7 +44,7 @@
               {% include 'icons/alert.svg' %}
               {{ alert.url_title }}
             </a>
-            <button type="button" data-process-action="escalate" class="btn-alert">
+            <button type="button" data-process-action="escalate" class="btn-alert" data-process-action-success="This alert has been escalated to the Mozilla Operations Center." data-process-action-error="An error has occurred, please try again later.">
               {% include 'icons/info.svg' %}
               <span class="info-text">Escalate to Security</span>
             </button>
@@ -62,7 +62,7 @@
           {% endif %}
           <div class="alert-feedback"><div class="loading-indicator">{% include 'icons/loading-black.svg' %}</div></div>
           {% if alert.get('helpfulness') == None %}
-          <form action="/alert/{{ alert.get('alert_id') }}" data-helpfulness method="POST" class="alert-survey">
+          <form action="/alert/{{ alert.get('alert_id') }}" data-helpfulness method="POST" class="alert-survey" data-helpfulness-success="Thank you for providing us feedback on this alert!" data-helpfulness-error="An error has occurred, please try again later.">
             <fieldset>
               <legend>Was this alert helpful?</legend>
               <input type="submit" value="Yes" name="helpfulness" /><!--
@@ -72,9 +72,12 @@
               --><input type="submit" value="No" name="helpfulness" />
             </fieldset>
           </form>
-          {% else %}
-            <span class="info-text">Thank you for providing us feedback on this alert!</span>
           {% endif %}
+          <div class="alert-feedback" role="alert">
+            {% if alert.get('helpfulness') != None %}
+              <p>Thank you for providing us feedback on this alert!</p>
+            {% endif %}
+          </div>
         </div>
       </div>
     {% endfor %}

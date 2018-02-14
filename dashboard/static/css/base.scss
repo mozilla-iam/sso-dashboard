@@ -413,6 +413,25 @@ body {
     }
 }
 
+.alert-feedback {
+    margin: 2em 0;
+
+    p {
+        font-style: italic;
+    }
+}
+
+.alert .loading-indicator {
+    display: none;
+    text-align: center;
+}
+
+.alert[data-loading] {
+
+    .loading-indicator {
+        display: block;
+    }
+}
 
 .alert-actions {
     text-align: center;

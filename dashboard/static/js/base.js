@@ -135,9 +135,25 @@ $(document).ready(function(){
     }
 
     $('[data-process-action]').click(function(){
-        var $button = $(this);
-        var alert_id = $button.closest('.alert').attr('id');
-        var alert_action = $button.attr('data-process-action');
+        var button = $(this);
+        var alert = button.closest('.alert');
+        var alert_id = alert.attr('id');
+        var alert_action = button.attr('data-process-action');
+        var alert_success = $('<p/>', { 'html': button.attr('data-process-action-success') });
+        var alert_error = $('<p/>', { 'html': button.attr('data-process-action-error') });
+        var alert_feedback = $('.alert-feedback', alert);
+
+        // if ack, just slide it up without waiting for server response
+        // worst case it fails and shows again on next page load
+        if( alert_action === 'acknowledge' ) {
+            button.closest('.alert').slideUp();
+            alert.closest('.messages').focus();
+        }
+        // otherwise, show a spinner, disable button
+        else {
+            alert.attr('data-loading', 'true' );
+            button.attr('disabled', 'true');
+        }
 
         $.ajax({
             url: '/alert/' + alert_id,
@@ -146,16 +162,29 @@ $(document).ready(function(){
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify({ 'alert_action': alert_action })
         }).done(function(){
-            if( alert_action === 'acknowledge' ) {
-                $button.closest('.alert').slideUp();
-            }
+            alert.removeAttr('data-loading');
+            alert_feedback.html(alert_success);
+            button.hide();
+            alert.focus();
+        }).fail(function(){
+            alert.removeAttr('data-loading');
+            alert_feedback.html(alert_error);
+            button.removeAttr('disabled');
         });
     });
 
     $('[data-helpfulness]').submit(function(e){
-        var $form = $(e.target);
-        var alert_id = $form.closest('.alert').attr('id');
+        var form = $(e.target);
+        var alert = form.closest('.alert');
+        var alert_id = alert.attr('id');
         var helpfulness = document.activeElement.value; // document.activeElement is currently focused element, which will at this time be the submit button
+        var helpfulness_success = $('<p/>', { 'html': form.attr('data-helpfulness-success') });
+        var helpfulness_error = $('<p/>', { 'html': form.attr('data-helpfulness-error') });
+        var form_feedback = form.next('.alert-feedback');
+
+        // always slide up, don't wait for post to be successful
+        // have 200ms delay, to make it feel more like something is happening
+        form.delay(200).slideUp();
 
         $.ajax({
             url: '/alert/' + alert_id,
@@ -167,7 +196,9 @@ $(document).ready(function(){
                 'helpfulness' : helpfulness
             })
         }).done(function(){
-            $form.slideUp();
+            form_feedback.html(helpfulness_success);
+        }).fail(function(){
+            form_feedback.html(helpfulness_error);
         });
 
         e.preventDefault();

@@ -88,26 +88,29 @@
         <div class="alert-risk"><span>{{ alert.risk }} risk</span></div>
         <p>{{ alert.date }}: {{ alert.summary }}</p>
         <div class="alert-actions">
-        {% if alert.get('state') != 'escalate' %}
           <a href="/notifications" class="btn-alert">
             {% include 'icons/alert.svg' %}
             <span class="info-text">More Info</span>
           </a>
-          <button type="button" data-process-action="escalate" class="btn-alert">
-            {% include 'icons/info.svg' %}
-            <span class="info-text">Escalate to Security</span>
-          </button>
+          {% if alert.get('state') != 'escalate' %}
+            <button type="button" data-process-action="escalate" data-process-action-success="This alert has been escalated to the Mozilla Operations Center." data-process-action-error="An error has occurred, please try again later." class="btn-alert">
+              {% include 'icons/info.svg' %}
+              <span class="info-text">Escalate to Security</span>
+            </button>
+          {% endif %}
           <a href="{{ alert.url }}" class="btn-alert" target="_blank">
             {% include 'icons/alert.svg' %}
             {{ alert.url_title }}
           </a>
-          {% else %}
-            <span class="info-text">This alert has been escalated to the Mozilla Operations Center.</span>
+        </div>
+        <div class="alert-feedback"  role="alert">
           <div class="loading-indicator">{% include 'icons/loading-white.svg' %}</div>
+          {% if alert.get('state') == 'escalate' %}
+          <p>This alert has been escalated to the Mozilla Operations Center.</p>
           {% endif %}
         </div>
         {% if alert.get('helpfulness') == None %}
-        <form action="/alert/{{ alert.get('alert_id') }}" data-helpfulness method="POST" class="alert-survey">
+        <form action="/alert/{{ alert.get('alert_id') }}" data-helpfulness method="POST" data-helpfulness-success="Thank you for providing us feedback on this alert!" data-helpfulness-error="An error has occurred, please try again later." class="alert-survey">
           <fieldset>
             <legend>Was this alert helpful?</legend>
             <input type="submit" value="Yes" name="helpfulness" /><!--
@@ -117,9 +120,12 @@
             --><input type="submit" value="No" name="helpfulness" />
           </fieldset>
         </form>
-        {% else %}
-          <span class="info-text">Thank you for providing us feedback on this alert!</span>
         {% endif %}
+        <div class="alert-feedback" role="alert">
+          {% if alert.get('helpfulness') != None %}
+            <p>Thank you for providing us feedback on this alert!</p>
+          {% endif %}
+        </div>
         <button type="button" data-process-action="acknowledge" class="closebtn"><span aria-hidden="true">&times;</span><span class="visually-hidden">Dismiss</button>
       </div>
     {% endfor %}

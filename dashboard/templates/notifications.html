@@ -57,10 +57,14 @@
             <button type="button" class="btn-alert" data-process-action="acknowledge">
               Dismiss
             </button>
-            <span class="info-text">This alert has been escalated to the Mozilla Operations Center.</span>
           </div>
           {% endif %}
-          <div class="alert-feedback"><div class="loading-indicator">{% include 'icons/loading-black.svg' %}</div></div>
+          <div class="alert-feedback">
+            <div class="loading-indicator">{% include 'icons/loading-black.svg' %}</div>
+            {% if alert.get('state') == 'escalate' %}
+            <p>This alert has been escalated to the Mozilla Operations Center.</p>
+            {% endif %}
+          </div>
           {% include 'partials/alert-feedback.html' %}
         </div>
       </div>

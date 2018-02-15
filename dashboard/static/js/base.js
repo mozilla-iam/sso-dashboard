@@ -108,7 +108,8 @@ $(document).ready(function(){
         }
         else {
             $('.user-menu').show();
-            $('.user-menu a:first').focus();
+            $('.user-menu').attr('tabindex','0');
+            $('.user-menu').focus();
             $('.menu').addClass('enabled');
         }
 

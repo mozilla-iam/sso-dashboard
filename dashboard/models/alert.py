@@ -2,11 +2,68 @@
 import binascii
 import boto3
 import datetime
+import json
+import logging
 import os
 import requests
 
 
 from boto3.dynamodb.conditions import Attr
+from faker import Faker
+
+
+fake = Faker()
+logger = logging.getLogger(__name__)
+
+
+class Feedback(object):
+    """Send user data back to MozDef or other subscribers via an SNS Topic"""
+    def __init__(self, alert_dict, alert_action):
+        self.alert_dict = alert_dict
+        self.alert_action = alert_action
+        self.ssm = None
+        self.sns = None
+        self.sns_topic_arn = self.get_sns_arn()
+
+    def connect_sns(self):
+        if self.sns is None:
+            self.sns = boto3.client('sns', region_name='us-west-2')
+
+    def connect_ssm(self):
+        if self.ssm is None:
+            self.ssm = boto3.client('ssm', region_name='us-west-2')
+
+    def get_sns_arn(self):
+        self.connect_ssm()
+
+        response = self.ssm.get_parameter(
+            Name='sso-dashboard-alerts-sns',
+            WithDecryption=False
+        )
+
+        return response.get('Parameter').get('Value')
+
+    def _construct_alert(self):
+        message = {
+            'category': 'user_feedback',
+            'details': {
+                'action': self.alert_action,  # (escalate|acknowledge|false-positive)
+                'alert_information': self.alert_dict
+            }
+        }
+
+        return message
+
+    def send(self):
+        """Send the event to the SNS Topic."""
+        self.connect_sns()
+        message = self._construct_alert()
+        response = self.sns.publish(
+            TopicArn=self.sns_topic_arn,
+            Message=json.dumps(message),
+            Subject='sso-dashboard-user-feedback'
+        )
+        return response
 
 
 class Alert(object):
@@ -14,6 +71,24 @@ class Alert(object):
     def __init__(self):
         self.alert_table_name = 'sso-dashboard-alert'
         self.dynamodb = None
+
+    def has_actions(self, alert_dict):
+        """Let's the view know if it should render actions for the alert."""
+
+        # Whitelist the firefox out of date alert.  It should not get buttons.
+        if self.alert_dict.get('alert_code') is not '63f675d8896f4fb2b3caa204c8c2761e':
+            return True
+        else:
+            return False
+
+    def has_escalation(self, alert_dict):
+        """Let's the view know if it should render actions for the alert."""
+
+        # Whitelist the firefox out of date alert.  It should not get buttons.
+        if self.alert_dict.get('alert_code') is not '63f675d8896f4fb2b3caa204c8c2761e':
+            return True
+        else:
+            return False
 
     def connect_dynamodb(self):
         if self.dynamodb is None:
@@ -23,7 +98,6 @@ class Alert(object):
 
     def find_or_create_by(self, alert_dict, user_id):
         """
-
         :param alert_dict: takes a dictionary of alert information
         :param user_id: the session info user_id
         :return: dynamodb response or none
@@ -34,10 +108,13 @@ class Alert(object):
 
         # If the alert is duplicate false do not create another instance of it.
         for alert in current_alerts:
-            if alert.get('alert_code') == alert_dict.get('alert_code') and alert_dict.get('duplicate') is False:
-                return None
-            else:
-                continue
+            try:
+                if alert.get('alert_code') == alert_dict.get('alert_code') and alert_dict.get('duplicate') is False:
+                    return None
+                else:
+                    continue
+            except AttributeError as e:
+                logger.error('Bad data in alerts table for user: {}, exception was {}'.format(user_id, e))
 
         # Else create another alert.
         return self.create(alert_dict)
@@ -102,14 +179,50 @@ class Alert(object):
             FilterExpression=Attr('user_id').eq(user_id)
         )
 
-        return response.get('Items')
+        inactive_alerts = []
+        visible_alerts = []
+        ranked_alerts = []
+        escalations = []
+
+        for alert in response.get('Items'):
+            if alert.get('state', '') == 'acknowledge':
+                inactive_alerts.append(alert)
+            elif alert.get('helpfulness', '') != '':
+                ranked_alerts.append(alert)
+                visible_alerts.append(alert)
+            elif alert.get('state', '') == 'escalate':
+                escalations.append(alert)
+                visible_alerts.append(alert)
+            else:
+                visible_alerts.append(alert)
+
+        return {
+            'visible_alerts': visible_alerts,
+            'ranked_alerts': ranked_alerts,
+            'escalations': escalations,
+            'inactive_alerts': inactive_alerts
+        }
+
+    def find_by_id(self, alert_id):
+        """
+        Search dynamodb for all non-expired alerts for a given user.
+        :param alert_id: The guid of the alert.
+        :return: List of alerts
+        """
+        self.connect_dynamodb()
+
+        response = self.dynamodb.scan(
+            FilterExpression=Attr('alert_id').eq(alert_id)
+        )
+
+        return response.get('Items')[0]
 
     def _create_alert_id(self):
         """
 
         :return: random alertid
         """
-        return binascii.b2a_hex(os.urandom(15))
+        return binascii.b2a_hex(os.urandom(15)).decode()
 
 
 class Rules(object):
@@ -188,3 +301,48 @@ class Rules(object):
                     return False
             else:
                 return False
+
+
+class FakeAlert(object):
+    """Class only fires in development mode.  Adds alerts to a given user for testing only."""
+    def __init__(self, user_id):
+        self.user_id = user_id
+        self.alert = Alert()
+
+    def create_fake_alerts(self):
+        self._create_fake_browser_alert()
+        self._create_fake_geolocation_alert()
+
+    def _create_fake_browser_alert(self):
+        alert_dict = {
+            'alert_code': '63f675d8896f4fb2b3caa204c8c2761e',
+            'user_id': self.user_id,
+            'risk': 'medium',
+            'summary': 'Your version of Firefox is older than the current stable release.',
+            'description': 'Running the latest version of your browser is key to keeping your '
+                           'computer secure and your private data private. Older browsers may '
+                           'have known security vulnerabilities that attackers can exploit to '
+                           'steal your data or load malware, which can put you and Mozilla at risk. ',
+            'date': str(fake.date(pattern="%Y-%m-%d", end_datetime=None)),
+            'url': 'https://www.mozilla.org/firefox/',
+            'url_title': 'Download',
+            'duplicate': False
+        }
+        self.alert.find_or_create_by(alert_dict=alert_dict, user_id=self.user_id)
+
+    def _create_fake_geolocation_alert(self):
+        alert_dict = {
+            'alert_code': '416c65727447656f6d6f64656c',
+            'user_id': self.user_id,
+            'risk': 'high',
+            'summary': 'Did you recently login from {}, {} (5.6.7.8)?'.format(
+                fake.state(),
+                fake.country()
+            ),
+            'description': 'This alert is created based on geo ip information about the last login of a user.',
+            'date': str(fake.date(pattern="%Y-%m-%d", end_datetime=None)),
+            'url': 'https://www.mozilla.org',
+            'url_title': 'Get Help',
+            'duplicate': False
+        }
+        self.alert.find_or_create_by(alert_dict=alert_dict, user_id=self.user_id)

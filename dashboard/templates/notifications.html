@@ -15,14 +15,14 @@
 
 {% block content %}
   <div class="notifications">
-    <h4>
-      <img src="/static/img/alerts/notification-black.svg" alt="alerts">
+    <h1>
+      <img src="/static/img/alerts/notification-black.svg" alt="" role="presentation">
       Notification Center
-      <span class="alerts-count">{{ user.alerts|count }}</span>
-    </h4>
+      <span class="alerts-count">{{ user.alerts['visible_alerts']|count }}<span class="visually-hidden"> notifications</span></span>
+    </h1>
 
-    {% for alert in user.alerts %}
-      <div class="alert-panel">
+    {% for alert in user.alerts.get('visible_alerts') %}
+      <div class="alert alert-panel" id="{{ alert.get('alert_id') }}">
         <div class="alert-header alert-{{ alert.risk }}">
           <span class="alert-risk">
             {{ alert.risk }} risk
@@ -38,19 +38,36 @@
           <div class="alert-description">
             {{ alert.description }}
           </div>
-          <a href="{{ alert.url }}" class="mui-btn">
-            <img src="/static/img/alerts/arrow-right-black.svg" alt="">
-            {{ alert.url_title }}
-          </a>
-          <span class="mui-btn" id="dismiss-alert" data-alert-id="{{ alert.get('alert_id') }}">
-            Dismiss
-          </span>
+          {% if alert.get('state') != 'escalate' %}
+          <div class="alert-actions">
+            <a href="{{ alert.url }}" class="btn-alert" target="_blank">
+              {% include 'icons/alert.svg' %}
+              {{ alert.url_title }}
+            </a>
+            <button type="button" data-process-action="escalate" class="btn-alert" data-process-action-success="This alert has been escalated to the Mozilla Operations Center." data-process-action-error="An error has occurred, please try again later.">
+              {% include 'icons/info.svg' %}
+              <span class="info-text">Escalate to Security</span>
+            </button>
+            <button type="button" class="btn-alert" data-process-action="acknowledge">
+              Dismiss
+            </button>
+          </div>
+          {% else %}
+          <div class="alert-actions">
+            <button type="button" class="btn-alert" data-process-action="acknowledge">
+              Dismiss
+            </button>
+          </div>
+          {% endif %}
+          <div class="alert-feedback">
+            <div class="loading-indicator">{% include 'icons/loading-black.svg' %}</div>
+            {% if alert.get('state') == 'escalate' %}
+            <p>This alert has been escalated to the Mozilla Operations Center.</p>
+            {% endif %}
+          </div>
+          {% include 'partials/alert-feedback.html' %}
         </div>
       </div>
     {% endfor %}
   </div>
-{% endblock %}
-
-{% block extra_js %}
-  <script type="text/javascript" src="/static/js/notifications.js"></script>
 {% endblock %}

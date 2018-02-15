@@ -6,12 +6,14 @@ phases:
       - echo Build started on `date`
       - echo Creating archive of python code.
       - echo installing ansible-container
-      - pip install ansible-container[docker]
+      - git clone https://github.com/ansible/ansible-container.git
+      - cd ansible-container
+      - pip install -e ./ansible-container[docker]
       - cd ansible && ansible-container build --with-volumes ../:/dashboard
   post_build:
     commands:
       - rm -rf /root/.docker/config.json
-      - aws ecr get-login --region us-west-2 | bash
+      - aws ecr get-login --region us-west-2 --no-include-email | bash
       - docker tag ansible-web ${DOCKER_REPO}:latest
       - docker push ${DOCKER_REPO}:latest
       - echo Build completed on `date`

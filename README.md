@@ -1,7 +1,7 @@
 # Auth0 Single Sign On Dashboard
 A python flask implementation of an SSO dashboard.  OIDC for authentication and message bus for alert pipelines.
 
-Work in progress.
+[![Build Status](https://travis-ci.org/mozilla-iam/sso-dashboard.svg?branch=master)](https://travis-ci.org/mozilla-iam/sso-dashboard)
 
 !['dashboard.png'](docs/images/dashboard.png)
 > Above is the dashboard prototype as it exists today. This screenshot will be updated as the dashboard UI evolves.

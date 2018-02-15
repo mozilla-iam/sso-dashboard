@@ -77,18 +77,8 @@ $(document).ready(function(){
         }
     });
 
-    // Highlight app tiles
-    $('a.app-tile').hover(
-        function() {
-            $(this).find('.app-logo').addClass('yellow-border');
-        },
-        function() {
-            $(this).find('.app-logo').removeClass('yellow-border');
-        }
-    );
-
     // Mobile search toggle
-    $('.search-button a').click(function() {
+    $('.search-button button').click(function() {
         // Make sure user menu is hidden
         $('.user-menu').hide();
         $('.menu').removeClass('enabled');
@@ -98,14 +88,29 @@ $(document).ready(function(){
         $('.mui-appbar').removeClass('menu-enabled');
         $('.search-button').removeClass('menu-enabled');
         // Show search input and invert button
-        $('.search-mobile').fadeToggle();
-        $('.search-button').toggleClass('invert');
+        if ( $('.search-mobile').is(':visible')) {
+            $('.search-mobile').fadeOut();
+            $('.search-button').removeClass('invert');
+            $('.search-button button:first').focus();
+        }
+        else {
+            $('.search-mobile').fadeIn();
+            $('.search-button').addClass('invert');
+            $('.search-mobile input:first').focus();
+        }
     });
 
     // Toggle user menu
-    $('.menu').click(function() {
-        $('.user-menu').toggle();
-        $('.menu').toggleClass('enabled');
+    $('.menu .menu-toggle').click(function() {
+        if ( $('.menu').hasClass('enabled')) {
+            $('.user-menu').hide();
+            $('.menu').removeClass('enabled');
+        }
+        else {
+            $('.user-menu').show();
+            $('.user-menu a:first').focus();
+            $('.menu').addClass('enabled');
+        }
 
         // If search-button is visible it's mobile viewport
         if ($('.search-button').is(':visible')) {
@@ -129,17 +134,77 @@ $(document).ready(function(){
         $('#alert-nightly').show();
     }
 
-    // Alerts ack
-    $('#submit-alert').click(function() {
-        var alert_id = $('#submit-alert').data('alert-id');
+    $('[data-process-action]').click(function(){
+        var button = $(this);
+        var alert = button.closest('.alert');
+        var alert_id = alert.attr('id');
+        var alert_action = button.attr('data-process-action');
+        var alert_success = $('<p/>', { 'html': button.attr('data-process-action-success') });
+        var alert_error = $('<p/>', { 'html': button.attr('data-process-action-error') });
+        var alert_feedback = button.closest('.alert-actions').next('.alert-feedback');
+
+        // if ack, just slide it up without waiting for server response
+        // worst case it fails and shows again on next page load
+        if( alert_action === 'acknowledge' ) {
+            button.closest('.alert').slideUp();
+            alert.closest('.messages').focus();
+        }
+        // otherwise, show a spinner, disable button
+        else {
+            alert.attr('data-loading', 'true' );
+            button.attr('disabled', 'true');
+        }
+
         $.ajax({
+            url: '/alert/' + alert_id,
             type: 'POST',
-            url: '/alert/' + alert_id
+            dataType   : 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({ 'alert_action': alert_action })
+        }).done(function(){
+            alert.removeAttr('data-loading');
+            alert_feedback.html(alert_success);
+            button.hide();
+            alert.focus();
+        }).fail(function(){
+            alert.removeAttr('data-loading');
+            alert_feedback.html(alert_error);
+            button.removeAttr('disabled');
         });
     });
 
-    // Alerts close button
-    $('.closebtn').click(function() {
-        $(this).parent('div').parent('.alert').slideUp();
-    });
+    $('[data-helpfulness]').submit(function(e){
+        var form = $(e.target);
+        var alert = form.closest('.alert');
+        var alert_id = alert.attr('id');
+        var helpfulness = document.activeElement.value; // document.activeElement is currently focused element, which will at this time be the submit button
+        var helpfulness_success = $('<p/>', { 'html': form.attr('data-helpfulness-success') });
+        var helpfulness_error = $('<p/>', { 'html': form.attr('data-helpfulness-error') });
+        var form_feedback = form.next('.alert-feedback');
+
+        // always slide up, don't wait for post to be successful
+        // have 200ms delay, to make it feel more like something is happening
+        form.delay(200).slideUp();
+        form_feedback.hide();
+
+        $.ajax({
+            url: '/alert/' + alert_id,
+            type: 'POST',
+            dataType   : 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({
+                'alert_action': 'indicate-helpfulness',
+                'helpfulness' : helpfulness
+            })
+        }).done(function(){
+            form_feedback.html(helpfulness_success);
+            form_feedback.slideDown();
+        }).fail(function(){
+            form_feedback.html(helpfulness_error);
+            form_feedback.slideDown();
+        });
+
+        e.preventDefault();
+
+    })
 });

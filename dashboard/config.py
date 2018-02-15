@@ -1,7 +1,7 @@
 """Configuration loader for different environments."""
 import base64
 import os
-import watchtower
+
 
 from utils import get_secret
 
@@ -14,7 +14,6 @@ class Config(object):
 
     def _init_env(self):
         if self.environment == 'Production':
-            self.app.logger.addHandler(watchtower.CloudWatchLogHandler())
             return ProductionConfig()
         elif self.environment == 'Development':
             return DevelopmentConfig()

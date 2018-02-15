@@ -1,6 +1,8 @@
-import logging
+import json
+import logging.config
 import mimetypes
 import os
+import yaml
 
 from flask import Flask
 from flask import jsonify
@@ -11,31 +13,44 @@ from flask import send_from_directory
 from flask import session
 from flask_assets import Bundle
 from flask_assets import Environment
-from flask_secure_headers.core import Secure_Headers
+from flask_talisman import Talisman
 
 import auth
 import config
+import person
 import vanity
-import json
+
+from csp import DASHBOARD_CSP
 from models.user import User
+from models.user import FakeUser
 from op.yaml_loader import Application
+from models.alert import FakeAlert
 from models.alert import Rules
 from models.tile import S3Transfer
 
-logger = logging.getLogger(__name__)
-logging.getLogger(__name__).addHandler(logging.StreamHandler())
-logging.basicConfig(level=logging.CRITICAL)
+logging.basicConfig(level=logging.INFO)
+
+with open('logging.yml', 'r') as log_config:
+    config_yml = log_config.read()
+    config_dict = yaml.load(config_yml)
+    logging.config.dictConfig(config_dict)
+
+logger = logging.getLogger('sso-dashboard')
 
 app = Flask(__name__)
-app.config.from_object(config.Config(app).settings)
 
-S3Transfer(config.Config(app).settings).sync_config()
+talisman = Talisman(
+    app, content_security_policy=DASHBOARD_CSP,
+    force_https=False
+)
+
+app.config.from_object(config.Config(app).settings)
+app_list = S3Transfer(config.Config(app).settings)
+app_list.sync_config()
 
 assets = Environment(app)
-
 js = Bundle('js/base.js', filters='jsmin', output='js/gen/packed.js')
 assets.register('js_all', js)
-
 
 sass = Bundle('css/base.scss', filters='scss')
 css = Bundle(sass, filters='cssmin', output='css/gen/all.css')
@@ -45,103 +60,33 @@ assets.register('css_all', css)
 mimetypes.add_type('image/svg+xml', '.svg')
 
 oidc_config = config.OIDCConfig()
-
 authentication = auth.OpenIDConnect(
     oidc_config
 )
-
 oidc = authentication.auth(app)
+person_api = person.API()
 
-vanity_router = vanity.Router(app=app).setup()
-# Add secure Headers to satify observatory checks
-
-sh = Secure_Headers()
-sh.update(
-    {
-        'CSP': {
-            'default-src': [
-                'self',
-            ],
-            'script-src': [
-                'self',
-                'data:',
-                'ajax.googleapis.com',
-                'fonts.googleapis.com',
-                'https://*.googletagmanager.com',
-                'https://tagmanager.google.com',
-                'https://*.google-analytics.com',
-                'https://cdn.sso.mozilla.com',
-                'https://cdn.sso.allizom.org',
-                'https://dhjrqi6qcwjfu.cloudfront.net'
-            ],
-            'style-src': [
-                'self',
-                'ajax.googleapis.com',
-                'fonts.googleapis.com',
-                'https://cdn.sso.mozilla.com',
-                'https://cdn.sso.allizom.org',
-                'https://dhjrqi6qcwjfu.cloudfront.net'
-            ],
-            'img-src': [
-                'self',
-                'https://mozillians.org',
-                'https://media.mozillians.org',
-                'https://cdn.mozillians.org',
-                'https://cdn.sso.mozilla.com',
-                'https://cdn.sso.allizom.org',
-                'https://*.google-analytics.com',
-                'https://*.gravatar.com',
-                'https://cdn.sso.mozilla.com',
-                'https://cdn.sso.allizom.org',
-                'https://dhjrqi6qcwjfu.cloudfront.net'
-            ],
-            'font-src': [
-                'self',
-                'fonts.googleapis.com',
-                'fonts.gstatic.com',
-                'https://cdn.sso.mozilla.com',
-                'https://cdn.sso.allizom.org',
-                'https://dhjrqi6qcwjfu.cloudfront.net'
-            ]
-        }
-    }
-)
-
-sh.update(
-    {
-        'HSTS':
-            {
-                'max-age': 15768000,
-                'includeSubDomains': True,
-                'preload': False
-            }
-    }
-)
-
-sh.update(
-    {
-        'HPKP': {}
-    }
-)
+vanity_router = vanity.Router(app, app_list).setup()
 
 
 @app.route('/favicon.ico')
-@sh.wrapper()
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static/img'),
-                               'favicon.ico')
+    return send_from_directory(os.path.join(app.root_path, 'static/img'), 'favicon.ico')
 
 
 @app.route('/')
-@sh.wrapper()
 def home():
     return redirect('/dashboard', code=302)
+
+
+@app.route('/csp_report', methods=['POST'])
+def csp_report():
+    return '200'
 
 
 # XXX This needs to load the schema from a better location
 # See also https://github.com/mozilla/iam-project-backlog/issues/161
 @app.route('/claim')
-@sh.wrapper()
 def claim():
     """Show the user schema - this path is refered to by
     our OIDC Claim namespace, i.e.: https://sso.mozilla.com/claim/*"""
@@ -173,7 +118,7 @@ def forbidden():
     token_verifier.verify
 
     return render_template(
-        'forbidden.html',token_verifier=token_verifier
+        'forbidden.html', token_verifier=token_verifier
     )
 
 
@@ -207,11 +152,17 @@ def signout():
 
 
 @app.route('/dashboard')
-@sh.wrapper()
 @oidc.oidc_auth
 def dashboard():
     """Primary dashboard the users will interact with."""
-    logger.info("User authenticated proceeding to dashboard.")
+    logger.info("User: {} authenticated proceeding to dashboard.".format(session.get('id_token')['sub']))
+
+    if "Mozilla-LDAP" in session.get('userinfo')['sub']:
+        logger.info("Mozilla IAM user detected. Attempt enriching with ID-Vault data.")
+        try:
+            session['idvault_userinfo'] = person_api.get_userinfo(session.get('id_token')['sub'])
+        except Exception as e:
+            logger.error("Could not enrich profile due to: {}.  Perhaps it doesn't exist?".format(e))
 
     # Transfer any updates in to the app_tiles.
     S3Transfer(config.Config(app).settings).sync_config()
@@ -220,7 +171,7 @@ def dashboard():
     Rules(userinfo=session['userinfo'], request=request).run()
 
     user = User(session, config.Config(app).settings)
-    apps = user.apps(Application().apps)
+    apps = user.apps(Application(app_list.apps_yml).apps)
 
     return render_template(
         'dashboard.html',
@@ -231,8 +182,32 @@ def dashboard():
     )
 
 
+@app.route('/styleguide/dashboard')
+def styleguide_dashboard():
+    user = FakeUser(config.Config(app).settings)
+    apps = user.apps(Application(app_list.apps_yml).apps)
+
+    return render_template(
+        'dashboard.html',
+        config=app.config,
+        user=user,
+        apps=apps,
+        alerts=None
+    )
+
+
+@app.route('/styleguide/notifications')
+@oidc.oidc_auth
+def styleguide_notifications():
+    user = FakeUser(config.Config(app).settings)
+    return render_template(
+        'notifications.html',
+        config=app.config,
+        user=user,
+    )
+
+
 @app.route('/notifications')
-@sh.wrapper()
 @oidc.oidc_auth
 def notifications():
     user = User(session, config.Config(app).settings)
@@ -243,13 +218,17 @@ def notifications():
     )
 
 
-@sh.wrapper
 @oidc.oidc_auth
 @app.route('/alert/<alert_id>', methods=['POST'])
 def alert_operation(alert_id):
     if request.method == 'POST':
         user = User(session, config.Config(app).settings)
-        result = user.acknowledge_alert(alert_id)
+        if request.data is not None:
+            data = json.loads(request.data.decode())
+            helpfulness = data.get('helpfulness')
+            alert_action = data.get('alert_action')
+
+        result = user.take_alert_action(alert_id, alert_action, helpfulness)
 
         if result['ResponseMetadata']['HTTPStatusCode'] == 200:
             return '200'
@@ -257,8 +236,20 @@ def alert_operation(alert_id):
             return '500'
 
 
+@oidc.oidc_auth
+@app.route('/alert/fake', methods=['GET'])
+def alert_faking():
+    if request.method == 'GET':
+        if app.config.get('SERVER_NAME') != 'sso.mozilla.com':
+            """Only allow alert faking in non production environment."""
+            user = User(session, config.Config(app).settings)
+            fake_alerts = FakeAlert(user_id=user.userinfo.get('sub'))
+            fake_alerts.create_fake_alerts()
+
+    return redirect('/dashboard', code=302)
+
+
 @app.route('/info')
-@sh.wrapper()
 @oidc.oidc_auth
 def info():
     """Return the JSONified user session for debugging."""
@@ -270,7 +261,6 @@ def info():
 
 
 @app.route('/about')
-@sh.wrapper()
 def about():
     return render_template(
         'about.html'

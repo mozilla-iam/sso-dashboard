@@ -16,6 +16,7 @@ class S3Transfer(object):
         self.app_config = app_config
         self.client = None
         self.s3_bucket = self.app_config.S3_BUCKET
+        self.apps_yml = None
 
     def connect_s3(self):
         if not self.client:
@@ -62,19 +63,18 @@ class S3Transfer(object):
 
     def _get_config(self):
         self.connect_s3()
-        config = self.client.get_object(
+        apps_yml = self.client.get_object(
             Bucket=self.s3_bucket,
             Key='apps.yml'
         )
 
-        this_dir = os.path.dirname(__file__)
-        filename = os.path.join(this_dir, '../data/{name}').format(
-            name='apps.yml'
+        response = self.client.head_object(
+            Bucket=self.s3_bucket,
+            Key='apps.yml'
         )
-        c = open(filename, 'w+')
-        c.write(config['Body'].read())
-        c.close()
-        self._update_etag(config['ETag'])
+
+        self._update_etag(response.get('ETag'))
+        self.apps_yml = apps_yml.get('Body').read()
 
     def _touch(self):
         fname = 'app.py'
@@ -94,9 +94,11 @@ class S3Transfer(object):
                 self._touch()
                 return True
             else:
+                self._get_config()
                 return False
                 # Do nothing
         except Exception as e:
+            print(e)
             logger.error(
                 'Problem fetching config file {error}'.format(
                     error=e

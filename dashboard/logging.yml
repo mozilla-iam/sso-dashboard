@@ -1,0 +1,30 @@
+# Default AWS Config
+version: 1
+formatters:
+    json:
+        format: "[%(asctime)s] %(process)d %(levelname)s %(name)s:%(funcName)s:%(lineno)s - %(message)s"
+    plaintext:
+        format: "[%(asctime)s] %(process)d %(levelname)s %(name)s:%(funcName)s:%(lineno)s - %(message)s"
+handlers:
+    console:
+        (): logging.StreamHandler
+        level: INFO
+        formatter: plaintext
+        stream: ext://sys.stdout
+    watchtower:
+        formatter: json
+        level: INFO
+        (): watchtower.CloudWatchLogHandler
+        log_group: sso-dashboard
+        stream_name:  flask
+        send_interval: 1
+        create_log_group: False
+loggers:
+    sso-dashboard:
+        handlers: [console, watchtower]
+    __main__:
+        handlers: [console, watchtower]
+    root:
+        handlers: [console, watchtower]
+    requests:
+        handlers: [console, watchtower]

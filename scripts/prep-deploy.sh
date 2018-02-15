@@ -11,4 +11,4 @@ rm -rf /home/ec2-user/app
 mkdir -p /home/ec2-user/app
 
 #Grab an ECR Login
-aws ecr get-login --region us-west-2 | bash
+aws ecr get-login --region us-west-2 --no-include-email | bash

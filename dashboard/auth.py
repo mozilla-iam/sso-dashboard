@@ -8,6 +8,7 @@ from flask_pyoidc.flask_pyoidc import OIDCAuthentication
 
 logger = logging.getLogger(__name__)
 
+
 class OpenIDConnect(object):
     """Auth object for login, logout, and response validation."""
 
@@ -26,7 +27,7 @@ class OpenIDConnect(object):
             issuer="https://{DOMAIN}/".format(DOMAIN=self.oidc_config.OIDC_DOMAIN),
             authorization_endpoint=self.oidc_config.auth_endpoint(),
             token_endpoint=self.oidc_config.token_endpoint(),
-            userinfo_endpoint=self.oidc_config.userinfo_endpoint(),
+            userinfo_endpoint=self.oidc_config.userinfo_endpoint()
 
         )
 
@@ -145,13 +146,11 @@ class tokenVerification(object):
             )
         elif error_code == 'incorrectaccount':
             error_text = "Sorry, you may not login using {connection_name}.  \
-             Please instead always login with {preferred_connection_name}.".format(
+             We require login to be performed using the most secure method available for your account, which is \
+             {preferred_connection_name}.".format(
                 connection_name=self._get_connection_name(self.jws_data.get('connection', '')),
                 preferred_connection_name=self._get_connection_name(self.preferred_connection_name)
             )
         else:
             error_text = "Oye, something went wrong."
         return error_text
-
-
-

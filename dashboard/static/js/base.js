@@ -108,7 +108,8 @@ $(document).ready(function(){
         }
         else {
             $('.user-menu').show();
-            $('.user-menu a:first').focus();
+            $('.user-menu').attr('tabindex','0');
+            $('.user-menu').focus();
             $('.menu').addClass('enabled');
         }
 
@@ -137,7 +138,7 @@ $(document).ready(function(){
     $('[data-process-action]').click(function(){
         var button = $(this);
         var alert = button.closest('.alert');
-        var alert_id = alert.attr('id');
+        var alert_id = alert.attr('id') || 'none';
         var alert_action = button.attr('data-process-action');
         var alert_success = $('<p/>', { 'html': button.attr('data-process-action-success') });
         var alert_error = $('<p/>', { 'html': button.attr('data-process-action-error') });
@@ -148,6 +149,10 @@ $(document).ready(function(){
         if( alert_action === 'acknowledge' ) {
             button.closest('.alert').slideUp();
             alert.closest('.messages').focus();
+
+            if ( alert_id === 'alert-nightly' ) {
+                return // no need to post anything
+            }
         }
         // otherwise, show a spinner, disable button
         else {

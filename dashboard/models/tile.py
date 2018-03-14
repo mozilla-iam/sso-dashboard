@@ -73,8 +73,16 @@ class S3Transfer(object):
             Key='apps.yml'
         )
 
+        self.apps_yml = apps_yml.get('Body').read().decode('utf-8')
+
+        this_dir = os.path.dirname(__file__)
+        filename = os.path.join(this_dir, '../data/{name}').format(
+            name='apps.yml'
+        )
+        c = open(filename, 'w+')
+        c.write(self.apps_yml)
+        c.close()
         self._update_etag(response.get('ETag'))
-        self.apps_yml = apps_yml.get('Body').read()
 
     def _touch(self):
         fname = 'app.py'

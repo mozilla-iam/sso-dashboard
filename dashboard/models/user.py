@@ -121,6 +121,7 @@ class User(object):
             if self._is_valid_yaml(app):
                 if self._is_authorized(app):
                     authorized_apps['apps'].append(app)
+
         return authorized_apps.get('apps', [])
 
     @property
@@ -132,8 +133,14 @@ class User(object):
         if self.userinfo.get('https://sso.mozilla.com/claim/groups', None):
             group_count = len(self.userinfo.get('https://sso.mozilla.com/claim/groups', None))
 
+        if self.userinfo.get('groups', None):
+            group_count = len(self.userinfo.get('groups', None))
+
         if 'https://sso.mozilla.com/claim/groups' in self.userinfo.keys() and group_count > 0:
                 return self.userinfo['https://sso.mozilla.com/claim/groups']
+
+        if 'groups' in self.userinfo.keys() and group_count > 0:
+                return self.userinfo['groups']
         else:
             # This could mean a user is authing with non-ldap
             return []

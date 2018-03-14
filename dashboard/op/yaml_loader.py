@@ -23,6 +23,7 @@ class Application(object):
         try:
             stream = yaml.safe_load(self.app_dict)
         except yaml.YAMLError as e:
+            print(e)
             stream = None
             logger.info(e)
             pass

@@ -22,9 +22,7 @@ DASHBOARD_CSP = {
     ],
     'img-src': [
         '\'self\'',
-        'https://mozillians.org',
-        'https://media.mozillians.org',
-        'https://cdn.mozillians.org',
+        'https://*.mozillians.org',
         'https://cdn.sso.mozilla.com',
         'https://cdn.sso.allizom.org',
         'https://*.google-analytics.com',

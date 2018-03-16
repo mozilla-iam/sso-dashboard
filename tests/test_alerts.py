@@ -57,7 +57,7 @@ class TestAlerts(object):
         assert res['ResponseMetadata']['HTTPStatusCode'] == 200
 
         res = a.find('bob|ad|123456')
-        assert len(res) is 1
+        assert len(res) is 4
 
         updated_alert_dict = {
             'user_id': 'bob|ad|123456',

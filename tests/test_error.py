@@ -18,14 +18,14 @@ class ErrorTest(object):
         os.path.abspath(
             os.path.dirname(__file__)
         ),
-        'data/public-signing-key.pem'
+        'data/mfa-required-jwt'
     )
 
     sample_json_web_token = open(sample_jwt_file).read()
 
     tv = auth.tokenVerification(
-        public_key=public_key,
-        jws=sample_json_web_token
+        public_key=public_key.encode(),
+        jws=sample_json_web_token.encode()
     )
 
     assert tv is not None

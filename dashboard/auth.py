@@ -75,7 +75,6 @@ class tokenVerification(object):
 
     @property
     def data(self):
-        self._verified()
         return self.jws_data
 
     @property
@@ -84,11 +83,11 @@ class tokenVerification(object):
 
     @property
     def preferred_connection_name(self):
-        return self.jws_data.get('preferred_connection_name', None)
+        return self.jws_data.get('preferred_connection_name', 'Unknown')
 
     @property
     def redirect_uri(self):
-        return self.jws_data.get('redirect_uri')
+        return self.jws_data.get('redirect_uri', 'https://sso.mozilla.com')
 
     def _get_connection_name(self, connection):
         CONNECTION_NAMES = {
@@ -104,7 +103,7 @@ class tokenVerification(object):
         )
 
     def _signed(self, jwk):
-        if self.jws.verify(jwk):
+        if self.jws_obj.verify(jwk):
             return True
         else:
             return False
@@ -112,19 +111,18 @@ class tokenVerification(object):
     def _verified(self):
         try:
             jwk = JWK.load(self.public_key)
-            self.jws = JWS.from_compact(self.jws)
+            self.jws_obj = JWS.from_compact(self.jws)
             if self._signed(jwk) is False:
                 logger.warning('The public key signature was not valid for jws {jws}'.format(jws=self.jws))
                 self.jws_data = json.loads(self.jws.payload)
                 self.jws_data['code'] = 'invalid'
                 return False
             else:
-                self.jws_data = json.loads(self.jws.payload)
+                self.jws_data = json.loads(self.jws_obj.payload.decode())
                 logger.info('Loaded JWS data.')
-                self.jws_data['connection_name'] = self._get_connection_name(self.jws_data['connection_name'])
+                self.jws_data['connection_name'] = self._get_connection_name(self.jws_data['connection'])
                 return True
-        except Exception as e:
-            logger.warning('JWS could not be decoded due to {error}'.format(error=e))
+        except UnicodeDecodeError:
             return False
 
     def error_message(self):

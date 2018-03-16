@@ -112,7 +112,7 @@ def forbidden():
     if 'error' not in request.args:
         return render_template('forbidden.html')
     else:
-        jws = request.args['error']
+        jws = request.args.get('error').encode()
 
     token_verifier = auth.tokenVerification(jws=jws, public_key=app.config['FORBIDDEN_PAGE_PUBLIC_KEY'])
     token_verifier.verify

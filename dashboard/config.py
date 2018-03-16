@@ -2,7 +2,6 @@
 import base64
 import os
 
-
 from utils import get_secret
 
 

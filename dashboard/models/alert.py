@@ -107,7 +107,7 @@ class Alert(object):
         current_alerts = self.find(user_id)
 
         # If the alert is duplicate false do not create another instance of it.
-        for alert in current_alerts:
+        for alert in current_alerts.get('visible_alerts'):
             try:
                 if alert.get('alert_code') == alert_dict.get('alert_code') and alert_dict.get('duplicate') is False:
                     return None

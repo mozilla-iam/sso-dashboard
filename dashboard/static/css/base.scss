@@ -36,7 +36,7 @@ $lightergray: #f4f4f4;
 $darkgray: #303030;
 $bggray: #f8f8f8;
 $yellow: #faba00;
-$blue: #229DC4;
+$blue: #229dc4;
 $red: #d04437;
 
 $appbar-height: 70px;
@@ -300,7 +300,7 @@ body {
         overflow: hidden; // establish a new block formatting context
 
         // this is the width which comfortably fits a risk indicator and text content
-        @media ( min-width: 40em ) {
+        @media (min-width: 40em) {
             padding: 0.5em 1em;
         }
 
@@ -340,7 +340,7 @@ body {
             text-align: center;
             margin: 1em 0;
 
-            @media ( min-width: 40em ) {
+            @media (min-width: 40em) {
                 position: absolute;
                 left: 1em;
                 top: 1em;
@@ -356,7 +356,7 @@ body {
             margin: 1em 0;
             max-width: 35em;
 
-            @media ( min-width: 40em ) {
+            @media (min-width: 40em) {
                 margin: 1em auto;
                 padding-left: 11em; /* always have space for abs pos risk indicator */
                 padding-right: 11em; /* balance space on left*/
@@ -376,7 +376,6 @@ body {
                 vertical-align: middle;
             }
         }
-
     }
 
     .closebtn {
@@ -386,7 +385,6 @@ body {
         line-height: 20px;
         cursor: pointer;
         transition: 0.3s;
-        border: 1px solid transparent;
         margin-left: 5px;
         padding: 5px;
         vertical-align: text-top;
@@ -496,7 +494,6 @@ body {
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
-
 
         @media all and (max-width: 767px) {
             width: 100%;
@@ -683,7 +680,7 @@ body {
         margin: 0 auto;
         max-width: 30em;
 
-        @media ( min-width: 50em ) {
+        @media (min-width: 50em) {
             padding-left: 14em;
         }
 
@@ -695,7 +692,7 @@ body {
     legend {
         margin: 1em 0 0;
 
-        @media ( min-width: 50em ) {
+        @media (min-width: 50em) {
             margin: 1.5em 0;
             position: absolute;
             left: 0;
@@ -729,13 +726,13 @@ body {
         }
 
         &:first-of-type {
-            @media ( min-width: 50em ) {
+            @media (min-width: 50em) {
                 border-radius: 2em 0 0 2em;
             }
         }
 
         &:last-of-type {
-            @media ( min-width: 50em ) {
+            @media (min-width: 50em) {
                 border-radius: 0 2em 2em 0;
             }
         }

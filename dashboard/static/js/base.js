@@ -151,7 +151,7 @@ $(document).ready(function(){
             alert.closest('.messages').focus();
 
             if ( alert_id === 'alert-nightly' ) {
-                return // no need to post anything
+                return; // no need to post anything
             }
         }
         // otherwise, show a spinner, disable button
@@ -211,5 +211,5 @@ $(document).ready(function(){
 
         e.preventDefault();
 
-    })
+    });
 });

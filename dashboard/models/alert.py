@@ -5,6 +5,7 @@ import datetime
 import json
 import logging
 import os
+import re
 import requests
 
 
@@ -287,6 +288,9 @@ class Rules(object):
         if self._user_firefox_version() is not None:
             u_version = self._version_to_dictionary(self._user_firefox_version())
             f_version = self._version_to_dictionary(self._firefox_info().get('LATEST_FIREFOX_VERSION'))
+            if u_version.get('dot_version') is not None:
+                if re.search('esr', u_version.get('dot_version')):
+                    f_version = self._version_to_dictionary(self._firefox_info().get('FIREFOX_ESR'))
 
             if u_version.get('major_version') < f_version.get('major_version'):
                 return True

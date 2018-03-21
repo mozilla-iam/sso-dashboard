@@ -70,15 +70,15 @@ class User(object):
     def first_name(self):
         """Return user first_name."""
         try:
-            return self.userinfo['given_name']
+            return self.idvault_info.get('firstName')
         except KeyError:
-            return self.profile['full_name']
+            return self.userinfo.get('user_id')
 
     @property
     def last_name(self):
         """Return user last_name."""
         try:
-            return self.userinfo['family_name']
+            return self.idvault_info.get('lastName')
         except KeyError:
             return None
 

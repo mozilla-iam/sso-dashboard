@@ -38,8 +38,8 @@ class TestUser(object):
         f_name = self.u.first_name
         l_name = self.u.last_name
 
-        assert f_name == 'Andrew'
-        assert l_name == 'Krug'
+        assert f_name == 'ad|Mozilla-LDAP|akrug'
+        assert l_name == 'ad|Mozilla-LDAP|akrug'
 
     def test_user_identifiers(self):
         assert len(self.u.user_identifiers()) == 2

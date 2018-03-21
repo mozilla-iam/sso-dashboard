@@ -12,10 +12,6 @@
         <h2>
             {% if token_verifier %}
                 {{ token_verifier.error_message()|safe }}
-                {% if token_verifier.redirect_uri %}
-                    <br></br>
-                  <a href="{{ token_verifier.redirect_uri }}">Go back</a>
-                {% endif %}
             {% else %}
                  Oye, something went wrong.
             {% endif %}
@@ -27,8 +23,13 @@
   <div class="mui-row section">
     <div class="mui-col-md-6 mui-col-md-offset-3">
       <a href="https://discourse.mozilla.org/c/iam" class="mui-btn help">Need Help?</a>
-
-      <a href="/dashboard" class="mui-btn return">Return to dashboard</a>
+      {% if token_verifier %}
+        {% if token_verifier.redirect_uri %}
+          <a href="/dashboard" class="mui-btn return">Go Back</a>
+        {% else %}
+          <a href="/dashboard" class="mui-btn return">Return to dashboard</a>
+        {% endif %}
+      {% endif %}
     </div>
   </div>
 {% endblock %}

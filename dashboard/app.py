@@ -255,8 +255,8 @@ def info():
     """Return the JSONified user session for debugging."""
     return jsonify(
         id_token=session.get('id_token'),
-        access_token=session.get('access_token'),
-        userinfo=session.get('userinfo')
+        userinfo=session.get('userinfo'),
+        person_api_v1=session.get('idvault_userinfo')
     )
 
 

@@ -38,9 +38,6 @@ class DefaultConfig(object):
 
     S3_BUCKET = get_secret('sso-dashboard.s3_bucket', {'app': 'sso-dashboard'})
 
-    MOZILLIANS_API_URL = 'https://mozillians.org/api/v2/users/'
-    MOZILLIANS_API_KEY = get_secret('sso-dashboard.mozillians_api_key', {'app': 'sso-dashboard'})
-
     CDN = 'https://cdn.{SERVER_NAME}'.format(SERVER_NAME=SERVER_NAME)
 
     FORBIDDEN_PAGE_PUBLIC_KEY = base64.b64decode(

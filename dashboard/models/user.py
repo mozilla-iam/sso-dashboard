@@ -70,8 +70,10 @@ class User(object):
     def first_name(self):
         """Return user first_name."""
         try:
-            return self.idvault_info.get('firstName')
+            return self.idvault_userinfo.get('firstName')
         except KeyError:
+            return self.userinfo.get('user_id')
+        except AttributeError:
             return self.userinfo.get('user_id')
 
     @property
@@ -81,6 +83,8 @@ class User(object):
             return self.idvault_info.get('lastName')
         except KeyError:
             return None
+        except AttributeError:
+            return self.userinfo.get('user_id')
 
     def user_identifiers(self):
         """Construct a list of potential user identifiers to match on."""

@@ -1,6 +1,5 @@
 """User class that governs maniuplation of session['userdata']"""
 import logging
-import requests
 import time
 from faker import Faker
 
@@ -10,96 +9,13 @@ fake = Faker()
 logger = logging.getLogger(__name__)
 
 
-class Mozillians(object):
-    """Operations governing Mozillians."""
-    def __init__(self, app_config=None):
-        self.app_config = app_config
-
-    @property
-    def api_key(self):
-        if self.app_config is not None:
-            return self.app_config.MOZILLIANS_API_KEY
-
-    @property
-    def api_url(self):
-        if self.app_config is not None:
-            return self.app_config.MOZILLIANS_API_URL
-
-    def _get_user_info(self, email):
-        response = self._get_user(email)
-        if not response:
-            return None
-
-        try:
-            results = response.get('results', -1)
-            user_url = results[0].get('_url')
-            user_info = requests.get(user_url, headers=self.headers, timeout=5)
-        except Exception as e:
-            logger.error('Userinfo could not be retreived due to: {}'.format(e))
-            return None
-
-        if user_info.status_code is not 200:
-            return None
-
-        try:
-            info = user_info.json()
-        except Exception as e:
-            logger.error('Userinfo could not be retreived due to: {}'.format(e))
-            return None
-
-        return info
-
-    def _get_user(self, email):
-        self.headers = {'X-API-KEY': self.api_key}
-        params = {'email': email}
-
-        if not self.api_url:
-            return None
-
-        try:
-            mozillians_response = requests.get(self.api_url, headers=self.headers,
-                                               params=params, timeout=5)
-        except Exception as e:
-            logger.error('Mozillians info could not be retreived due to: {}'.format(e))
-            return None
-
-        if mozillians_response.status_code is not 200:
-            return None
-
-        try:
-            response = mozillians_response.json()
-        except Exception as e:
-            logger.error('Mozillians info could not be retreived due to: {}'.format(e))
-            return None
-
-        return response
-
-    def user_detail(self, email, field='photo'):
-        response = self._get_user_info(email)
-
-        ctx = {
-            'avatar': None,
-            'full_name': None
-        }
-
-        if response:
-            if response['photo']['privacy'] == 'Public':
-                ctx['avatar'] = response['photo']['value']
-            if response['full_name']['privacy'] == 'Public':
-                ctx['full_name'] = response['full_name']['value']
-
-        return ctx
-
-
 class User(object):
     def __init__(self, session, app_config):
         """Constructor takes user session."""
         self.id_token = session.get('id_token', None)
         self.app_config = app_config
-        m = Mozillians(self.app_config)
         self.userinfo = session.get('userinfo')
         self.idvault_info = session.get('idvault_userinfo')
-        self.profile = m.user_detail(self.email())
 
     def email(self):
         try:
@@ -126,7 +42,12 @@ class User(object):
 
     @property
     def avatar(self):
-        return self.profile['avatar']
+        if self.idvault_info:
+            picture_url = self.idvault_info.get('picture')
+        else:
+            picture_url = None
+
+        return picture_url
 
     def group_membership(self):
         """Return list of group membership if user is asserted from ldap."""
@@ -228,8 +149,6 @@ class FakeUser(object):
     def __init__(self, app_config):
         """Constructor takes user session."""
         self.app_config = app_config
-        m = Mozillians(self.app_config)
-        self.profile = m.user_detail(self.email())
 
     def email(self):
         return fake.email()

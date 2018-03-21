@@ -164,6 +164,10 @@ def dashboard():
         except Exception as e:
             logger.error("Could not enrich profile due to: {}.  Perhaps it doesn't exist?".format(e))
 
+    # Hotfix to set user id for firefox alert
+    # XXXTBD Refactor rules later to support full id_conformant session
+    session['userinfo']['user_id'] = session.get('id_token')['sub']
+
     # Transfer any updates in to the app_tiles.
     S3Transfer(config.Config(app).settings).sync_config()
 
@@ -255,8 +259,8 @@ def info():
     """Return the JSONified user session for debugging."""
     return jsonify(
         id_token=session.get('id_token'),
-        access_token=session.get('access_token'),
-        userinfo=session.get('userinfo')
+        userinfo=session.get('userinfo'),
+        person_api_v1=session.get('idvault_userinfo')
     )
 
 

@@ -70,7 +70,7 @@ class User(object):
     def first_name(self):
         """Return user first_name."""
         try:
-            return self.idvault_info.get('firstName')
+            return self.idvault_userinfo.get('firstName')
         except KeyError:
             return self.userinfo.get('user_id')
 

@@ -25,7 +25,7 @@
       <a href="https://discourse.mozilla.org/c/iam" class="mui-btn help">Need Help?</a>
       {% if token_verifier %}
         {% if token_verifier.redirect_uri %}
-          <a href="/dashboard" class="mui-btn return">Go Back</a>
+          <a href="{{ token_verifier.redirect_uri }}" class="mui-btn return">Go Back</a>
         {% else %}
           <a href="/dashboard" class="mui-btn return">Return to dashboard</a>
         {% endif %}

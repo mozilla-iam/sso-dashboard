@@ -85,7 +85,7 @@ class User(object):
             return ""
         except AttributeError:
             return ""
-
+     
     def user_identifiers(self):
         """Construct a list of potential user identifiers to match on."""
         return [self.email(), self.userinfo['sub']]

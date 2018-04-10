@@ -70,8 +70,7 @@ class User(object):
     def first_name(self):
         """Return user first_name."""
         try:
-
-            return self.idvault_info.get('firstName')
+            return self.idvault_info.get('firstName', "")
         except KeyError:
             return ""
         except AttributeError:
@@ -81,7 +80,7 @@ class User(object):
     def last_name(self):
         """Return user last_name."""
         try:
-            return self.idvault_info.get('lastName')
+            return self.idvault_info.get('lastName', "")
         except KeyError:
             return ""
         except AttributeError:

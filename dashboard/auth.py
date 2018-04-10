@@ -130,10 +130,15 @@ class tokenVerification(object):
         if error_code == 'githubrequiremfa':
             error_text = \
                 "You must setup a security device(\"MFA\", \"2FA\") for your GitHub account in order to access \
-                this service.Please follow the \
+                this service. Please follow the \
                 <a href=\"https://help.github.com/articles/securing-your-account-with-two-factor-authentication-2fa/\">\
                 GitHub documentation\
                 </a> to setup your device, then try logging in again."
+        elif error_code == 'fxarequiremfa':
+            error_text = \
+                "You must setup a security device(\"MFA"", \"2FA\") for your Firefox Account in order to access \
+                this service. Please setup a <a href=\"https://accounts.firefox.com\">security device</a>, then \
+                try logging in again."
         elif error_code == 'notingroup':
             error_text = "Sorry, you do not have permission to access {client}.  \
             Please contact eus@mozilla.com if you should have access.".format(client=self.data.get('client'))

@@ -331,14 +331,44 @@ class FakeAlert(object):
         self.alert.find_or_create_by(alert_dict=alert_dict, user_id=self.user_id)
 
     def _create_fake_geolocation_alert(self):
+        fake_state = fake.state()
+        fake_country = fake.country()
+        fake_email = fake.email()
+        fake_ip = fake.ipv4()
+
+        original_alert_dict = {
+            'category': 'geomodel',
+            'details': {
+                'category': 'NEWCOUNTRY',
+                'locality_details': {
+                    'city': fake_state,
+                    'country': fake_country
+                },
+                'principal': fake_email,
+                'source_ip': fake_ip
+            },
+            'severity': 'NOTICE',
+            'summary': '{} NEWCOUNTRY {}, {} access from {}'.format(
+                fake_email,
+                fake_state,
+                fake_country,
+                fake_ip
+            ),
+            'tags': ['geomodel'],
+            'url': 'https://www.mozilla.org/alert',
+            'utctimestamp': '{}+00:00'.format(fake.iso8601())
+        }
+
         alert_dict = {
             'alert_code': '416c65727447656f6d6f64656c',
             'user_id': self.user_id,
             'risk': 'high',
-            'summary': 'Did you recently login from {}, {} (5.6.7.8)?'.format(
-                fake.state(),
-                fake.country()
+            'summary': 'Did you recently login from {}, {} ({})?'.format(
+                fake_state,
+                fake_country,
+                fake_ip
             ),
+            'alert_str_json': json.dumps(original_alert_dict),
             'description': 'This alert is created based on geo ip information about the last login of a user.',
             'date': str(fake.date(pattern="%Y-%m-%d", end_datetime=None)),
             'url': 'https://www.mozilla.org',

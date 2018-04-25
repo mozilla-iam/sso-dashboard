@@ -1,3 +1,4 @@
+"""SSO Dashboard App File."""
 import json
 import logging.config
 import mimetypes
@@ -125,17 +126,13 @@ def forbidden():
 @app.route('/logout')
 @oidc.oidc_logout
 def logout():
-
-    """Route decorator destroys flask session and redirects to auth0 to destroy
-    auth0 session.  Ending page is mozilla signout.html."""
-    logger.info("User called logout route.")
-    if os.environ.get('ENVIRONMENT') == 'Production':
-        proto = "https"
-    else:
-        proto = "http"
-
-     logout_url = "https://{}/login?client={}&action=logout".format(auth0_domain, oidc_config.OIDC_CLIENT_ID)
-
+    """
+    Redirect to new feature in NLX that destroys autologin preferences.
+    Aka Logout is REALLY logout.
+    """
+    logout_url = "https://{}/login?client={}&action=logout".format(
+        oidc_config.OIDC_DOMAIN, oidc_config.OIDC_CLIENT_ID
+    )
     return redirect(logout_url, code=302)
 
 

@@ -47,6 +47,7 @@ body {
   font-family: "Open Sans", sans-serif;
   letter-spacing: 0.03em;
   margin: 0 1.5em;
+  padding: 1em;
   display: grid;
   grid-template-rows: auto 1fr; }
 
@@ -93,7 +94,7 @@ hr {
   border-bottom: 1px solid #fff;
   padding: 1.5em;
   text-align: center;
-  margin: 0 -1.5em 2em -1.5em;
+  margin: -1em -2.5em 2em;
   display: flex;
   flex-direction: column; }
   .banner p {
@@ -147,9 +148,9 @@ hr {
   appearance: none; }
   .button:hover {
     background-color: #fff;
-    text-decoration: none;
     color: #000;
-    border-color: currentColor; }
+    border-color: currentColor;
+    text-decoration: none; }
   .button:focus {
     outline: none;
     outline: 0;
@@ -228,11 +229,12 @@ hr {
       width: 100%;
       max-width: 26em; } }
   @supports (display: grid) {
-    @media (min-height: 50em) {
-      .card {
-        grid-row-start: 2;
-        top: -3em;
-        /* compensate for negative margin for footer links */ } } }
+    .card {
+      grid-row-start: 2; }
+      @media (min-height: 50em) {
+        .card {
+          top: -3em;
+          /* compensate for negative margin for footer links */ } } }
   .card__back {
     margin-bottom: 1em; }
   .card__heading {
@@ -337,7 +339,7 @@ hr {
   margin-bottom: 2em;
   padding: 0;
   border-radius: 0; }
-  .logo img {
+  .logo svg {
     width: 100%;
     max-width: 6.5em;
     display: block; }

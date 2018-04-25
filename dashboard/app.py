@@ -134,7 +134,7 @@ def logout():
     else:
         proto = "http"
 
-    logout_url = "https://{auth0_domain}/login?client={oidc_config.client_id}&action=logout"
+     logout_url = "https://{}/login?client={}&action=logout".format(auth0_domain, oidc_config.OIDC_CLIENT_ID)
 
     return redirect(logout_url, code=302)
 

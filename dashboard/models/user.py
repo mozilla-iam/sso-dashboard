@@ -56,6 +56,8 @@ class User(object):
 
         if self.userinfo.get('groups'):
             group_count = len(self.userinfo.get('groups', []))
+        else:
+            group_count = 0
 
         if 'https://sso.mozilla.com/claim/groups' in self.userinfo.keys() and group_count > 0:
                 return self.userinfo['https://sso.mozilla.com/claim/groups']

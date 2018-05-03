@@ -27,7 +27,8 @@ DASHBOARD_CSP = {
         'https://cdn.sso.allizom.org',
         'https://*.google-analytics.com',
         'https://*.gravatar.com',
-        'https://i0.wp.com/'
+        'https://i0.wp.com/',
+        'https://i1.wp.com'
     ],
     'font-src': [
         '\'self\'',

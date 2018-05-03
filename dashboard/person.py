@@ -12,7 +12,7 @@ class API(object):
         :param session: the flask session to update with userinfo
         """
         self.config = config.OIDCConfig()
-        self.person_api_url = 'person-api.sso.mozilla.com'
+        self.person_api_url = self._get_url()
 
     def get_bearer(self):
         conn = http.client.HTTPSConnection(self.config.OIDC_DOMAIN)
@@ -20,7 +20,7 @@ class API(object):
             {
                 'client_id': self.config.OIDC_CLIENT_ID,
                 'client_secret': self.config.OIDC_CLIENT_SECRET,
-                'audience': 'https://person-api.sso.mozilla.com',
+                'audience': 'https://{}'.format(self._get_url()),
                 'grant_type': 'client_credentials'
             }
         )
@@ -44,3 +44,9 @@ class API(object):
         res = conn.getresponse()
         data = res.read()
         return json.loads(json.loads(data.decode('utf-8')).get('body'))
+
+    def _get_url(self):
+        if self.config.OIDC_DOMAIN == 'auth.mozilla.auth0.com':
+            return 'person-api.sso.mozilla.com'
+        else:
+            return 'person-api.sso.allizom.org'

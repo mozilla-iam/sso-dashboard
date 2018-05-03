@@ -51,13 +51,13 @@ class User(object):
 
     def group_membership(self):
         """Return list of group membership if user is asserted from ldap."""
-        if self.userinfo.get('https://sso.mozilla.com/claim/groups', []):
+        if self.userinfo.get('https://sso.mozilla.com/claim/groups', []) != []:
             group_count = len(self.userinfo.get('https://sso.mozilla.com/claim/groups', []))
-
-        if self.userinfo.get('groups'):
-            group_count = len(self.userinfo.get('groups', []))
         else:
-            group_count = 0
+            if self.userinfo.get('groups'):
+                group_count = len(self.userinfo.get('groups', []))
+            else:
+                group_count = 0
 
         if 'https://sso.mozilla.com/claim/groups' in self.userinfo.keys() and group_count > 0:
                 return self.userinfo['https://sso.mozilla.com/claim/groups']

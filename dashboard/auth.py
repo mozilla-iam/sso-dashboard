@@ -93,6 +93,7 @@ class tokenVerification(object):
         CONNECTION_NAMES = {
             'google-oauth2': 'Google',
             'github': 'GitHub',
+            'firefoxaccounts': 'Firefox Accounts',
             'Mozilla-LDAP-Dev': 'LDAP',
             'Mozilla-LDAP': 'LDAP',
             'email': 'passwordless email'

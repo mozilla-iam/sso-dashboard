@@ -89,21 +89,20 @@
         <p>{{ alert.summary }}</p>
         <p class="alert-timing"><time>{{ alert.date }}</time></p>
         <div class="alert-actions">
-          <a href="/notifications" class="btn-alert">
-            {% include 'icons/alert.svg' %}
-            <span class="info-text">More Info</span>
-          </a>
-          {% if alert.get('state') != 'escalate' %}
-            <!--
-            <button type="button" data-process-action="escalate" data-process-action-success="This alert has been escalated to the Mozilla Operations Center." data-process-action-error="An error has occurred, please try again later." class="btn-alert">
-              {% include 'icons/info.svg' %}
-              <span class="info-text">Escalate to Security</span>
-            </button>
-          -->
-          {% endif %}
           <a href="{{ alert.url }}" class="btn-alert" target="_blank">
             {% include 'icons/alert.svg' %}
             {{ alert.url_title }}
+          </a>
+          <!--
+          {% if alert.get('state') != 'escalate' %}
+            <button type="button" data-process-action="escalate" data-process-action-success="This alert has been escalated to the Mozilla Operations Center." data-process-action-error="An error has occurred, please try again later." class="btn-alert">
+              {% include 'icons/arrow-right.svg' %}
+              <span class="info-text">Escalate to Security</span>
+            </button>-->
+          {% endif %}
+          <a href="/notifications" class="btn-alert">
+            {% include 'icons/info.svg' %}
+            <span class="info-text">More Info</span>
           </a>
         </div>
         <div class="alert-feedback"  role="alert">

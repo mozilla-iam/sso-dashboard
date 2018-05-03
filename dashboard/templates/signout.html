@@ -1,67 +1,27 @@
-{% extends "layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Mozilla Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600" rel="stylesheet">
+    <link href="/static/css/nlx.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="card">
+      <a href="https://mozilla.org" class="logo" target="_blank">
+        <img src="/static/img/mozilla.svg" alt="mozilla">
+      </a>
 
-{% block appbar %}{% endblock %}
-
-{% block content_class %}logout{% endblock %}
-
-{% block content %}
-  <div class="mui-row">
-    <div class="mui-col-md-12 panel">
-      <div>
-        <img src="/static/img/mozilla-m.svg" alt="Mozilla">
-      </div>
-
-      <div>
-        <img src="/static/img/success.svg" alt="sucess">
-      </div>
-
-      <div>
-        <h2>Mozilla SSO</h2>
-        <h2>Log Out Success</h2>
-      </div>
-
-      <div class="notice">
-        Make sure you also log out of each individual application you used this session.
-      </div>
-
-      <hr>
-
-      <a href="/" class="mui-btn">Log In to Mozilla SSO</a>
+      <h2 class="card__heading card__heading--success">
+        <svg viewBox="0 0 18 12" class="card__heading-icon"><path d="M0 0h18v12H0V0zm9 6.563L16.64.75H1.36L9 6.563zM.75 11.25h16.5V1.219l-5.39 4.125 5.39 5.906h-.91l-5.09-5.484L9 7.5 6.75 5.766 1.709 11.25H.758L6.14 5.344.75 1.219V11.25z" fill="#000" fill-rule="evenodd"/></svg><span>Log out success</span></h2>
+        <p>Make sure you also log out of each individual application used this session.</p>
+        <hr>
+        <a href="https://sso.mozilla.com" class="button button--secondary">Log in to Mozilla</a>
+      <ul class="legal-links list list--plain">
+        <li><a href="https://www.mozilla.org/en-US/about/legal/" target="_blank">Legal</a></li>
+        <li><a href="https://www.mozilla.org/en-US/privacy/websites/" target="_blank">Privacy</a></li>
+        <li><a href="https://discourse.mozilla.org/c/iam" target="_blank">Need help?</a></li>
+      </ul>
     </div>
-  </div>
-
-  <div class="footer-links">
-    <div class="icon-container">
-      <div class="icon">
-        <img class="footer-icon" src="/static/img/email.svg">
-        <a target="_blank" href="https://mozilla.service-now.com/sp?id=sc_cat_item&sys_id=ca46b2794fcc2200f004ef6d0210c77c">Need Help?</a>
-      </div>
-    </div>
-    <div class="icon-container">
-      <div class="icon">
-        <img class="footer-icon" src="/static/img/feedback.svg">
-        <a target="_blank" href="https://discourse.mozilla-community.org/c/iam/dashboard">Feedback</a>
-      </div>
-    </div>
-    <div class="icon-container">
-      <div class="icon">
-        <img class="footer-icon" src="/static/img/github.svg">
-        <a target="_blank" href="https://github.com/mozilla-iam/sso-dashboard">Contribute</a>
-      </div>
-    </div>
-    <div class="icon-container">
-      <div class="icon">
-        <img class="footer-icon" src="/static/img/legal.svg">
-        <a target="_blank" href="https://www.mozilla.org/en-US/about/legal/">Legal</a>
-      </div>
-    </div>
-    <div class="icon-container">
-      <div class="icon">
-        <img class="footer-icon" src="/static/img/privacy.svg">
-        <a target="_blank" href="https://www.mozilla.org/en-US/privacy/websites/">Privacy</a>
-      </div>
-    </div>
-  </div>
-{% endblock %}
-
-{% block footer %}{% endblock %}
+  </body>
+</html>

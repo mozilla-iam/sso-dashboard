@@ -135,6 +135,16 @@ def logout():
     )
     return redirect(logout_url, code=302)
 
+@app.route('/autologin-settings')
+def showautologinsettings():
+    """
+    Redirect to NLX Auto-login Settings page
+    """
+    autologin_settings_url = "https://{}/login?client={}&action=autologin_settings".format(
+        oidc_config.OIDC_DOMAIN, oidc_config.OIDC_CLIENT_ID
+    )
+    return redirect(autologin_settings_url, code=302)
+
 
 @app.route('/signout.html')
 def signout():

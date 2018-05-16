@@ -135,6 +135,7 @@ def logout():
     )
     return redirect(logout_url, code=302)
 
+
 @app.route('/autologin-settings')
 def showautologinsettings():
     """

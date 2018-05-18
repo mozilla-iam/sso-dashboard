@@ -143,6 +143,9 @@ class tokenVerification(object):
         elif error_code == 'notingroup':
             error_text = "Sorry, you do not have permission to access {client}.  \
             Please contact eus@mozilla.com if you should have access.".format(client=self.data.get('client'))
+        elif error_code == 'accesshasexpired':
+            error_text = "Sorry, your access to {client} has expired because you have not been actively using it. \
+            Please request access again.".format(client=self.data.get('client'))
         elif error_code == 'primarynotverified':
             "You primary email address is not yet verified. Please verify your \
             email address with {connection_name} in order to use this service.".format(

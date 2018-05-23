@@ -220,7 +220,7 @@ body {
         &.enabled {
             background-color: black;
             color: white;
-            width: 217px;
+            width: 250px;
             border-bottom: 1px solid #5b555c;
             border-left: none;
             height: calc(#{$appbar-height} - 1px);
@@ -869,7 +869,7 @@ footer {
     top: $appbar-height;
     right: 0;
     display: none;
-    width: 217px;
+    width: 250px;
 
     &:focus {
         outline: none;
@@ -1157,7 +1157,7 @@ footer {
 
             &.enabled {
                 height: calc(#{$appbar-height} - 1px);
-                width: 200px;
+                width: 250px;
 
                 .name {
                     height: calc(#{$appbar-height} - 1px);
@@ -1202,7 +1202,7 @@ footer {
     .user-menu {
         top: $appbar-height;
         height: 100%;
-        width: 200px;
+        width: 250px;
 
         a {
             padding: 0 30px 0 15px;

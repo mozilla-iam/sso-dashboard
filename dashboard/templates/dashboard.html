@@ -63,6 +63,7 @@
     <a href="https://mozillians.org/oidc/authenticate/?next=/user/edit/" target="_blank"><span>Settings</span> <img class="menu-icon" src="/static/img/settings.svg" alt=""></a>
     <a {% if user.alerts %}href="/notifications"{% else %}href="#" class="inactive"{% endif %}><span>Notifications</span> <img class="menu-icon" src="/static/img/alerts/notification-white.svg" alt=""></a>
     <a href="/logout"><span>Logout</span> <img class="menu-icon"src="/static/img/logout.svg" alt=""></a>
+    <a href="/autologin-settings"><span>Enable / Disable Auto-login</span></a>
     <div class="coming-soon"><span>coming soon</span></div>
     <a href="#" class="inactive"><span>Access Request</span> <img class="menu-icon"src="/static/img/request.svg" alt=""></a>
   </div>
@@ -93,12 +94,12 @@
             {% include 'icons/alert.svg' %}
             {{ alert.url_title }}
           </a>
-          <!--
-          {% if alert.get('state') != 'escalate' %}
+
+          {% if alert.get('state') != 'escalate' and alert.get('risk') == 'high' %}
             <button type="button" data-process-action="escalate" data-process-action-success="This alert has been escalated to the Mozilla Operations Center." data-process-action-error="An error has occurred, please try again later." class="btn-alert">
               {% include 'icons/arrow-right.svg' %}
               <span class="info-text">Escalate to Security</span>
-            </button>-->
+            </button>
           {% endif %}
           <a href="/notifications" class="btn-alert">
             {% include 'icons/info.svg' %}

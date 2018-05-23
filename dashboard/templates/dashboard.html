@@ -93,8 +93,7 @@
             {% include 'icons/alert.svg' %}
             {{ alert.url_title }}
           </a>
-
-          {% if alert.get('state') != 'escalate' and alert.get('risk') == 'high' %}
+          {% if alert.get('state') != 'escalate' and alert.get('alert_code') == '416c65727447656f6d6f64656c' %}
             <button type="button" data-process-action="escalate" data-process-action-success="This alert has been escalated to the Mozilla Operations Center." data-process-action-error="An error has occurred, please try again later." class="btn-alert">
               {% include 'icons/arrow-right.svg' %}
               <span class="info-text">Escalate to Security</span>

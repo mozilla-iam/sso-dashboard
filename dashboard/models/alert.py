@@ -218,6 +218,31 @@ class Alert(object):
             'inactive_alerts': inactive_alerts
         }
 
+    def to_summary(self, alert_dict):
+        """
+        Takes list of lists of alerts as formatted in self.find()
+        Return statuses for consumption in NLX
+        """
+        high_count = 0
+        maximum_count = 0
+        medium_count = 0
+        low_count = 0
+
+        for alert in alert_dict.get('visible_alerts', []):
+            if alert.get('risk') == 'high':
+                high_count = high_count + 1
+            if alert.get('risk') == 'maximum':
+                maximum_count = maximum_count + 1
+            if alert.get('risk') == 'medium':
+                medium_count = medium_count + 1
+            if alert.get('risk') == 'low':
+                low_count = low_count + 1
+
+        return {
+            'alerts':
+                {'maximum': maximum_count, 'high': high_count, 'medium': medium_count, 'low': low_count}
+        }
+
     def find_by_id(self, alert_id):
         """
         Search dynamodb for all non-expired alerts for a given user.

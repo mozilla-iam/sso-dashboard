@@ -331,6 +331,8 @@ class FakeAlert(object):
         self.alert.find_or_create_by(alert_dict=alert_dict, user_id=self.user_id)
 
     def _create_fake_geolocation_alert(self):
+        prev_fake_state = fake.state()
+        prev_fake_country = fake.country()
         fake_state = fake.state()
         fake_country = fake.country()
         fake_email = fake.email()
@@ -340,6 +342,10 @@ class FakeAlert(object):
             'category': 'geomodel',
             'details': {
                 'category': 'NEWCOUNTRY',
+                'prev_locality_details': {
+                    'city': prev_fake_state,
+                    'country': prev_fake_country
+                },
                 'locality_details': {
                     'city': fake_state,
                     'country': fake_country

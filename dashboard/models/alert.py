@@ -7,7 +7,6 @@ import logging
 import os
 import requests
 
-from boto3.dynamodb.conditions import Attr
 from boto3.dynamodb.conditions import Key
 from faker import Faker
 
@@ -256,7 +255,7 @@ class Alert(object):
         self.connect_dynamodb()
 
         response = self.dynamodb.query(
-             KeyConditionExpression=Key('alert_id').eq(alert_id)
+            KeyConditionExpression=Key('alert_id').eq(alert_id)
         )
 
         if response.get('Items'):

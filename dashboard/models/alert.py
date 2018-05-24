@@ -173,18 +173,33 @@ class Alert(object):
         :param user_id: The auth0 id of the user.
         :return: List of alerts
         """
-        self.connect_dynamodb()
+        response = None
+        try:
+            self.connect_dynamodb()
 
-        response = self.dynamodb.scan(
-            FilterExpression=Attr('user_id').eq(user_id)
-        )
+            response = self.dynamodb.scan(
+                FilterExpression=Attr('user_id').eq(user_id)
+            )
+
+            alerts = response.get('Items', [])
+
+            if response:
+                while 'LastEvaluatedKey' in response:
+                    response = self.dynamodb.scan(
+                        FilterExpression=Attr('user_id').eq(user_id),
+                        ExclusiveStartKey=response['LastEvaluatedKey']
+                    )
+                    alerts.extend(response['Items'])
+        except Exception as e:
+            logger.error('Could not load alerts for user: {} due to: {}.'.format(user_id, e))
+            alerts = []
 
         inactive_alerts = []
         visible_alerts = []
         ranked_alerts = []
         escalations = []
 
-        for alert in response.get('Items'):
+        for alert in alerts:
             if alert.get('state', '') == 'acknowledge':
                 inactive_alerts.append(alert)
             elif alert.get('helpfulness', '') != '':
@@ -331,6 +346,8 @@ class FakeAlert(object):
         self.alert.find_or_create_by(alert_dict=alert_dict, user_id=self.user_id)
 
     def _create_fake_geolocation_alert(self):
+        prev_fake_state = fake.state()
+        prev_fake_country = fake.country()
         fake_state = fake.state()
         fake_country = fake.country()
         fake_email = fake.email()
@@ -340,6 +357,10 @@ class FakeAlert(object):
             'category': 'geomodel',
             'details': {
                 'category': 'NEWCOUNTRY',
+                'prev_locality_details': {
+                    'city': prev_fake_state,
+                    'country': prev_fake_country
+                },
                 'locality_details': {
                     'city': fake_state,
                     'country': fake_country

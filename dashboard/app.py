@@ -21,10 +21,13 @@ import config
 import person
 import vanity
 
+from api import idp
+from api import exceptions
 from csp import DASHBOARD_CSP
 from models.user import User
 from models.user import FakeUser
 from op.yaml_loader import Application
+from models.alert import Alert
 from models.alert import FakeAlert
 from models.alert import Rules
 from models.tile import S3Transfer
@@ -68,6 +71,8 @@ oidc = authentication.auth(app)
 person_api = person.API()
 
 vanity_router = vanity.Router(app, app_list).setup()
+
+api = idp.AuthorizeAPI(app, oidc_config)
 
 
 @app.route('/favicon.ico')
@@ -253,6 +258,22 @@ def alert_faking():
             fake_alerts.create_fake_alerts()
 
     return redirect('/dashboard', code=302)
+
+
+@app.route('/api/v1/alert', methods=['GET'])
+@api.requires_api_auth
+def alert_api():
+    if request.method == 'GET' and api.requires_scope("read:alert"):
+        user_id = request.args.get('user_id')
+        alerts = Alert().find(user_id)
+        result = Alert().to_summary(alerts)
+        return jsonify(result)
+    raise exceptions.AuthError(
+        {
+            "code": "Unauthorized",
+            "description": "Scope not matched.  Access Denied."
+        }, 403
+    )
 
 
 @app.route('/info')

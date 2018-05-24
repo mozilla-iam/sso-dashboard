@@ -173,18 +173,33 @@ class Alert(object):
         :param user_id: The auth0 id of the user.
         :return: List of alerts
         """
-        self.connect_dynamodb()
+        response = None
+        try:
+            self.connect_dynamodb()
 
-        response = self.dynamodb.scan(
-            FilterExpression=Attr('user_id').eq(user_id)
-        )
+            response = self.dynamodb.scan(
+                FilterExpression=Attr('user_id').eq(user_id)
+            )
+
+            alerts = response.get('Items', [])
+
+            if response:
+                while 'LastEvaluatedKey' in response:
+                    response = self.dynamodb.scan(
+                        FilterExpression=Attr('user_id').eq(user_id),
+                        ExclusiveStartKey=response['LastEvaluatedKey']
+                    )
+                    alerts.extend(response['Items'])
+        except Exception as e:
+            logger.error('Could not load alerts for user: {} due to: {}.'.format(user_id, e))
+            alerts = []
 
         inactive_alerts = []
         visible_alerts = []
         ranked_alerts = []
         escalations = []
 
-        for alert in response.get('Items'):
+        for alert in alerts:
             if alert.get('state', '') == 'acknowledge':
                 inactive_alerts.append(alert)
             elif alert.get('helpfulness', '') != '':

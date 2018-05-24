@@ -7,8 +7,7 @@ import logging
 import os
 import requests
 
-
-from boto3.dynamodb.conditions import Attr
+from boto3.dynamodb.conditions import Key
 from faker import Faker
 
 
@@ -177,16 +176,20 @@ class Alert(object):
         try:
             self.connect_dynamodb()
 
-            response = self.dynamodb.scan(
-                FilterExpression=Attr('user_id').eq(user_id)
+            response = self.dynamodb.query(
+                IndexName='user_id-index',
+                Select='ALL_ATTRIBUTES',
+                KeyConditionExpression=Key('user_id').eq(user_id)
             )
 
             alerts = response.get('Items', [])
 
             if response:
                 while 'LastEvaluatedKey' in response:
-                    response = self.dynamodb.scan(
-                        FilterExpression=Attr('user_id').eq(user_id),
+                    response = self.dynamodb.query(
+                        IndexName='user_id-index',
+                        Select='ALL_ATTRIBUTES',
+                        KeyConditionExpression=Key('user_id').eq(user_id),
                         ExclusiveStartKey=response['LastEvaluatedKey']
                     )
                     alerts.extend(response['Items'])
@@ -218,6 +221,31 @@ class Alert(object):
             'inactive_alerts': inactive_alerts
         }
 
+    def to_summary(self, alert_dict):
+        """
+        Takes list of lists of alerts as formatted in self.find()
+        Return statuses for consumption in NLX
+        """
+        high_count = 0
+        maximum_count = 0
+        medium_count = 0
+        low_count = 0
+
+        for alert in alert_dict.get('visible_alerts', []):
+            if alert.get('risk') == 'high':
+                high_count = high_count + 1
+            if alert.get('risk') == 'maximum':
+                maximum_count = maximum_count + 1
+            if alert.get('risk') == 'medium':
+                medium_count = medium_count + 1
+            if alert.get('risk') == 'low':
+                low_count = low_count + 1
+
+        return {
+            'alerts':
+                {'maximum': maximum_count, 'high': high_count, 'medium': medium_count, 'low': low_count}
+        }
+
     def find_by_id(self, alert_id):
         """
         Search dynamodb for all non-expired alerts for a given user.
@@ -226,11 +254,14 @@ class Alert(object):
         """
         self.connect_dynamodb()
 
-        response = self.dynamodb.scan(
-            FilterExpression=Attr('alert_id').eq(alert_id)
+        response = self.dynamodb.query(
+            KeyConditionExpression=Key('alert_id').eq(alert_id)
         )
 
-        return response.get('Items')[0]
+        if response.get('Items'):
+            return response.get('Items')[0]
+
+        return {}
 
     def _create_alert_id(self):
         """
@@ -271,6 +302,14 @@ class Rules(object):
                 'duplicate': False
             }
             self.alert.find_or_create_by(alert_dict=alert_dict, user_id=self.userinfo.get('user_id'))
+        if not self._firefox_out_of_date():
+            # Clear any active alerts for firefox out of date.
+            alerts = self.alert.find(self.userinfo.get('user_id'))
+            for alert in alerts.get('visible_alerts'):
+                if alert.get('alert_code') == '63f675d8896f4fb2b3caa204c8c2761e':
+                    self.alert.destroy(
+                        alert_id=alert.get('alert_id'), user_id=alert.get('user_id')
+                    )
 
     def _firefox_info(self):
         release_json = requests.get('https://product-details.mozilla.org/1.0/firefox_versions.json')
@@ -330,7 +369,7 @@ class FakeAlert(object):
 
     def _create_fake_browser_alert(self):
         alert_dict = {
-            'alert_code': '63f675d8896f4fb2b3caa204c8c2761e',
+            'alert_code': 'a63f675d8896f4fb2b3caa204c8c2761e',
             'user_id': self.user_id,
             'risk': 'medium',
             'summary': 'Your version of Firefox is older than the current stable release.',

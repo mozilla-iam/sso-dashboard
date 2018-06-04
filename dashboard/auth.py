@@ -158,6 +158,12 @@ class tokenVerification(object):
                 connection_name=self._get_connection_name(self.jws_data.get('connection', '')),
                 preferred_connection_name=self._get_connection_name(self.preferred_connection_name)
             )
+        elif error_code == 'accountnotprimary':
+            error_text = "You already have an account with a different login method for this identifier. Please \
+              set {connection_name} as your primary login method on <a href=\"https://www.mozillians.org\">\
+              mozillians.org</a> or use your original login method for this account.".format(
+                connection_name=self._get_connection_name(self.jws_data.get('connection', ''))
+              )
         else:
             error_text = "Oye, something went wrong."
         return error_text

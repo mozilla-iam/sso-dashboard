@@ -139,7 +139,9 @@ class tokenVerification(object):
             error_text = \
                 "You must setup a security device(\"MFA"", \"2FA\") for your Firefox Account in order to access \
                 this service. Please setup a <a href=\"https://accounts.firefox.com\">security device</a>, then \
-                try logging in again."
+                try logging in again.\n\
+                If you have just setup your security device and you see this message, please log out of Firefox \
+                Account and back in again."
         elif error_code == 'notingroup':
             error_text = "Sorry, you do not have permission to access {client}.  \
             Please contact eus@mozilla.com if you should have access.".format(client=self.data.get('client'))

@@ -302,7 +302,7 @@ class Rules(object):
                 'duplicate': False
             }
             self.alert.find_or_create_by(alert_dict=alert_dict, user_id=self.userinfo.get('user_id'))
-        if not self._firefox_out_of_date():
+        else:
             # Clear any active alerts for firefox out of date.
             alerts = self.alert.find(self.userinfo.get('user_id'))
             for alert in alerts.get('visible_alerts'):

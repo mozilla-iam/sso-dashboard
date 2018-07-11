@@ -302,7 +302,8 @@ class Rules(object):
                 'duplicate': False
             }
             self.alert.find_or_create_by(alert_dict=alert_dict, user_id=self.userinfo.get('user_id'))
-        if not self._firefox_out_of_date():
+
+        else:
             # Clear any active alerts for firefox out of date.
             alerts = self.alert.find(self.userinfo.get('user_id'))
             for alert in alerts.get('visible_alerts'):
@@ -313,7 +314,10 @@ class Rules(object):
 
     def _firefox_info(self):
         release_json = requests.get('https://product-details.mozilla.org/1.0/firefox_versions.json')
-        return release_json.json()
+        if release_json.status_code == 200:
+            return release_json.json()
+        else:
+            return None
 
     def _user_firefox_version(self):
         agent = self.request.headers.get('User-Agent')
@@ -338,9 +342,11 @@ class Rules(object):
         return version_dict
 
     def _firefox_out_of_date(self):
-        if self._user_firefox_version() is not None:
+        ff_info = self._firefox_info()
+
+        if self._user_firefox_version() is not None and ff_info is not None:
             u_version = self._version_to_dictionary(self._user_firefox_version())
-            f_version = self._version_to_dictionary(self._firefox_info().get('LATEST_FIREFOX_VERSION'))
+            f_version = self._version_to_dictionary(ff_info.get('LATEST_FIREFOX_VERSION'))
 
             if u_version.get('major_version') < f_version.get('major_version'):
                 return True

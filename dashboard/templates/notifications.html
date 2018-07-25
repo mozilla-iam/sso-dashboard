@@ -35,9 +35,23 @@
           <div class="alert-summary">
             {{ alert.summary }}
           </div>
+          <div class="alert-create-header">
+            Why was this alert created?<br>
+          </div>
           <div class="alert-description">
             {{ alert.description }}
           </div>
+          {% if 'details' in alert %}
+            <div class="alert-details-header">
+              Details:<br>
+            </div>
+            <div class="alert-details">
+              {% for details_key, details_value in alert.get('details').items() %}
+                {{ details_key }}: {{ details_value }}<br>
+              {% endfor %}
+            </div>
+            <br>
+          {% endif %}
           {% if alert.get('state') != 'escalate' %}
           <div class="alert-actions">
             <a href="{{ alert.url }}" class="btn-alert" target="_blank">

@@ -196,10 +196,16 @@ class FakeUser(object):
                     'description': 'This alert is created based on geo ip information about the last login of a user.',
                     'duplicate': True,
                     'risk': 'medium',
-                    'summary': 'Did you recently login from Unknown, {}?'.format(fake.country()),
+                    'summary': 'Did you recently login from {}, {}?'.format(fake.city(), fake.country()),
                     'url': 'https://mana.mozilla.org/wiki/display/SECURITY/Alert%3A+Change+in+Country',
                     'url_title': 'Get Help',
-                    'user_id': 'ad|Mozilla-LDAP|fakeuser'
+                    'user_id': 'ad|Mozilla-LDAP|fakeuser',
+                    'details': {
+                        'Timestamp': fake.date_time_this_year().strftime('%A, %B %d %Y %H:%M UTC'),
+                        'New Location': '{}, {}'.format(fake.city(), fake.country()),
+                        'New IP': '{} ({})'.format(fake.ipv4(), fake.company()),
+                        'Previous Location': '{}, {}'.format(fake.city(), fake.country())
+                    }
                 },
                 {
                     'alert_code': '63f675d8896f4fb2b3caa204c8c2761e',

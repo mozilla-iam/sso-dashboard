@@ -60,7 +60,7 @@ class DevelopmentConfig(DefaultConfig):
     DEVELOPMENT = True
     DEBUG = True
     SECRET_KEY = 'abab123123'
-    SERVER_NAME = 'localhost:5000'
+    SERVER_NAME = os.environ.get('SERVER_NAME', 'localhost:5000')
     CDN = 'https://cdn.sso.allizom.org'
 
 

@@ -203,7 +203,9 @@ class Alert(object):
         escalations = []
 
         for alert in alerts:
-            if alert.get('state', '') == 'acknowledge':
+            if self._alert_is_expired(alert):
+                self.destroy(alert.get('alert_id'), user_id)
+            elif alert.get('state', '') == 'acknowledge':
                 inactive_alerts.append(alert)
             elif alert.get('helpfulness', '') != '':
                 ranked_alerts.append(alert)
@@ -220,6 +222,16 @@ class Alert(object):
             'escalations': escalations,
             'inactive_alerts': inactive_alerts
         }
+
+    def _alert_is_expired(self, alert):
+        now = datetime.datetime.today()
+        threshold = now - datetime.timedelta(days=7)
+        alert_time = datetime.datetime.strptime(alert.get('date'), '%Y-%m-%d')
+
+        if alert_time < threshold:
+            return True
+        else:
+            return False
 
     def to_summary(self, alert_dict):
         """

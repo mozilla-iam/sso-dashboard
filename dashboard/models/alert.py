@@ -355,11 +355,10 @@ class Rules(object):
 
     def _firefox_out_of_date(self):
         ff_info = self._firefox_info()
-
         if self._user_firefox_version() is not None and ff_info is not None:
             u_version = self._version_to_dictionary(self._user_firefox_version())
-            f_version = self._version_to_dictionary(ff_info.get('LATEST_FIREFOX_VERSION'))
-
+            f_version = self._version_to_dictionary(ff_info.get('FIREFOX_ESR'))
+            print(f_version)
             if u_version.get('major_version') < f_version.get('major_version'):
                 return True
             elif u_version.get('major_version') == f_version.get('major_version'):

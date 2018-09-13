@@ -156,7 +156,7 @@ class tokenVerification(object):
             )
         elif error_code == 'incorrectaccount':
             error_text = "Sorry, you may not login using {connection_name}.  \
-             We require login to be performed using the most secure method available for your account, which is \
+             Instead, please use \
              {preferred_connection_name}.".format(
                 connection_name=self._get_connection_name(self.jws_data.get('connection', '')),
                 preferred_connection_name=self._get_connection_name(self.preferred_connection_name)

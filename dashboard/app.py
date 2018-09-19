@@ -49,6 +49,7 @@ app = Flask(__name__)
 try:
     if os.environ["ENABLE_DASHBOARD_MONITORING"]:
         metrics = PrometheusMetrics(app)
+        metrics.start_http_server(9000)
 except KeyError:
     logger.info("Prometheus exporter disabled, set ENABLE_DASHBOARD_MONITORING to enable it.")
 

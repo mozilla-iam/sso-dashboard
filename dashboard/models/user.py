@@ -3,7 +3,7 @@ import logging
 import time
 from faker import Faker
 
-from . import alert
+from dashboard.models import alert
 
 fake = Faker()
 logger = logging.getLogger(__name__)

@@ -47,7 +47,7 @@ logger = logging.getLogger('sso-dashboard')
 app = Flask(__name__)
 everett_config = get_config()
 # Enable monitoring endpoint
-if everett_config('enable_prometheus_monitoring', default='False') == 'True':
+if everett_config('enable_prometheus_monitoring', namespace='sso-dashboard', default='False') == 'True':
     metrics = PrometheusMetrics(app)
     metrics.start_http_server(
         int(

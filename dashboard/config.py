@@ -1,7 +1,5 @@
 """Configuration loader for different environments."""
 import base64
-import os
-
 from dashboard import get_config
 
 CONFIG = get_config()
@@ -19,9 +17,6 @@ class Config(object):
 
 
 class DefaultConfig(object):
-    def __init__(self):
-        CONFIG = get_config()
-
     """Defaults for the configuration objects."""
     DEBUG = bool(CONFIG('debug', namespace='sso-dashboard', default='True'))
     TESTING = bool(CONFIG('testing', namespace='sso-dashboard', default='False'))

@@ -27,6 +27,12 @@
    dest: /usr/bin/start.sh
    mode: 0775
 
+- name: Copy the everett ini file
+  copy:
+   src: ../files/sso-dashboard.ini
+   dest: /etc/sso-dashboard.ini
+   mode: 0775
+
 - name: Install git
   yum: name=git state=latest
 
@@ -61,8 +67,8 @@
 
 - name: Copy The Application
   copy:
-   src: /dashboard/dashboard/
-   dest: /sso-dashboard
+   src: /dashboard/
+   dest: /sso-dashboard/
    owner: flaskapp
    group: nginx
    mode: 755

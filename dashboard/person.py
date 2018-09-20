@@ -2,7 +2,7 @@ import http.client
 import json
 import urllib
 
-import config
+from dashboard import config
 
 
 class API(object):

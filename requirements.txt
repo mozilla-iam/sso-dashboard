@@ -62,3 +62,4 @@ watchtower==0.5.2
 webassets==0.12.1
 Werkzeug==0.12.2
 prometheus-flask-exporter==0.2.2
+prometheus-client==0.3.1

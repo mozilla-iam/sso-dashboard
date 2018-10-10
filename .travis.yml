@@ -6,7 +6,7 @@ notifications:
 python:
   - 3.6
 env:
-  - "DASHBOARD_CONFIG_INI=tests/sso-dashboard.ini AWS_DEFAULT_REGION=us-west-2"
+  - "DASHBOARD_CONFIG_INI=tests/sso-dashboard.ini AWS_DEFAULT_REGION=us-west-2 BOTO_CONFIG=/dev/null"
 before_install:
   - pip install flake8
   - flake8 dashboard

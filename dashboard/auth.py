@@ -162,13 +162,13 @@ class tokenVerification(object):
                 preferred_connection_name=self._get_connection_name(self.preferred_connection_name)
             )
         elif error_code == 'aai_failed':
-            error_text = "{client} requires you to setup additional security measure for your account, \
+            error_text = "{client} requires you to setup additional security measures for your account, \
             such as enabling multi-factor authentication (MFA) or using a safer authentication method (such as a \
             Firefox Account login). You will not be able to login until this is \
             done.".format(client=self.data.get('client'))
         elif error_code == 'staffmustuseldap':
-            error_text = "Staff LDAP accounts holders are required to use their LDAP account to login. Please go back \
-            and type your LDAP email to login with your Staff account, instead of using
+            error_text = "Staff LDAP account holders are required to use their LDAP account to login. Please go back \
+            and type your LDAP email address to login with your Staff account, instead of using \
             {connection_name}.".format(connection_name=self._get_connection_name(self.jws_data.get('connection', '')))
         else:
             error_text = "Oye, something went wrong."

@@ -8,9 +8,9 @@ with open("README.md", "r") as fh:
 
 requirements = []
 
-setup_requirements = ['pytest-runner']
+setup_requirements = ['pytest-runner', 'credstash', 'everett', 'josepy', 'flask_pyoidc']
 
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'moto']
+test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'moto', 'pytest-moto', 'faker']
 
 setup(
     name="dashboard",

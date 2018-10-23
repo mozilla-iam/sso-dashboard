@@ -137,9 +137,8 @@ class tokenVerification(object):
                 </a> to setup your device, then try logging in again."
         elif error_code == 'fxarequiremfa':
             error_text = \
-                "You must setup a security device (\"MFA"", \"2FA\") for your Firefox Account in order to access \
-                this service. Please setup a <a href=\"https://accounts.firefox.com\">security device</a>, then \
-                try logging in again.\n<br/><br/>\n\
+                "Please <a href=\"https://support.mozilla.org/kb/secure-firefox-account-two-step-authentication\">secure your Firefox Account with two-step authentication</a>, \
+                then try logging in again.\n<br/><br/>\n\
                 If you have just setup your security device and you see this message, please log out of \
                  <a href=\"https://accounts.firefox.com\">Firefox Accounts</a> (click the \"Sign out\" button), then \
                  log back in."

@@ -1,0 +1,4 @@
+env: dev
+environment: Development
+domain_name: web.sso-dashboard-dev.infra.iam.mozilla.com
+namespace: sso-dashboard-dev

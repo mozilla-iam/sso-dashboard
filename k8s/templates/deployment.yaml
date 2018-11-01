@@ -14,7 +14,7 @@ spec:
   template:
     metadata:
       annotations:
-        iam.amazonaws.com/role: arn:aws:iam::656532927350:role/SSODashboardKubernetesDeployment
+        iam.amazonaws.com/role: {{ .Values.assume_role }}
       labels:
         app: {{ .Values.name }}
     spec:

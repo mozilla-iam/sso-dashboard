@@ -7,7 +7,7 @@ metadata:
     app: {{ .Values.name }}
   namespace: {{ .Values.namespace }}
 spec:
-  replicas: 1
+  replicas: 5
   selector:
     matchLabels:
       app: {{ .Values.name }}
@@ -25,10 +25,10 @@ spec:
           - containerPort: 8000
           resources:
             requests:
-              memory: "200Mi"
+              memory: "512Mi"
               cpu: "250m"
             limits:
-              memory: "200Mi"
+              memory: "768Mi"
               cpu: "500m"
           env:
             - name: AWS_DEFAULT_REGION
@@ -39,4 +39,5 @@ spec:
               value: https://mozillians.org/api/v2/users/
             - name: SERVER_NAME
               value: {{ .Values.domain_name }}
-
+            - name: DASHBOARD_GUNICORN_WORKERS
+              value: 1

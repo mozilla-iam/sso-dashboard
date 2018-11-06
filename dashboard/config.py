@@ -32,7 +32,7 @@ class DefaultConfig(object):
 
     S3_BUCKET = CONFIG('s3_bucket', namespace='sso-dashboard')
 
-    CDN = 'https://cdn.{SERVER_NAME}'.format(SERVER_NAME=SERVER_NAME)
+    CDN = CONFIG('cdn', namespace='sso-dashboard', default='https://cdn.{SERVER_NAME}'.format(SERVER_NAME=SERVER_NAME))
 
     FORBIDDEN_PAGE_PUBLIC_KEY = base64.b64decode(
         CONFIG('forbidden_page_public_key', namespace='sso-dashboard')

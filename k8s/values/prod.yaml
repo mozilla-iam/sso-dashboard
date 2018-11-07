@@ -1,0 +1,6 @@
+env: staging
+environment: production
+domain_name: web.sso-dashboard-prod.infra.iam.mozilla.com
+namespace: sso-dashboard-prod
+assume_role:
+registry:

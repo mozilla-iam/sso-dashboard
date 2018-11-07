@@ -1,0 +1,6 @@
+env: staging
+environment: Development
+domain_name: web.sso-dashboard-staging.infra.iam.mozilla.com
+namespace: sso-dashboard-staging
+assume_role:
+registry:

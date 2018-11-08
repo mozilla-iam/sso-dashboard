@@ -1,6 +1,7 @@
 import os
 
 from credstash import getSecret
+from credstash import ItemNotFound
 from everett import NO_VALUE
 from everett.manager import listify
 
@@ -33,16 +34,18 @@ class CredstashEnv(object):
         # The namespace is either None, a string or a list of
         # strings. This converts it into a list.
         namespace = listify(namespace)
+        try:
+            if len(namespace) > 0:
+                secret = getSecret(
+                    name='{}.{}'.format(namespace[0], key),
+                    context={'app': 'sso-dashboard'},
+                    region="us-east-1"
+                )
+        except ItemNotFound:
+            secret = None
 
-        if len(namespace) > 0:
-            secret = getSecret(
-                name='{}.{}'.format(namespace[0], key),
-                context={'app': 'sso-dashboard'},
-                region="us-east-1"
-            )
-
-            if secret is not None:
-                return secret
+        if secret is not None:
+            return secret
 
         return NO_VALUE
 

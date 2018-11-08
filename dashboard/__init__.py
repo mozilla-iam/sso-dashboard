@@ -41,6 +41,8 @@ class CredstashEnv(object):
                     context={'app': 'sso-dashboard'},
                     region="us-east-1"
                 )
+            else:
+                secret = None
         except ItemNotFound:
             secret = None
 

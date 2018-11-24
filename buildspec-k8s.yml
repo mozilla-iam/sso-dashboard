@@ -1,41 +1,43 @@
 version: 0.2
 
+env:
+  variables:
+    IMAGE_NAME: sso-dashboard
+    DOCKER_REGISTRY: 320464205386.dkr.ecr.us-west-2.amazonaws.com
+
 phases:
   install:
     commands:
-      - apt update && apt install apt-transport-https
-      - curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-      - echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
-      - apt update && apt install -y curl kubectl python3-pip
-      - pip3 install awscli
+      - apt update && apt install -y apt-transport-https curl
+      - curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+      - echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
+      - apt update && apt install -y kubectl
       - curl -O https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz
-      - tar zxvf helm-v2.11.0-linux-amd64.tar.gz
-      - cp linux-amd64/helm /usr/local/bin/
+      - tar zxf helm-v2.11.0-linux-amd64.tar.gz
+      - mv linux-amd64/helm /usr/local/bin/
       - curl -O https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator
       - chmod +x aws-iam-authenticator
-      - cp aws-iam-authenticator /usr/local/bin/
+      - mv aws-iam-authenticator /usr/local/bin/
+      - apt update && apt install -y python3-pip
+      - pip3 install awscli
+      - sed -i "s/--workers=5/--workers=1/" ./ansible/roles/dashboard/files/nginx/start.sh
   pre_build:
     commands:
       - export COMMIT_SHA=$CODEBUILD_RESOLVED_SOURCE_VERSION
-      - export DEPLOY_ENV=$(echo $CODEBUILD_WEBHOOK_TRIGGER | sed -e 's/tag\/.*-\(.*\)/\1/' | sed -e 's/branch\/master/dev/')
+      - export DEPLOY_ENV=$(echo $CODEBUILD_WEBHOOK_TRIGGER | sed -e 's/tag\/.*-\(.*\)/\1/' | sed -e 's/branch\/master/dev/' | sed -e 's/branch\/production/prod/')
+      - if [ -z "$DEPLOY_ENV" ]; then export DEPLOY_ENV="dev"; fi
       - export MASTER=$(if [ "$CODEBUILD_WEBHOOK_TRIGGER" = "branch/master" ]; then echo 1; fi)
       - echo "running for ${COMMIT_SHA} in ${DEPLOY_ENV}"
       - aws eks update-kubeconfig --name $CLUSTER_NAME
       - aws ecr get-login --region us-west-2 --no-include-email | bash
-      - echo 'These two lines can be removed after the stage / prod migration is complete'
-      - echo 'These values can be maintained in the source repository at that point'
-      - echo 'server_name=web.sso-dashboard-staging.infra.iam.mozilla.com' >> ./ansible/roles/dashboard/files/sso-dashboard.ini
-      - echo 'cdn=https://cdn.sso.allizom.org' >> ./ansible/roles/dashboard/files/sso-dashboard.ini
+      - git clone https://github.com/ansible/ansible-container.git
+      - pip install -e ./ansible-container[docker]
   build:
     commands:
-      - git clone https://github.com/ansible/ansible-container.git
-      - cd ansible-container
-      - pip install -e ./ansible-container[docker]
-      - '[ -n "$MASTER" ] && cd ansible && ansible-container build --with-volumes `echo $CODEBUILD_SRC_DIR`:/dashboard'
-      - '[ -n "$MASTER" ] && docker tag ansible-web $DOCKER_REPO:$COMMIT_SHA'
-      - '[ -n "$MASTER" ] && docker push $DOCKER_REPO:$COMMIT_SHA'
+      - if [ -n "$MASTER" ]; then cd ansible && ansible-container build --with-volumes `echo $CODEBUILD_SRC_DIR`:/dashboard && cd ..; fi
+      - if [ -n "$MASTER" ]; then docker tag ansible-web $DOCKER_REPO:$COMMIT_SHA; fi
+      - if [ -n "$MASTER" ]; then docker push $DOCKER_REPO:$COMMIT_SHA; fi
   post_build:
     commands:
-      - echo "Finding appropriate deployment environment"
-      - echo "Environment is ${DEPLOY_ENV}"
-      - helm template -f k8s/values.yaml -f k8s/values/${DEPLOY_ENV:-dev}.yaml --set registry=$DOCKER_REPO,namespace=sso-dashboard-${DEPLOY_ENV:-dev},rev=$COMMIT_SHA,assume_role=$ASSUME_ROLE k8s/ | kubectl --token $DEPLOY_TOKEN apply -f -
+      - helm template -f k8s/values.yaml -f k8s/values/$DEPLOY_ENV.yaml --set registry=$DOCKER_REPO,namespace=sso-dashboard-$DEPLOY_ENV,rev=$COMMIT_SHA,assume_role=$ASSUME_ROLE_ARN k8s/ | kubectl apply -f -
+

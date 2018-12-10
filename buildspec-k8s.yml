@@ -37,7 +37,9 @@ phases:
       - if [ -n "$MASTER" ]; then cd ansible && ansible-container build --with-volumes `echo $CODEBUILD_SRC_DIR`:/dashboard && cd ..; fi
       - if [ -n "$MASTER" ]; then docker tag ansible-web $DOCKER_REPO:$COMMIT_SHA; fi
       - if [ -n "$MASTER" ]; then docker push $DOCKER_REPO:$COMMIT_SHA; fi
+      - cd ansible && ansible-container build --with-volumes `echo $CODEBUILD_SRC_DIR`:/dashboard && cd ..
+      - docker tag ansible-web $DOCKER_REPO:$COMMIT_SHA
+      - docker push $DOCKER_REPO:$COMMIT_SHA
   post_build:
     commands:
       - helm template -f k8s/values.yaml -f k8s/values/$DEPLOY_ENV.yaml --set registry=$DOCKER_REPO,namespace=sso-dashboard-$DEPLOY_ENV,rev=$COMMIT_SHA,assume_role=$ASSUME_ROLE_ARN k8s/ | kubectl apply -f -
-

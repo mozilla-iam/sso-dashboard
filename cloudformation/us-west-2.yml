@@ -2,27 +2,15 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: "Mozilla Single Sign On Dashboard"
 Mappings:
   dev:
-      us-east-1:
-        branch: "git checkout master"
-        CertificateARN: "arn:aws:acm:us-east-1:656532927350:certificate/af98d466-2099-4d99-b1d1-dc222b8e59b0"
       us-west-2:
         AMI: ami-069d1e7e
         branch: "git checkout master"
         CertificateARN: "arn:aws:acm:us-west-2:656532927350:certificate/ade32b62-e360-4ecd-8c3c-f44671dba94f"
-      eu-west-1:
-        branch: "git checkout master"
-        CertificateARN: "arn:aws:acm:eu-central-1:656532927350:certificate/105a2ca8-3253-4d0f-973e-91d59584b4f6"
   prod:
-      us-east-1:
-        branch: "git checkout production"
-        CertificateARN: "arn:aws:acm:us-east-1:371522382791:certificate/12dd7f1a-177c-4a11-8b62-ca098d3ee40c"
       us-west-2:
         AMI: ami-b99e1dc1
         branch: "git checkout production"
         CertificateARN: "arn:aws:acm:us-west-2:371522382791:certificate/8f0dfce8-88c1-4b9c-b3bd-850af8dcc0a5"
-      eu-west-1:
-        branch: "git checkout production"
-        CertificateARN: "arn:aws:acm:eu-central-1:371522382791:certificate/82bcf762-ea43-4f32-b78e-4bbabe2f6fe4"
 Parameters:
   KeyName:
     Description: The EC2 Key Pair to allow SSH access to the instance

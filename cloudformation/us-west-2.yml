@@ -8,7 +8,7 @@ Mappings:
       us-west-2:
         AMI: ami-069d1e7e
         branch: "git checkout master"
-        CertificateARN: "arn:aws:acm:us-west-2:656532927350:certificate/ade32b62-e360-4ecd-8c3c-f44671dba94f"
+        CertificateARN: "arn:aws:acm:us-west-2:656532927350:certificate/39900f53-5c37-44b4-aa4b-9c48f1de9a9d"
       eu-west-1:
         branch: "git checkout master"
         CertificateARN: "arn:aws:acm:eu-central-1:656532927350:certificate/105a2ca8-3253-4d0f-973e-91d59584b4f6"
@@ -19,7 +19,7 @@ Mappings:
       us-west-2:
         AMI: ami-b99e1dc1
         branch: "git checkout production"
-        CertificateARN: "arn:aws:acm:us-west-2:371522382791:certificate/8f0dfce8-88c1-4b9c-b3bd-850af8dcc0a5"
+        CertificateARN: "arn:aws:acm:us-west-2:371522382791:certificate/fd8b3557-6b01-41fe-b7f4-ae726ec4ea56"
       eu-west-1:
         branch: "git checkout production"
         CertificateARN: "arn:aws:acm:eu-central-1:371522382791:certificate/82bcf762-ea43-4f32-b78e-4bbabe2f6fe4"

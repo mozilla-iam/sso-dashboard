@@ -1,81 +1,55 @@
 """Configuration loader for different environments."""
 import base64
-import os
+from dashboard import get_config
 
-from utils import get_secret
+CONFIG = get_config()
 
 
 class Config(object):
     def __init__(self, app):
         self.app = app
-        self.environment = os.environ.get('ENVIRONMENT')
+
+        self.environment = CONFIG('environment', default='development')
         self.settings = self._init_env()
 
     def _init_env(self):
-        if self.environment == 'Production':
-            return ProductionConfig()
-        elif self.environment == 'Development':
-            return DevelopmentConfig()
-        elif self.environment == 'Testing':
-            return TestingConfig()
-        else:
-            return DevelopmentConfig()
+        return DefaultConfig()
 
 
 class DefaultConfig(object):
     """Defaults for the configuration objects."""
-    DEBUG = True
-    TESTING = False
-    CSRF_ENABLED = True
-    PERMANENT_SESSION = True
-    PERMANENT_SESSION_LIFETIME = 86400
+    DEBUG = bool(CONFIG('debug', namespace='sso-dashboard', default='True'))
+    TESTING = bool(CONFIG('testing', namespace='sso-dashboard', default='False'))
+    CSRF_ENABLED = bool(CONFIG('csrf_enabled', default='True'))
+    PERMANENT_SESSION = bool(CONFIG('permanent_session', namespace='sso-dashboard', default='True'))
+    PERMANENT_SESSION_LIFETIME = int(CONFIG('permanent_session_lifetime', namespace='sso-dashboard', default='86400'))
 
-    SESSION_COOKIE_HTTPONLY = True
-    LOGGER_NAME = "sso-dashboard"
+    SESSION_COOKIE_HTTPONLY = bool(CONFIG('session_cookie_httponly', namespace='sso-dashboard', default='True'))
+    LOGGER_NAME = CONFIG('logger_name', namespace='sso-dashboard', default='sso-dashboard')
 
-    SECRET_KEY = get_secret('sso-dashboard.secret_key', {'app': 'sso-dashboard'})
-    SERVER_NAME = get_secret('sso-dashboard.server_name', {'app': 'sso-dashboard'})
+    SECRET_KEY = CONFIG('secret_key', namespace='sso-dashboard')
+    SERVER_NAME = CONFIG('server_name', namespace='sso-dashboard', default='localhost:5000')
 
-    S3_BUCKET = get_secret('sso-dashboard.s3_bucket', {'app': 'sso-dashboard'})
+    S3_BUCKET = CONFIG('s3_bucket', namespace='sso-dashboard')
 
-    CDN = 'https://cdn.{SERVER_NAME}'.format(SERVER_NAME=SERVER_NAME)
+    CDN = CONFIG('cdn', namespace='sso-dashboard', default='https://cdn.{SERVER_NAME}'.format(SERVER_NAME=SERVER_NAME))
 
     FORBIDDEN_PAGE_PUBLIC_KEY = base64.b64decode(
-        get_secret('sso-dashboard.forbidden_page_public_key', {'app': 'sso-dashboard'})
+        CONFIG('forbidden_page_public_key', namespace='sso-dashboard')
     )
 
-
-class ProductionConfig(DefaultConfig):
-    PREFERRED_URL_SCHEME = 'https'
-    DEBUG = False
-
-
-class StagingConfig(DefaultConfig):
-    DEVELOPMENT = True
-    DEBUG = True
-
-
-class DevelopmentConfig(DefaultConfig):
-    PREFERRED_URL_SCHEME = 'http'
-    DEVELOPMENT = True
-    DEBUG = True
-    SECRET_KEY = 'abab123123'
-    SERVER_NAME = os.environ.get('SERVER_NAME', 'localhost:5000')
-    CDN = 'https://cdn.sso.allizom.org'
-
-
-class TestingConfig(DefaultConfig):
-    TESTING = True
+    PREFERRED_URL_SCHEME = CONFIG('preferred_url_scheme', namespace='sso-dashboard', default='https')
 
 
 class OIDCConfig(object):
     """Convienience Object for returning required vars to flask."""
     def __init__(self):
         """General object initializer."""
-        self.OIDC_DOMAIN = get_secret('sso-dashboard.oidc_domain', {'app': 'sso-dashboard'})
-        self.OIDC_CLIENT_ID = get_secret('sso-dashboard.oidc_client_id', {'app': 'sso-dashboard'})
-        self.OIDC_CLIENT_SECRET = get_secret(
-            'sso-dashboard.oidc_client_secret', {'app': 'sso-dashboard'}
+        CONFIG = get_config()
+        self.OIDC_DOMAIN = CONFIG('oidc_domain', namespace='sso-dashboard')
+        self.OIDC_CLIENT_ID = CONFIG('oidc_client_id', namespace='sso-dashboard')
+        self.OIDC_CLIENT_SECRET = CONFIG(
+            'oidc_client_secret', namespace='sso-dashboard'
         )
         self.LOGIN_URL = "https://{DOMAIN}/login?client={CLIENT_ID}".format(
             DOMAIN=self.OIDC_DOMAIN,

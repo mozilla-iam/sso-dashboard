@@ -2,7 +2,7 @@ from flask import make_response
 from flask import redirect
 from flask import request
 
-from op import yaml_loader
+from dashboard.op import yaml_loader
 
 
 class Router(object):

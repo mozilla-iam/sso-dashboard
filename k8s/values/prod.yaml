@@ -1,0 +1,7 @@
+env: prod
+environment: production
+domain_name: sso.mozilla.com
+namespace: sso-dashboard-prod
+assume_role:
+registry:
+replicas: 10

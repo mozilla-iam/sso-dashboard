@@ -5,7 +5,7 @@ from flask import request
 from flask import _request_ctx_stack
 from six.moves.urllib.request import urlopen
 from jose import jwt
-from api.exceptions import AuthError
+from dashboard.api.exceptions import AuthError
 
 logger = logging.getLogger(__name__)
 

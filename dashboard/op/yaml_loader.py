@@ -1,7 +1,6 @@
 """File based loader. Will fetch connected apps from yml file instead."""
 
 import logging
-import operator
 import os
 import yaml
 
@@ -36,13 +35,7 @@ class Application(object):
             )
 
     def _alphabetize(self):
-        try:
-            self.apps['apps'] = sorted(
-                self.apps['apps'], key=operator.itemgetter('name')
-            )
-        except Exception as e:
-            logger.info(e)
-            pass
+        self.apps['apps'].sort(key=lambda a: a['application']['name'].lower())
 
     def _find(self, name, path):
         for root, dirs, files in os.walk(path):

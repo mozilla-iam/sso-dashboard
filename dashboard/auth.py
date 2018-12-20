@@ -137,9 +137,9 @@ class tokenVerification(object):
                 </a> to setup your device, then try logging in again."
         elif error_code == 'fxarequiremfa':
             error_text = \
-                "You must setup a security device (\"MFA"", \"2FA\") for your Firefox Account in order to access \
-                this service. Please setup a <a href=\"https://accounts.firefox.com\">security device</a>, then \
-                try logging in again.\n<br/><br/>\n\
+                "Please <a href=\"https://support.mozilla.org/kb/secure-firefox-account-two-step-authentication\">\
+                secure your Firefox Account with two-step authentication</a>, \
+                then try logging in again.\n<br/><br/>\n\
                 If you have just setup your security device and you see this message, please log out of \
                  <a href=\"https://accounts.firefox.com\">Firefox Accounts</a> (click the \"Sign out\" button), then \
                  log back in."
@@ -156,11 +156,20 @@ class tokenVerification(object):
             )
         elif error_code == 'incorrectaccount':
             error_text = "Sorry, you may not login using {connection_name}.  \
-             We require login to be performed using the most secure method available for your account, which is \
+             Instead, please use \
              {preferred_connection_name}.".format(
                 connection_name=self._get_connection_name(self.jws_data.get('connection', '')),
                 preferred_connection_name=self._get_connection_name(self.preferred_connection_name)
             )
+        elif error_code == 'aai_failed':
+            error_text = "{client} requires you to setup additional security measures for your account, \
+            such as enabling multi-factor authentication (MFA) or using a safer authentication method (such as a \
+            Firefox Account login). You will not be able to login until this is \
+            done.".format(client=self.data.get('client'))
+        elif error_code == 'staffmustuseldap':
+            error_text = "Staff LDAP account holders are required to use their LDAP account to login. Please go back \
+            and type your LDAP email address to login with your Staff account, instead of using \
+            {connection_name}.".format(connection_name=self._get_connection_name(self.jws_data.get('connection', '')))
         else:
             error_text = "Oye, something went wrong."
         return error_text

@@ -15,28 +15,31 @@ from flask import session
 from flask_assets import Bundle
 from flask_assets import Environment
 from flask_talisman import Talisman
-
-import auth
-import config
-import person
-import vanity
-
-from api import idp
-from api import exceptions
-from csp import DASHBOARD_CSP
-from models.user import User
-from models.user import FakeUser
-from op.yaml_loader import Application
-from models.alert import Alert
-from models.alert import FakeAlert
-from models.alert import Rules
-from models.tile import S3Transfer
+from prometheus_client import multiprocess
+from prometheus_client.core import CollectorRegistry
 from prometheus_flask_exporter import PrometheusMetrics
+
+from dashboard import auth
+from dashboard import config
+from dashboard import get_config
+from dashboard import person
+from dashboard import vanity
+
+from dashboard.api import idp
+from dashboard.api import exceptions
+from dashboard.csp import DASHBOARD_CSP
+from dashboard.models.user import User
+from dashboard.models.user import FakeUser
+from dashboard.op.yaml_loader import Application
+from dashboard.models.alert import Alert
+from dashboard.models.alert import FakeAlert
+from dashboard.models.alert import Rules
+from dashboard.models.tile import S3Transfer
 
 
 logging.basicConfig(level=logging.INFO)
 
-with open('logging.yml', 'r') as log_config:
+with open('dashboard/logging.yml', 'r') as log_config:
     config_yml = log_config.read()
     config_dict = yaml.load(config_yml)
     logging.config.dictConfig(config_dict)
@@ -44,13 +47,18 @@ with open('logging.yml', 'r') as log_config:
 logger = logging.getLogger('sso-dashboard')
 
 app = Flask(__name__)
-
+everett_config = get_config()
 # Enable monitoring endpoint
-try:
-    if os.environ["ENABLE_DASHBOARD_MONITORING"]:
-        metrics = PrometheusMetrics(app)
-except KeyError:
-    logger.info("Prometheus exporter disabled, set ENABLE_DASHBOARD_MONITORING to enable it.")
+if everett_config('enable_prometheus_monitoring', namespace='sso-dashboard', default='False') == 'True':
+    os.environ["prometheus_multiproc_dir"] = "/tmp"
+    registry = CollectorRegistry()
+    multiprocess.MultiProcessCollector(registry, path='/tmp')
+    metrics = PrometheusMetrics(app)
+    metrics.start_http_server(
+        int(
+            everett_config('prometheus_monitoring_port', namespace='sso-dashboard', default='9000')
+        )
+    )
 
 talisman = Talisman(
     app, content_security_policy=DASHBOARD_CSP,

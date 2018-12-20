@@ -1,6 +1,7 @@
-env: staging
+env: prod
 environment: production
-domain_name: web.sso-dashboard-prod.infra.iam.mozilla.com
+domain_name: sso.mozilla.com
 namespace: sso-dashboard-prod
 assume_role:
 registry:
+replicas: 10

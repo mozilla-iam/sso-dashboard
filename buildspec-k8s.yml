@@ -1,10 +1,5 @@
 version: 0.2
 
-env:
-  variables:
-    IMAGE_NAME: sso-dashboard
-    DOCKER_REGISTRY: 320464205386.dkr.ecr.us-west-2.amazonaws.com
-
 phases:
   install:
     commands:
@@ -20,26 +15,22 @@ phases:
       - mv aws-iam-authenticator /usr/local/bin/
       - apt update && apt install -y python3-pip
       - pip3 install awscli
-      - sed -i "s/--workers=5/--workers=1/" ./ansible/roles/dashboard/files/nginx/start.sh
   pre_build:
     commands:
-      - export COMMIT_SHA=$CODEBUILD_RESOLVED_SOURCE_VERSION
-      - export DEPLOY_ENV=$(echo $CODEBUILD_WEBHOOK_TRIGGER | sed -e 's/tag\/.*-\(.*\)/\1/' | sed -e 's/branch\/master/dev/' | sed -e 's/branch\/production/prod/')
-      - if [ -z "$DEPLOY_ENV" ]; then export DEPLOY_ENV="dev"; fi
-      - export MASTER=$(if [ "$CODEBUILD_WEBHOOK_TRIGGER" = "branch/master" ]; then echo 1; fi)
-      - echo "running for ${COMMIT_SHA} in ${DEPLOY_ENV}"
-      - aws eks update-kubeconfig --name $CLUSTER_NAME
+      - export COMMIT_SHA=${CODEBUILD_RESOLVED_SOURCE_VERSION} # Commit SHA that triggered this build
+      - export DEPLOY_ENV=$(echo ${CODEBUILD_WEBHOOK_TRIGGER} | sed -e 's/branch\/master/dev/' | sed -e 's/branch\/production/prod/')
+      - if [ -z "${DEPLOY_ENV}" ]; then export DEPLOY_ENV="dev"; fi
+      - echo "Running for ${COMMIT_SHA} in ${DEPLOY_ENV}"
+      - ASSUME_ROLE_ARN=$(aws ssm get-parameter --name "/iam/sso-dashboard/${DEPLOY_ENV}/assum_role_arn" --query 'Parameter.Value' --output text)
+      - aws eks update-kubeconfig --name ${CLUSTER_NAME}
       - aws ecr get-login --region us-west-2 --no-include-email | bash
       - git clone https://github.com/ansible/ansible-container.git
       - pip install -e ./ansible-container[docker]
   build:
     commands:
-      - if [ -n "$MASTER" ]; then cd ansible && ansible-container build --with-volumes `echo $CODEBUILD_SRC_DIR`:/dashboard && cd ..; fi
-      - if [ -n "$MASTER" ]; then docker tag ansible-web $DOCKER_REPO:$COMMIT_SHA; fi
-      - if [ -n "$MASTER" ]; then docker push $DOCKER_REPO:$COMMIT_SHA; fi
-      - cd ansible && ansible-container build --with-volumes `echo $CODEBUILD_SRC_DIR`:/dashboard && cd ..
-      - docker tag ansible-web $DOCKER_REPO:$COMMIT_SHA
-      - docker push $DOCKER_REPO:$COMMIT_SHA
+      - cd ansible && ansible-container build --with-volumes `echo ${CODEBUILD_SRC_DIR}`:/dashboard && cd ..
+      - docker tag ansible-web ${DOCKER_REPO}:${COMMIT_SHA}
+      - docker push ${DOCKER_REPO}:${COMMIT_SHA}
   post_build:
     commands:
-      - helm template -f k8s/values.yaml -f k8s/values/$DEPLOY_ENV.yaml --set registry=$DOCKER_REPO,namespace=sso-dashboard-$DEPLOY_ENV,rev=$COMMIT_SHA,assume_role=$ASSUME_ROLE_ARN k8s/ | kubectl apply -f -
+      - helm template -f k8s/values.yaml -f k8s/values/${DEPLOY_ENV}.yaml --set registry=${DOCKER_REPO},namespace=sso-dashboard-${DEPLOY_ENV},rev=${COMMIT_SHA},assume_role=${ASSUME_ROLE_ARN} k8s/ | kubectl apply -f -

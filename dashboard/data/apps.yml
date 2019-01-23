@@ -852,7 +852,7 @@ apps:
       url: "https://mozdefqa1.private.mdc1.mozilla.com/"
       logo: "mozdef.png"
       authorized_users: []
-      authorized_groups: ["hris_costcenter_1420", "vpn_opsec_mozdef"]
+      authorized_groups: ["hris_costcenter_1420", "vpn_opsec_mozdef", "vpn_opsec_mozdefqa"]
       expire_access_when_unused_after: 7776000
       display: false
   - application:

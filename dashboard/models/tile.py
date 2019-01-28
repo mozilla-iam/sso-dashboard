@@ -85,7 +85,7 @@ class S3Transfer(object):
         self._update_etag(response.get('ETag'))
 
     def _touch(self):
-        fname = 'app.py'
+        fname = 'dashboard/app.py'
         fhandle = open(fname, 'a')
         try:
             os.utime(fname, None)

@@ -1,5 +1,1 @@
-__all__ = [
-    'alert',
-    'tile',
-    'user'
-]
+__all__ = ["alert", "tile", "user"]

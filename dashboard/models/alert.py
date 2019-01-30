@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 class Feedback(object):
     """Send user data back to MozDef or other subscribers via an SNS Topic"""
+
     def __init__(self, alert_dict, alert_action):
         self.alert_dict = alert_dict
         self.alert_action = alert_action
@@ -26,29 +27,28 @@ class Feedback(object):
 
     def connect_sns(self):
         if self.sns is None:
-            self.sns = boto3.client('sns', region_name='us-west-2')
+            self.sns = boto3.client("sns", region_name="us-west-2")
 
     def connect_ssm(self):
         if self.ssm is None:
-            self.ssm = boto3.client('ssm', region_name='us-west-2')
+            self.ssm = boto3.client("ssm", region_name="us-west-2")
 
     def get_sns_arn(self):
         self.connect_ssm()
 
         response = self.ssm.get_parameter(
-            Name='sso-dashboard-alerts-sns',
-            WithDecryption=False
+            Name="sso-dashboard-alerts-sns", WithDecryption=False
         )
 
-        return response.get('Parameter').get('Value')
+        return response.get("Parameter").get("Value")
 
     def _construct_alert(self):
         message = {
-            'category': 'user_feedback',
-            'details': {
-                'action': self.alert_action,  # (escalate|acknowledge|false-positive)
-                'alert_information': self.alert_dict
-            }
+            "category": "user_feedback",
+            "details": {
+                "action": self.alert_action,  # (escalate|acknowledge|false-positive)
+                "alert_information": self.alert_dict,
+            },
         }
 
         return message
@@ -60,22 +60,23 @@ class Feedback(object):
         response = self.sns.publish(
             TopicArn=self.sns_topic_arn,
             Message=json.dumps(message),
-            Subject='sso-dashboard-user-feedback'
+            Subject="sso-dashboard-user-feedback",
         )
         return response
 
 
 class Alert(object):
     """Primary object containing alert functions."""
+
     def __init__(self):
-        self.alert_table_name = 'sso-dashboard-alert'
+        self.alert_table_name = "sso-dashboard-alert"
         self.dynamodb = None
 
     def has_actions(self, alert_dict):
         """Let's the view know if it should render actions for the alert."""
 
         # Whitelist the firefox out of date alert.  It should not get buttons.
-        if self.alert_dict.get('alert_code') is not '63f675d8896f4fb2b3caa204c8c2761e':
+        if self.alert_dict.get("alert_code") is not "63f675d8896f4fb2b3caa204c8c2761e":
             return True
         else:
             return False
@@ -84,14 +85,14 @@ class Alert(object):
         """Let's the view know if it should render actions for the alert."""
 
         # Whitelist the firefox out of date alert.  It should not get buttons.
-        if self.alert_dict.get('alert_code') is not '63f675d8896f4fb2b3caa204c8c2761e':
+        if self.alert_dict.get("alert_code") is not "63f675d8896f4fb2b3caa204c8c2761e":
             return True
         else:
             return False
 
     def connect_dynamodb(self):
         if self.dynamodb is None:
-            dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
+            dynamodb = boto3.resource("dynamodb", region_name="us-west-2")
             table = dynamodb.Table(self.alert_table_name)
             self.dynamodb = table
 
@@ -106,14 +107,21 @@ class Alert(object):
         current_alerts = self.find(user_id)
 
         # If the alert is duplicate false do not create another instance of it.
-        for alert in current_alerts.get('visible_alerts'):
+        for alert in current_alerts.get("visible_alerts"):
             try:
-                if alert.get('alert_code') == alert_dict.get('alert_code') and alert_dict.get('duplicate') is False:
+                if (
+                    alert.get("alert_code") == alert_dict.get("alert_code")
+                    and alert_dict.get("duplicate") is False
+                ):
                     return None
                 else:
                     continue
             except AttributeError as e:
-                logger.error('Bad data in alerts table for user: {}, exception was {}'.format(user_id, e))
+                logger.error(
+                    "Bad data in alerts table for user: {}, exception was {}".format(
+                        user_id, e
+                    )
+                )
 
         # Else create another alert.
         return self.create(alert_dict)
@@ -126,10 +134,8 @@ class Alert(object):
         """
         self.connect_dynamodb()
 
-        alert_dict['alert_id'] = self._create_alert_id()
-        response = self.dynamodb.put_item(
-            Item=alert_dict
-        )
+        alert_dict["alert_id"] = self._create_alert_id()
+        response = self.dynamodb.put_item(Item=alert_dict)
 
         return response
 
@@ -142,10 +148,7 @@ class Alert(object):
         self.connect_dynamodb()
 
         response = self.dynamodb.delete_item(
-            Key={
-                'alert_id': alert_id,
-                'user_id': user_id
-            }
+            Key={"alert_id": alert_id, "user_id": user_id}
         )
 
         return response
@@ -159,10 +162,8 @@ class Alert(object):
         """
         self.connect_dynamodb()
 
-        alert_dict['alert_id'] = alert_id
-        response = self.dynamodb.put_item(
-            Item=alert_dict
-        )
+        alert_dict["alert_id"] = alert_id
+        response = self.dynamodb.put_item(Item=alert_dict)
 
         return response
 
@@ -177,24 +178,26 @@ class Alert(object):
             self.connect_dynamodb()
 
             response = self.dynamodb.query(
-                IndexName='user_id-index',
-                Select='ALL_ATTRIBUTES',
-                KeyConditionExpression=Key('user_id').eq(user_id)
+                IndexName="user_id-index",
+                Select="ALL_ATTRIBUTES",
+                KeyConditionExpression=Key("user_id").eq(user_id),
             )
 
-            alerts = response.get('Items', [])
+            alerts = response.get("Items", [])
 
             if response:
-                while 'LastEvaluatedKey' in response:
+                while "LastEvaluatedKey" in response:
                     response = self.dynamodb.query(
-                        IndexName='user_id-index',
-                        Select='ALL_ATTRIBUTES',
-                        KeyConditionExpression=Key('user_id').eq(user_id),
-                        ExclusiveStartKey=response['LastEvaluatedKey']
+                        IndexName="user_id-index",
+                        Select="ALL_ATTRIBUTES",
+                        KeyConditionExpression=Key("user_id").eq(user_id),
+                        ExclusiveStartKey=response["LastEvaluatedKey"],
                     )
-                    alerts.extend(response['Items'])
+                    alerts.extend(response["Items"])
         except Exception as e:
-            logger.error('Could not load alerts for user: {} due to: {}.'.format(user_id, e))
+            logger.error(
+                "Could not load alerts for user: {} due to: {}.".format(user_id, e)
+            )
             alerts = []
 
         inactive_alerts = []
@@ -204,29 +207,29 @@ class Alert(object):
 
         for alert in alerts:
             if self._alert_is_expired(alert):
-                self.destroy(alert.get('alert_id'), user_id)
-            elif alert.get('state', '') == 'acknowledge':
+                self.destroy(alert.get("alert_id"), user_id)
+            elif alert.get("state", "") == "acknowledge":
                 inactive_alerts.append(alert)
-            elif alert.get('helpfulness', '') != '':
+            elif alert.get("helpfulness", "") != "":
                 ranked_alerts.append(alert)
                 visible_alerts.append(alert)
-            elif alert.get('state', '') == 'escalate':
+            elif alert.get("state", "") == "escalate":
                 escalations.append(alert)
                 visible_alerts.append(alert)
             else:
                 visible_alerts.append(alert)
 
         return {
-            'visible_alerts': visible_alerts,
-            'ranked_alerts': ranked_alerts,
-            'escalations': escalations,
-            'inactive_alerts': inactive_alerts
+            "visible_alerts": visible_alerts,
+            "ranked_alerts": ranked_alerts,
+            "escalations": escalations,
+            "inactive_alerts": inactive_alerts,
         }
 
     def _alert_is_expired(self, alert):
         now = datetime.datetime.today()
         threshold = now - datetime.timedelta(days=7)
-        alert_time = datetime.datetime.strptime(alert.get('date'), '%Y-%m-%d')
+        alert_time = datetime.datetime.strptime(alert.get("date"), "%Y-%m-%d")
 
         if alert_time < threshold:
             return True
@@ -243,19 +246,23 @@ class Alert(object):
         medium_count = 0
         low_count = 0
 
-        for alert in alert_dict.get('visible_alerts', []):
-            if alert.get('risk') == 'high':
+        for alert in alert_dict.get("visible_alerts", []):
+            if alert.get("risk") == "high":
                 high_count = high_count + 1
-            if alert.get('risk') == 'maximum':
+            if alert.get("risk") == "maximum":
                 maximum_count = maximum_count + 1
-            if alert.get('risk') == 'medium':
+            if alert.get("risk") == "medium":
                 medium_count = medium_count + 1
-            if alert.get('risk') == 'low':
+            if alert.get("risk") == "low":
                 low_count = low_count + 1
 
         return {
-            'alerts':
-                {'maximum': maximum_count, 'high': high_count, 'medium': medium_count, 'low': low_count}
+            "alerts": {
+                "maximum": maximum_count,
+                "high": high_count,
+                "medium": medium_count,
+                "low": low_count,
+            }
         }
 
     def find_by_id(self, alert_id):
@@ -267,11 +274,11 @@ class Alert(object):
         self.connect_dynamodb()
 
         response = self.dynamodb.query(
-            KeyConditionExpression=Key('alert_id').eq(alert_id)
+            KeyConditionExpression=Key("alert_id").eq(alert_id)
         )
 
-        if response.get('Items'):
-            return response.get('Items')[0]
+        if response.get("Items"):
+            return response.get("Items")[0]
 
         return {}
 
@@ -300,56 +307,60 @@ class Rules(object):
     def alert_firefox_out_of_date(self):
         if self._firefox_out_of_date():
             alert_dict = {
-                'alert_code': '63f675d8896f4fb2b3caa204c8c2761e',
-                'user_id': self.userinfo.get('user_id'),
-                'risk': 'medium',
-                'summary': 'Your version of Firefox is older than the current stable release.',
-                'description': 'Running the latest version of your browser is key to keeping your '
-                               'computer secure and your private data private. Older browsers may '
-                               'have known security vulnerabilities that attackers can exploit to '
-                               'steal your data or load malware, which can put you and Mozilla at risk. ',
-                'date': str(datetime.date.today()),
-                'url': 'https://www.mozilla.org/firefox/',
-                'url_title': 'Download',
-                'duplicate': False
+                "alert_code": "63f675d8896f4fb2b3caa204c8c2761e",
+                "user_id": self.userinfo.get("user_id"),
+                "risk": "medium",
+                "summary": "Your version of Firefox is older than the current stable release.",
+                "description": "Running the latest version of your browser is key to keeping your "
+                "computer secure and your private data private. Older browsers may "
+                "have known security vulnerabilities that attackers can exploit to "
+                "steal your data or load malware, which can put you and Mozilla at risk. ",
+                "date": str(datetime.date.today()),
+                "url": "https://www.mozilla.org/firefox/",
+                "url_title": "Download",
+                "duplicate": False,
             }
-            self.alert.find_or_create_by(alert_dict=alert_dict, user_id=self.userinfo.get('user_id'))
+            self.alert.find_or_create_by(
+                alert_dict=alert_dict, user_id=self.userinfo.get("user_id")
+            )
 
         else:
             # Clear any active alerts for firefox out of date.
-            alerts = self.alert.find(self.userinfo.get('user_id'))
-            for alert in alerts.get('visible_alerts'):
-                if alert.get('alert_code') == '63f675d8896f4fb2b3caa204c8c2761e':
+            alerts = self.alert.find(self.userinfo.get("user_id"))
+            for alert in alerts.get("visible_alerts"):
+                if alert.get("alert_code") == "63f675d8896f4fb2b3caa204c8c2761e":
                     self.alert.destroy(
-                        alert_id=alert.get('alert_id'), user_id=alert.get('user_id')
+                        alert_id=alert.get("alert_id"), user_id=alert.get("user_id")
                     )
 
     def _firefox_info(self):
-        release_json = requests.get('https://product-details.mozilla.org/1.0/firefox_versions.json')
+        release_json = requests.get(
+            "https://product-details.mozilla.org/1.0/firefox_versions.json"
+        )
         if release_json.status_code == 200:
             return release_json.json()
         else:
             return None
 
     def _user_firefox_version(self):
-        agent = self.request.headers.get('User-Agent')
-        if agent.find('Firefox') != -1:
-            version = agent.split('Firefox/')[1]
+        agent = self.request.headers.get("User-Agent")
+        if agent.find("Firefox") != -1:
+            version = agent.split("Firefox/")[1]
         else:
             version = None
         return version
 
     def _version_to_dictionary(self, version_number):
-        version_number_list = version_number.split('.')
+        version_number_list = version_number.split(".")
         version_dict = {
-            'major_version': version_number_list[0],
-            'minor_version': version_number_list[1]
+            "major_version": version_number_list[0],
+            "minor_version": version_number_list[1],
         }
 
         if len(version_number_list) == 3:
-            version_dict['dot_version'] = version_number_list[2]
+            version_dict["dot_version"] = version_number_list[2]
         else:
-            version_dict['dot_version'] = None
+            version_dict["dot_version"] = None
 
         return version_dict
 
@@ -357,16 +368,18 @@ class Rules(object):
         ff_info = self._firefox_info()
         if self._user_firefox_version() is not None and ff_info is not None:
             u_version = self._version_to_dictionary(self._user_firefox_version())
-            f_version = self._version_to_dictionary(ff_info.get('FIREFOX_ESR'))
+            f_version = self._version_to_dictionary(ff_info.get("FIREFOX_ESR"))
 
-            if u_version.get('major_version') < f_version.get('major_version'):
+            if u_version.get("major_version") < f_version.get("major_version"):
                 return True
-            elif u_version.get('major_version') == f_version.get('major_version'):
-                if u_version.get('minor_version') < f_version.get('minor_version'):
+            elif u_version.get("major_version") == f_version.get("major_version"):
+                if u_version.get("minor_version") < f_version.get("minor_version"):
                     return True
-                elif u_version.get('minor_version') == f_version.get('minor_version') \
-                        and u_version.get('dot_version') is not None:
-                    if u_version.get('dot_version') < f_version.get('dot_version'):
+                elif (
+                    u_version.get("minor_version") == f_version.get("minor_version")
+                    and u_version.get("dot_version") is not None
+                ):
+                    if u_version.get("dot_version") < f_version.get("dot_version"):
                         return True
                 else:
                     return False
@@ -376,6 +389,7 @@ class Rules(object):
 
 class FakeAlert(object):
     """Class only fires in development mode.  Adds alerts to a given user for testing only."""
+
     def __init__(self, user_id):
         self.user_id = user_id
         self.alert = Alert()
@@ -386,18 +400,18 @@ class FakeAlert(object):
 
     def _create_fake_browser_alert(self):
         alert_dict = {
-            'alert_code': 'a63f675d8896f4fb2b3caa204c8c2761e',
-            'user_id': self.user_id,
-            'risk': 'medium',
-            'summary': 'Your version of Firefox is older than the current stable release.',
-            'description': 'Running the latest version of your browser is key to keeping your '
-                           'computer secure and your private data private. Older browsers may '
-                           'have known security vulnerabilities that attackers can exploit to '
-                           'steal your data or load malware, which can put you and Mozilla at risk. ',
-            'date': str(fake.date(pattern="%Y-%m-%d", end_datetime=None)),
-            'url': 'https://www.mozilla.org/firefox/',
-            'url_title': 'Download',
-            'duplicate': False
+            "alert_code": "a63f675d8896f4fb2b3caa204c8c2761e",
+            "user_id": self.user_id,
+            "risk": "medium",
+            "summary": "Your version of Firefox is older than the current stable release.",
+            "description": "Running the latest version of your browser is key to keeping your "
+            "computer secure and your private data private. Older browsers may "
+            "have known security vulnerabilities that attackers can exploit to "
+            "steal your data or load malware, which can put you and Mozilla at risk. ",
+            "date": str(fake.date(pattern="%Y-%m-%d", end_datetime=None)),
+            "url": "https://www.mozilla.org/firefox/",
+            "url_title": "Download",
+            "duplicate": False,
         }
         self.alert.find_or_create_by(alert_dict=alert_dict, user_id=self.user_id)
 
@@ -410,46 +424,38 @@ class FakeAlert(object):
         fake_ip = fake.ipv4()
 
         original_alert_dict = {
-            'category': 'geomodel',
-            'details': {
-                'category': 'NEWCOUNTRY',
-                'prev_locality_details': {
-                    'city': prev_fake_state,
-                    'country': prev_fake_country
+            "category": "geomodel",
+            "details": {
+                "category": "NEWCOUNTRY",
+                "prev_locality_details": {
+                    "city": prev_fake_state,
+                    "country": prev_fake_country,
                 },
-                'locality_details': {
-                    'city': fake_state,
-                    'country': fake_country
-                },
-                'principal': fake_email,
-                'source_ip': fake_ip
+                "locality_details": {"city": fake_state, "country": fake_country},
+                "principal": fake_email,
+                "source_ip": fake_ip,
             },
-            'severity': 'NOTICE',
-            'summary': '{} NEWCOUNTRY {}, {} access from {}'.format(
-                fake_email,
-                fake_state,
-                fake_country,
-                fake_ip
+            "severity": "NOTICE",
+            "summary": "{} NEWCOUNTRY {}, {} access from {}".format(
+                fake_email, fake_state, fake_country, fake_ip
             ),
-            'tags': ['geomodel'],
-            'url': 'https://www.mozilla.org/alert',
-            'utctimestamp': '{}+00:00'.format(fake.iso8601())
+            "tags": ["geomodel"],
+            "url": "https://www.mozilla.org/alert",
+            "utctimestamp": "{}+00:00".format(fake.iso8601()),
         }
 
         alert_dict = {
-            'alert_code': '416c65727447656f6d6f64656c',
-            'user_id': self.user_id,
-            'risk': 'high',
-            'summary': 'Did you recently login from {}, {} ({})?'.format(
-                fake_state,
-                fake_country,
-                fake_ip
+            "alert_code": "416c65727447656f6d6f64656c",
+            "user_id": self.user_id,
+            "risk": "high",
+            "summary": "Did you recently login from {}, {} ({})?".format(
+                fake_state, fake_country, fake_ip
             ),
-            'alert_str_json': json.dumps(original_alert_dict),
-            'description': 'This alert is created based on geo ip information about the last login of a user.',
-            'date': str(fake.date(pattern="%Y-%m-%d", end_datetime=None)),
-            'url': 'https://www.mozilla.org',
-            'url_title': 'Get Help',
-            'duplicate': False
+            "alert_str_json": json.dumps(original_alert_dict),
+            "description": "This alert is created based on geo ip information about the last login of a user.",
+            "date": str(fake.date(pattern="%Y-%m-%d", end_datetime=None)),
+            "url": "https://www.mozilla.org",
+            "url_title": "Get Help",
+            "duplicate": False,
         }
         self.alert.find_or_create_by(alert_dict=alert_dict, user_id=self.user_id)

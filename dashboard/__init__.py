@@ -13,20 +13,11 @@ from everett.manager import ConfigIniEnv
 """Mozilla Single Signon Dashboard."""
 
 __author__ = """Andrew Krug"""
-__email__ = 'akrug@mozilla.com'
-__version__ = '0.0.1'
+__email__ = "akrug@mozilla.com"
+__version__ = "0.0.1"
 
 
-__all__ = [
-    'app',
-    'auth',
-    'config',
-    'models',
-    'person',
-    's3',
-    'utils',
-    'vanity'
-]
+__all__ = ["app", "auth", "config", "models", "person", "s3", "utils", "vanity"]
 
 
 class CredstashEnv(object):
@@ -37,9 +28,9 @@ class CredstashEnv(object):
         try:
             if len(namespace) > 0:
                 secret = getSecret(
-                    name='{}.{}'.format(namespace[0], key),
-                    context={'app': 'sso-dashboard'},
-                    region="us-east-1"
+                    name="{}.{}".format(namespace[0], key),
+                    context={"app": "sso-dashboard"},
+                    region="us-east-1",
                 )
             else:
                 secret = None
@@ -55,11 +46,13 @@ class CredstashEnv(object):
 def get_config():
     return ConfigManager(
         [
-            ConfigIniEnv([
-                os.environ.get('DASHBOARD_CONFIG_INI'),
-                '~/.sso-dashboard.ini',
-                '/etc/sso-dashboard.ini'
-            ]),
-            CredstashEnv()
+            ConfigIniEnv(
+                [
+                    os.environ.get("DASHBOARD_CONFIG_INI"),
+                    "~/.sso-dashboard.ini",
+                    "/etc/sso-dashboard.ini",
+                ]
+            ),
+            CredstashEnv(),
         ]
     )

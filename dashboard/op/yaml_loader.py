@@ -28,14 +28,12 @@ class Application(object):
         return stream
 
     def _render_data(self):
-        for app in self.apps['apps']:
-            app['application']['alt_text'] = app['application']['name']
-            app['application']['name'] = self._truncate(
-                app['application']['name']
-            )
+        for app in self.apps["apps"]:
+            app["application"]["alt_text"] = app["application"]["name"]
+            app["application"]["name"] = self._truncate(app["application"]["name"])
 
     def _alphabetize(self):
-        self.apps['apps'].sort(key=lambda a: a['application']['name'].lower())
+        self.apps["apps"].sort(key=lambda a: a["application"]["name"].lower())
 
     def _find(self, name, path):
         for root, dirs, files in os.walk(path):
@@ -44,27 +42,21 @@ class Application(object):
 
     def _has_vanity(self, app):
         try:
-            app['application']['vanity_url']
+            app["application"]["vanity_url"]
             return True
         except Exception:
             return False
 
     def _truncate(self, app_name):
         """If name is longer than allowed 18 chars truncate the name."""
-        app_name = (
-            app_name[:16] + '..'
-        ) if len(app_name) > 18 else app_name
+        app_name = (app_name[:16] + "..") if len(app_name) > 18 else app_name
 
         return app_name
 
     def vanity_urls(self):
         redirects = []
-        for app in self.apps['apps']:
+        for app in self.apps["apps"]:
             if self._has_vanity(app):
-                for redirect in app['application']['vanity_url']:
-                    redirects.append(
-                        {
-                            redirect: app['application']['url']
-                        }
-                    )
+                for redirect in app["application"]["vanity_url"]:
+                    redirects.append({redirect: app["application"]["url"]})
         return redirects

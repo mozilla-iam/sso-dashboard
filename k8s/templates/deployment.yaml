@@ -25,11 +25,11 @@ spec:
           - containerPort: 8000
           resources:
             requests:
-              memory: "512Mi"
-              cpu: "250m"
-            limits:
               memory: "768Mi"
               cpu: "500m"
+            limits:
+              memory: "1024Mi"
+              cpu: "1000m"
           env:
             - name: AWS_DEFAULT_REGION
               value: us-west-2
@@ -40,4 +40,4 @@ spec:
             - name: SERVER_NAME
               value: {{ .Values.domain_name }}
             - name: DASHBOARD_GUNICORN_WORKERS
-              value: "5"
+              value: "6"

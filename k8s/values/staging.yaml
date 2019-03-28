@@ -4,4 +4,4 @@ domain_name: sso.allizom.org
 namespace: sso-dashboard-staging
 assume_role:
 registry:
-replicas: 1
+replicas: 2

@@ -2,8 +2,8 @@ DASHBOARD_CSP = {
     "default-src": ["'self'"],
     "script-src": [
         "'self'",
-        "ajax.googleapis.com",
-        "fonts.googleapis.com",
+        "https://ajax.googleapis.com",
+        "https://fonts.googleapis.com",
         "https://*.googletagmanager.com",
         "https://tagmanager.google.com",
         "https://*.google-analytics.com",
@@ -12,8 +12,8 @@ DASHBOARD_CSP = {
     ],
     "style-src": [
         "'self'",
-        "ajax.googleapis.com",
-        "fonts.googleapis.com",
+        "https://ajax.googleapis.com",
+        "https://fonts.googleapis.com",
         "https://cdn.sso.mozilla.com",
         "https://cdn.sso.allizom.org",
     ],
@@ -29,8 +29,8 @@ DASHBOARD_CSP = {
     ],
     "font-src": [
         "'self'",
-        "fonts.googleapis.com",
-        "fonts.gstatic.com",
+        "https://fonts.googleapis.com",
+        "https://fonts.gstatic.com",
         "https://cdn.sso.mozilla.com",
         "https://cdn.sso.allizom.org",
     ],

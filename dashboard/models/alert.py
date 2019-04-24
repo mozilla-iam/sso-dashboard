@@ -76,7 +76,7 @@ class Alert(object):
         """Let's the view know if it should render actions for the alert."""
 
         # Whitelist the firefox out of date alert.  It should not get buttons.
-        if self.alert_dict.get("alert_code") is not "63f675d8896f4fb2b3caa204c8c2761e":
+        if self.alert_dict.get("alert_code") != "63f675d8896f4fb2b3caa204c8c2761e":
             return True
         else:
             return False
@@ -85,7 +85,7 @@ class Alert(object):
         """Let's the view know if it should render actions for the alert."""
 
         # Whitelist the firefox out of date alert.  It should not get buttons.
-        if self.alert_dict.get("alert_code") is not "63f675d8896f4fb2b3caa204c8c2761e":
+        if self.alert_dict.get("alert_code") != "63f675d8896f4fb2b3caa204c8c2761e":
             return True
         else:
             return False
@@ -110,8 +110,7 @@ class Alert(object):
         for alert in current_alerts.get("visible_alerts"):
             try:
                 if (
-                    alert.get("alert_code") == alert_dict.get("alert_code")
-                    and alert_dict.get("duplicate") is False
+                    alert.get("alert_code") == alert_dict.get("alert_code") and alert_dict.get("duplicate") is False
                 ):
                     return None
                 else:
@@ -376,8 +375,9 @@ class Rules(object):
                 if u_version.get("minor_version") < f_version.get("minor_version"):
                     return True
                 elif (
-                    u_version.get("minor_version") == f_version.get("minor_version")
-                    and u_version.get("dot_version") is not None
+                    u_version.get(
+                        "minor_version"
+                    ) == f_version.get("minor_version") and u_version.get("dot_version") is not None
                 ):
                     if u_version.get("dot_version") < f_version.get("dot_version"):
                         return True

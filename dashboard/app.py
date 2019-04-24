@@ -52,8 +52,7 @@ everett_config = get_config()
 if (
     everett_config(
         "enable_prometheus_monitoring", namespace="sso-dashboard", default="False"
-    )
-    == "True"
+    ) == "True"
 ):
     os.environ["prometheus_multiproc_dir"] = "/tmp"
     registry = CollectorRegistry()

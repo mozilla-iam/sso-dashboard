@@ -48,6 +48,7 @@
 - name: Install credstash
   pip:
     name: credstash
+  executable: pip3.6
 
 - name: Create Flask User
   user: name=flaskapp state=present createhome=yes home=/sso-dashboard group=root

@@ -41,7 +41,7 @@ logging.basicConfig(level=logging.INFO)
 
 with open("dashboard/logging.yml", "r") as log_config:
     config_yml = log_config.read()
-    config_dict = yaml.load(config_yml)
+    config_dict = yaml.safe_load(config_yml)
     logging.config.dictConfig(config_dict)
 
 logger = logging.getLogger("sso-dashboard")

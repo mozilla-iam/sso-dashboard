@@ -5,10 +5,6 @@ from josepy.jws import JWS
 
 """Class that governs all authentication with open id connect."""
 from flask_pyoidc.flask_pyoidc import OIDCAuthentication
-from flask_pyoidc.provider_configuration import ClientMetadata
-from flask_pyoidc.provider_configuration import ProviderConfiguration
-from flask_pyoidc.provider_configuration import ProviderMetadata
-
 logger = logging.getLogger(__name__)
 
 
@@ -20,35 +16,21 @@ class OpenIDConnect(object):
         self.oidc_config = configuration
 
     def client_info(self):
-        return ClientMetadata(client_id=self.oidc_config.client_id, client_secret=self.oidc_config.client_secret)
+        client_info = {
+            'client_id': self.oidc_config.client_id,
+            'client_secret': self.oidc_config.client_secret,
+        }
+        return client_info
 
-    def provider_info(self):
-        auth_params = {'scope': ['openid', 'profile']} # specify the scope to request
-        issuer="https://{DOMAIN}/".format(DOMAIN=self.oidc_config.OIDC_DOMAIN)
-        return ProviderConfiguration(issuer=issuer, client_metadata=self.client_info(), auth_request_params=auth_params)
-
-    def auth(self, app):
-        auth = OIDCAuthentication({'default': self.provider_info()}, app)
-        return auth
-
-
-class nullOpenIDConnect(OpenIDConnect):
-    """Null object for ensuring test cov if new up fails."""
-
-    def __init__(self, configuration):
-        """None based versions of OIDC Object."""
-        self.oidc_config = None
-
-    def client_info(self):
-        return dict(client_id=None, client_secret=None)
-
-    def provider_info(self):
-        return dict(
-            issuer=None,
-            authorization_endpoint=None,
-            token_endpoint=None,
-            userinfo_endpoint=None,
+    def get_oidc(self, app):
+        extra_request_args = {'scope': ['openid', 'profile']}
+        o = OIDCAuthentication(
+            app,
+            issuer="https://{DOMAIN}".format(DOMAIN=self.oidc_config.OIDC_DOMAIN), 
+            client_registration_info=self.client_info(),
+            extra_request_args=extra_request_args,
         )
+        return o
 
 
 class tokenVerification(object):

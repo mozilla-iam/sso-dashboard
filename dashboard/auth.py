@@ -5,6 +5,9 @@ from josepy.jws import JWS
 
 """Class that governs all authentication with open id connect."""
 from flask_pyoidc.flask_pyoidc import OIDCAuthentication
+from flask_pyoidc.provider_configuration import ClientMetadata
+from flask_pyoidc.provider_configuration import ProviderConfiguration
+from flask_pyoidc.provider_configuration import ProviderMetadata
 
 logger = logging.getLogger(__name__)
 
@@ -17,27 +20,16 @@ class OpenIDConnect(object):
         self.oidc_config = configuration
 
     def client_info(self):
-        return dict(
-            client_id=self.oidc_config.client_id,
-            client_secret=self.oidc_config.client_secret,
-        )
+        return ClientMetadata(client_id=self.oidc_config.client_id, client_secret=self.oidc_config.client_secret)
 
     def provider_info(self):
-        return dict(
-            issuer="https://{DOMAIN}/".format(DOMAIN=self.oidc_config.OIDC_DOMAIN),
-            authorization_endpoint=self.oidc_config.auth_endpoint(),
-            token_endpoint=self.oidc_config.token_endpoint(),
-            userinfo_endpoint=self.oidc_config.userinfo_endpoint(),
-            auth_params = {'scope': ['openid', 'profile']}
-        )
+        auth_params = {'scope': ['openid', 'profile']} # specify the scope to request
+        issuer="https://{DOMAIN}/".format(DOMAIN=self.oidc_config.OIDC_DOMAIN)
+        return ProviderConfiguration(issuer=issuer, client_metadata=self.client_info(), auth_request_params=auth_params)
 
     def auth(self, app):
-        o = OIDCAuthentication(
-            app,
-            provider_configuration_info=self.provider_info(),
-            client_registration_info=self.client_info(),
-        )
-        return o
+        auth = OIDCAuthentication({'default': self.provider_info()}, app)
+        return auth
 
 
 class nullOpenIDConnect(OpenIDConnect):

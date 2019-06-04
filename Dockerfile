@@ -30,7 +30,6 @@ RUN mkdir -p /dashboard/static/img/logos
 RUN chmod 750 -R /dashboard
 RUN useradd -ms /bin/bash flaskapp
 RUN chown -R flaskapp:nginx /dashboard
-RUN pip3 install git+git://github.com/mozilla-iam/pyoidc.git@hotfix_unicode#egg=pyoidc
 RUN pip3 install pyOpenSSL==17.3.0 --upgrade
 RUN pip3 install cryptography==2.0 --upgrade
 ENTRYPOINT [ "dumb-init", "/usr/bin/start.sh" ]

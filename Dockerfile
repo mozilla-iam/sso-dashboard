@@ -28,7 +28,9 @@ RUN rm /sso-dashboard/static/js/gen/packed.js 2& > /dev/null
 RUN rm /sso-dashboard/data/apps.yml-etag 2& > /dev/null
 RUN mkdir -p /sso-dashboard/static/img/logos
 RUN chmod 750 -R /sso-dashboard
+RUN useradd -ms /bin/bash flaskapp
 RUN chown -R flaskapp:nginx /sso-dashboard
 RUN pip3 install git+git://github.com/mozilla-iam/pyoidc.git@hotfix_unicode#egg=pyoidc
 RUN pip3 install pyOpenSSL==17.3.0 --upgrade
-RUN pip install cryptography==2.0 --upgrade
+RUN pip3 install cryptography==2.0 --upgrade
+USER flaskapp

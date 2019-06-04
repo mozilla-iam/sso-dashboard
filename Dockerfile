@@ -3,7 +3,7 @@ FROM centos:7
 RUN yum update -y
 RUN yum install epel-release -y && yum update -y
 RUN yum install nginx python36 python36-devel python36-pip -y
-RUN curl https://github.com/Yelp/dumb-init/releases/download/v1.0.2/dumb-init_1.0.2_amd64 > /usr/bin/dumb-init
+COPY ./ansible/roles/dashboard/files/dumb-init /usr/bin/dumb-init
 RUN chmod 775 /usr/bin/dumb-init
 RUN yum install gcc \
     libffi-devel \
@@ -33,5 +33,4 @@ RUN chown -R flaskapp:nginx /sso-dashboard
 RUN pip3 install git+git://github.com/mozilla-iam/pyoidc.git@hotfix_unicode#egg=pyoidc
 RUN pip3 install pyOpenSSL==17.3.0 --upgrade
 RUN pip3 install cryptography==2.0 --upgrade
-USER flaskapp
-CMD ['/usr/bin/dumb-init', '/usr/bin/start.sh']
+ENTRYPOINT [ "dumb-init", "/usr/bin/start.sh" ]

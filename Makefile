@@ -4,7 +4,7 @@ STAGE	:= $(if $(STAGE),$(STAGE),dev)
 CLUSTER_NAME := $(if $(CLUSTER_NAME),$(CLUSTER_NAME),kubernetes-prod-us-west-2)
 
 DOCKER_REPO := 320464205386.dkr.ecr.us-west-2.amazonaws.com/sso-dashboard
-COMMIT_SHA := $(shell git rev-parse --short HEAD)
+COMMIT_SHA := $(shell git rev-parse HEAD)
 
 all:
 	@echo 'Available make targets:'

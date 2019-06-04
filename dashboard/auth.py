@@ -28,6 +28,7 @@ class OpenIDConnect(object):
             authorization_endpoint=self.oidc_config.auth_endpoint(),
             token_endpoint=self.oidc_config.token_endpoint(),
             userinfo_endpoint=self.oidc_config.userinfo_endpoint(),
+            auth_params = {'scope': ['openid', 'profile']}
         )
 
     def auth(self, app):
@@ -36,7 +37,6 @@ class OpenIDConnect(object):
             provider_configuration_info=self.provider_info(),
             client_registration_info=self.client_info(),
         )
-
         return o
 
 

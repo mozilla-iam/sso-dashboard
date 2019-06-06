@@ -37,10 +37,9 @@ class DefaultConfig(object):
     )
 
     SECRET_KEY = CONFIG("secret_key", namespace="sso-dashboard")
-    SERVER_NAME = "localhost:8000"
-#    SERVER_NAME = CONFIG(
-#        "server_name", namespace="sso-dashboard", default="localhost:8000"
-#    )
+    SERVER_NAME = CONFIG(
+        "server_name", namespace="sso-dashboard", default="localhost:8000"
+    )
 
     S3_BUCKET = CONFIG("s3_bucket", namespace="sso-dashboard")
 

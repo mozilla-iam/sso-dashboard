@@ -21,6 +21,7 @@ RUN useradd -ms /bin/bash flaskuser
 RUN mkdir /dashboard
 RUN chown -R flaskuser /dashboard
 COPY requirements.txt /dashboard/requirements.txt
+RUN pip3 install --upgrade pip
 RUN pip3 install -r /dashboard/requirements.txt
 COPY ./dashboard/ //dashboard/
 RUN rm /dashboard/static/css/gen/all.css 2& > /dev/null
@@ -32,5 +33,5 @@ RUN useradd -ms /bin/bash flaskapp
 RUN chown -R flaskapp:nginx /dashboard
 RUN pip3 install pyOpenSSL==17.3.0 --upgrade
 RUN pip3 install cryptography==2.0 --upgrade
-RUN pip3 install git+git://github.com/mozilla-iam/pyoidc.git@hotfix_unicode#egg=pyoidc
+RUN pip3 install git+git://github.com/mozilla-iam/pyoidc.git@fix_updated_at#egg=pyoidc
 ENTRYPOINT [ "dumb-init", "/usr/bin/start.sh" ]

@@ -5,6 +5,7 @@ from josepy.jws import JWS
 
 """Class that governs all authentication with open id connect."""
 from flask_pyoidc.flask_pyoidc import OIDCAuthentication
+
 logger = logging.getLogger(__name__)
 
 
@@ -16,17 +17,14 @@ class OpenIDConnect(object):
         self.oidc_config = configuration
 
     def client_info(self):
-        client_info = {
-            'client_id': self.oidc_config.client_id,
-            'client_secret': self.oidc_config.client_secret,
-        }
+        client_info = {"client_id": self.oidc_config.client_id, "client_secret": self.oidc_config.client_secret}
         return client_info
 
     def get_oidc(self, app):
-        extra_request_args = {'scope': ['openid', 'profile']}
+        extra_request_args = {"scope": ["openid", "profile"]}
         o = OIDCAuthentication(
             app,
-            issuer="https://{DOMAIN}".format(DOMAIN=self.oidc_config.OIDC_DOMAIN), 
+            issuer="https://{DOMAIN}".format(DOMAIN=self.oidc_config.OIDC_DOMAIN),
             client_registration_info=self.client_info(),
             extra_request_args=extra_request_args,
         )
@@ -68,11 +66,7 @@ class tokenVerification(object):
             "Mozilla-LDAP": "LDAP",
             "email": "passwordless email",
         }
-        return (
-            CONNECTION_NAMES[connection]
-            if connection in CONNECTION_NAMES
-            else connection
-        )
+        return CONNECTION_NAMES[connection] if connection in CONNECTION_NAMES else connection
 
     def _signed(self, jwk):
         if self.jws_obj.verify(jwk):
@@ -85,20 +79,14 @@ class tokenVerification(object):
             jwk = JWK.load(self.public_key)
             self.jws_obj = JWS.from_compact(self.jws)
             if self._signed(jwk) is False:
-                logger.warning(
-                    "The public key signature was not valid for jws {jws}".format(
-                        jws=self.jws
-                    )
-                )
+                logger.warning("The public key signature was not valid for jws {jws}".format(jws=self.jws))
                 self.jws_data = json.loads(self.jws.payload)
                 self.jws_data["code"] = "invalid"
                 return False
             else:
                 self.jws_data = json.loads(self.jws_obj.payload.decode())
                 logger.info("Loaded JWS data.")
-                self.jws_data["connection_name"] = self._get_connection_name(
-                    self.jws_data["connection"]
-                )
+                self.jws_data["connection_name"] = self._get_connection_name(self.jws_data["connection"])
                 return True
         except UnicodeDecodeError:
             return False
@@ -131,20 +119,14 @@ class tokenVerification(object):
         elif error_code == "primarynotverified":
             "You primary email address is not yet verified. Please verify your \
             email address with {connection_name} in order to use this service.".format(
-                connection_name=self._get_connection_name(
-                    self.jws_data.get("connection", "")
-                )
+                connection_name=self._get_connection_name(self.jws_data.get("connection", ""))
             )
         elif error_code == "incorrectaccount":
             error_text = "Sorry, you may not login using {connection_name}.  \
              Instead, please use \
              {preferred_connection_name}.".format(
-                connection_name=self._get_connection_name(
-                    self.jws_data.get("connection", "")
-                ),
-                preferred_connection_name=self._get_connection_name(
-                    self.preferred_connection_name
-                ),
+                connection_name=self._get_connection_name(self.jws_data.get("connection", "")),
+                preferred_connection_name=self._get_connection_name(self.preferred_connection_name),
             )
         elif error_code == "aai_failed":
             error_text = "{client} requires you to setup additional security measures for your account, \
@@ -157,9 +139,7 @@ class tokenVerification(object):
             error_text = "Staff LDAP account holders are required to use their LDAP account to login. Please go back \
             and type your LDAP email address to login with your Staff account, instead of using \
             {connection_name}.".format(
-                connection_name=self._get_connection_name(
-                    self.jws_data.get("connection", "")
-                )
+                connection_name=self._get_connection_name(self.jws_data.get("connection", ""))
             )
         else:
             error_text = "Oye, something went wrong."

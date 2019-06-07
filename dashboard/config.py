@@ -56,7 +56,6 @@ class DefaultConfig(object):
     PREFERRED_URL_SCHEME = CONFIG(
         "preferred_url_scheme", namespace="sso-dashboard", default="https"
     )
-    PREFERRED_URL_SCHEME = "http"
 
 
 class OIDCConfig(object):

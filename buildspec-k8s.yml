@@ -3,34 +3,18 @@ version: 0.2
 phases:
   install:
     commands:
-      - apt update && apt install -y apt-transport-https curl
-      - curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-      - echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
-      - apt update && apt install -y kubectl
-      - curl -O https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz
-      - tar zxf helm-v2.11.0-linux-amd64.tar.gz
-      - mv linux-amd64/helm /usr/local/bin/
-      - curl -O https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator
-      - chmod +x aws-iam-authenticator
-      - mv aws-iam-authenticator /usr/local/bin/
-      - apt update && apt install -y python3-pip
-      - pip3 install awscli
+      - make setup-codebuild
   pre_build:
     commands:
       - export COMMIT_SHA=${CODEBUILD_RESOLVED_SOURCE_VERSION} # Commit SHA that triggered this build
       - export DEPLOY_ENV=$(echo ${CODEBUILD_WEBHOOK_TRIGGER} | sed -e 's/branch\/master/dev/' | sed -e 's/branch\/production/prod/')
       - if [ -z "${DEPLOY_ENV}" ]; then export DEPLOY_ENV="dev"; fi
       - echo "Running for ${COMMIT_SHA} in ${DEPLOY_ENV}"
-      - ASSUME_ROLE_ARN=$(aws ssm get-parameter --name "/iam/sso-dashboard/${DEPLOY_ENV}/assum_role_arn" --query 'Parameter.Value' --output text)
-      - aws eks update-kubeconfig --name ${CLUSTER_NAME}
-      - aws ecr get-login --region us-west-2 --no-include-email | bash
-      - git clone https://github.com/ansible/ansible-container.git
-      - pip install -e ./ansible-container[docker]
+      - make login CLUSTER_NAME=${CLUSTER_NAME}
   build:
     commands:
-      - cd ansible && ansible-container build --with-volumes `echo ${CODEBUILD_SRC_DIR}`:/dashboard && cd ..
-      - docker tag ansible-web ${DOCKER_REPO}:${COMMIT_SHA}
-      - docker push ${DOCKER_REPO}:${COMMIT_SHA}
+      - make build COMMIT_SHA=${CODEBUILD_RESOLVED_SOURCE_VERSION}
+      - make push DOCKER_DEST=${DOCKER_REPO}:${CODEBUILD_RESOLVED_SOURCE_VERSION}
   post_build:
     commands:
-      - helm template -f k8s/values.yaml -f k8s/values/${DEPLOY_ENV}.yaml --set registry=${DOCKER_REPO},namespace=sso-dashboard-${DEPLOY_ENV},rev=${COMMIT_SHA},assume_role=${ASSUME_ROLE_ARN} k8s/ | kubectl apply -f -
+      - make release STAGE=${DEPLOY_ENV}

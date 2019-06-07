@@ -64,8 +64,7 @@ class User(object):
                 group_count = 0
 
         if (
-            "https://sso.mozilla.com/claim/groups" in self.userinfo.keys()
-            and group_count > 0
+            "https://sso.mozilla.com/claim/groups" in self.userinfo.keys() and group_count > 0
         ):
             return self.userinfo["https://sso.mozilla.com/claim/groups"]
 

@@ -19,7 +19,7 @@ from prometheus_client import multiprocess
 from prometheus_client.core import CollectorRegistry
 from prometheus_flask_exporter import PrometheusMetrics
 
-from dashboard import auth
+from dashboard import oidc_auth
 from dashboard import config
 from dashboard import get_config
 from dashboard import person
@@ -37,11 +37,11 @@ from dashboard.models.alert import Rules
 from dashboard.models.tile import S3Transfer
 
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 with open("dashboard/logging.yml", "r") as log_config:
     config_yml = log_config.read()
-    config_dict = yaml.load(config_yml)
+    config_dict = yaml.safe_load(config_yml)
     logging.config.dictConfig(config_dict)
 
 logger = logging.getLogger("sso-dashboard")
@@ -52,8 +52,7 @@ everett_config = get_config()
 if (
     everett_config(
         "enable_prometheus_monitoring", namespace="sso-dashboard", default="False"
-    )
-    == "True"
+    ) == "True"
 ):
     os.environ["prometheus_multiproc_dir"] = "/tmp"
     registry = CollectorRegistry()
@@ -85,8 +84,8 @@ assets.register("css_all", css)
 mimetypes.add_type("image/svg+xml", ".svg")
 
 oidc_config = config.OIDCConfig()
-authentication = auth.OpenIDConnect(oidc_config)
-oidc = authentication.auth(app)
+authentication = oidc_auth.OpenIDConnect(oidc_config)
+oidc = authentication.get_oidc(app)
 person_api = person.API()
 
 vanity_router = vanity.Router(app, app_list).setup()
@@ -136,7 +135,7 @@ def forbidden():
     else:
         jws = request.args.get("error").encode()
 
-    token_verifier = auth.tokenVerification(
+    token_verifier = oidc_auth.tokenVerification(
         jws=jws, public_key=app.config["FORBIDDEN_PAGE_PUBLIC_KEY"]
     )
     token_verifier.verify

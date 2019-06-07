@@ -17,46 +17,18 @@ class OpenIDConnect(object):
         self.oidc_config = configuration
 
     def client_info(self):
-        return dict(
-            client_id=self.oidc_config.client_id,
-            client_secret=self.oidc_config.client_secret,
-        )
+        client_info = {"client_id": self.oidc_config.client_id, "client_secret": self.oidc_config.client_secret}
+        return client_info
 
-    def provider_info(self):
-        return dict(
-            issuer="https://{DOMAIN}/".format(DOMAIN=self.oidc_config.OIDC_DOMAIN),
-            authorization_endpoint=self.oidc_config.auth_endpoint(),
-            token_endpoint=self.oidc_config.token_endpoint(),
-            userinfo_endpoint=self.oidc_config.userinfo_endpoint(),
-        )
-
-    def auth(self, app):
+    def get_oidc(self, app):
+        extra_request_args = {"scope": ["openid", "profile"]}
         o = OIDCAuthentication(
             app,
-            provider_configuration_info=self.provider_info(),
+            issuer="https://{DOMAIN}".format(DOMAIN=self.oidc_config.OIDC_DOMAIN),
             client_registration_info=self.client_info(),
+            extra_request_args=extra_request_args,
         )
-
         return o
-
-
-class nullOpenIDConnect(OpenIDConnect):
-    """Null object for ensuring test cov if new up fails."""
-
-    def __init__(self, configuration):
-        """None based versions of OIDC Object."""
-        self.oidc_config = None
-
-    def client_info(self):
-        return dict(client_id=None, client_secret=None)
-
-    def provider_info(self):
-        return dict(
-            issuer=None,
-            authorization_endpoint=None,
-            token_endpoint=None,
-            userinfo_endpoint=None,
-        )
 
 
 class tokenVerification(object):
@@ -94,11 +66,7 @@ class tokenVerification(object):
             "Mozilla-LDAP": "LDAP",
             "email": "passwordless email",
         }
-        return (
-            CONNECTION_NAMES[connection]
-            if connection in CONNECTION_NAMES
-            else connection
-        )
+        return CONNECTION_NAMES[connection] if connection in CONNECTION_NAMES else connection
 
     def _signed(self, jwk):
         if self.jws_obj.verify(jwk):
@@ -111,20 +79,14 @@ class tokenVerification(object):
             jwk = JWK.load(self.public_key)
             self.jws_obj = JWS.from_compact(self.jws)
             if self._signed(jwk) is False:
-                logger.warning(
-                    "The public key signature was not valid for jws {jws}".format(
-                        jws=self.jws
-                    )
-                )
+                logger.warning("The public key signature was not valid for jws {jws}".format(jws=self.jws))
                 self.jws_data = json.loads(self.jws.payload)
                 self.jws_data["code"] = "invalid"
                 return False
             else:
                 self.jws_data = json.loads(self.jws_obj.payload.decode())
                 logger.info("Loaded JWS data.")
-                self.jws_data["connection_name"] = self._get_connection_name(
-                    self.jws_data["connection"]
-                )
+                self.jws_data["connection_name"] = self._get_connection_name(self.jws_data["connection"])
                 return True
         except UnicodeDecodeError:
             return False
@@ -157,20 +119,14 @@ class tokenVerification(object):
         elif error_code == "primarynotverified":
             "You primary email address is not yet verified. Please verify your \
             email address with {connection_name} in order to use this service.".format(
-                connection_name=self._get_connection_name(
-                    self.jws_data.get("connection", "")
-                )
+                connection_name=self._get_connection_name(self.jws_data.get("connection", ""))
             )
         elif error_code == "incorrectaccount":
             error_text = "Sorry, you may not login using {connection_name}.  \
              Instead, please use \
              {preferred_connection_name}.".format(
-                connection_name=self._get_connection_name(
-                    self.jws_data.get("connection", "")
-                ),
-                preferred_connection_name=self._get_connection_name(
-                    self.preferred_connection_name
-                ),
+                connection_name=self._get_connection_name(self.jws_data.get("connection", "")),
+                preferred_connection_name=self._get_connection_name(self.preferred_connection_name),
             )
         elif error_code == "aai_failed":
             error_text = "{client} requires you to setup additional security measures for your account, \
@@ -183,9 +139,7 @@ class tokenVerification(object):
             error_text = "Staff LDAP account holders are required to use their LDAP account to login. Please go back \
             and type your LDAP email address to login with your Staff account, instead of using \
             {connection_name}.".format(
-                connection_name=self._get_connection_name(
-                    self.jws_data.get("connection", "")
-                )
+                connection_name=self._get_connection_name(self.jws_data.get("connection", ""))
             )
         else:
             error_text = "Oye, something went wrong."

@@ -23,7 +23,7 @@ class ErrorTest(object):
 
     sample_json_web_token = open(sample_jwt_file).read()
 
-    tv = auth.tokenVerification(
+    tv = oidc_auth.tokenVerification(
         public_key=public_key.encode(),
         jws=sample_json_web_token.encode()
     )

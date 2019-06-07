@@ -8,7 +8,7 @@ formatters:
 handlers:
     console:
         (): logging.StreamHandler
-        level: INFO
+        level: DEBUG
         formatter: plaintext
         stream: ext://sys.stdout
     watchtower:

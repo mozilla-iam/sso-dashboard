@@ -4,7 +4,7 @@ STAGE	:= $(if $(STAGE),$(STAGE),dev)
 CLUSTER_NAME := $(if $(CLUSTER_NAME),$(CLUSTER_NAME),kubernetes-prod-us-west-2)
 
 DOCKER_REPO := 320464205386.dkr.ecr.us-west-2.amazonaws.com/sso-dashboard
-COMMIT_SHA := $(shell git rev-parse --short HEAD)
+COMMIT_SHA := $(shell git rev-parse HEAD)
 
 all:
 	@echo 'Available make targets:'
@@ -42,3 +42,24 @@ push:
 release:
 	$(eval ASSUME_ROLE_ARN := $(shell aws ssm get-parameter --name "/iam/sso-dashboard/$(STAGE)/assum_role_arn" --query 'Parameter.Value' --output text))
 	helm template -f k8s/values.yaml -f k8s/values/$(STAGE).yaml --set registry=$(DOCKER_REPO),namespace=sso-dashboard-$(STAGE),rev=$(COMMIT_SHA),assume_role=$(ASSUME_ROLE_ARN) k8s/ | kubectl apply -f -
+
+.PHONY: run
+run:
+	$(eval ASSUME_ROLE_ARN := $(shell aws ssm get-parameter --name "/iam/sso-dashboard/$(STAGE)/assum_role_arn" --query 'Parameter.Value' --output text))
+	docker run -e \
+	ENVIRONMENT=Development \
+	-e AWS_DEFAULT_REGION=us-west-2 \
+	-e ENVIRONMENT=Development \
+	-e ASSUME_ROLE_ARN=$(ASSUME_ROLE_ARN) \
+	-e MOZILLIANS_API_URL=https://mozillians.org/api/v2/users/ \
+	-e SERVER_NAME=localhost:8000 \
+	-e DASHBOARD_GUNICORN_WORKERS=1 \
+	-e FLASK_DEBUG=True \
+	-e FLASK_APP=dashboard/app.py \
+	-e LANG=en_US.utf8 \
+	-v ~/.aws:/root/.aws \
+	-p 8000:8000 \
+	-v `pwd`/dashboard:/dashboard \
+	--entrypoint "/usr/local/bin/flask" \
+	$(DOCKER_REPO):$(COMMIT_SHA) \
+	run --host=0.0.0.0 --port 8000

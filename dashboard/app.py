@@ -100,7 +100,8 @@ def favicon():
 
 @app.route("/")
 def home():
-    return redirect("/dashboard", code=302)
+    redirect_url = "https://sso.mozilla.com/dashboard"
+    return redirect(redirect_url, code=302)
 
 
 @app.route("/csp_report", methods=["POST"])
@@ -266,7 +267,8 @@ def alert_faking():
             fake_alerts = FakeAlert(user_id=user.userinfo.get("sub"))
             fake_alerts.create_fake_alerts()
 
-    return redirect("/dashboard", code=302)
+    redirect_url = "https://sso.mozilla.com/dashboard"
+    return redirect(redirect_url, code=302)
 
 
 @app.route("/api/v1/alert", methods=["GET"])

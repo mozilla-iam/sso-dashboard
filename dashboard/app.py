@@ -100,7 +100,12 @@ def favicon():
 
 @app.route("/")
 def home():
-    redirect_url = "https://{}/dashboard".format(app.config.get("SERVER_NAME"))
+    # We only want this fix applied on production
+    if app.config.get("SERVER_NAME") == "sso.mozilla.com":
+        redirect_url = "https://{}/dashboard".format(app.config.get("SERVER_NAME"))
+    else:
+        redirect_url = "/dashboard"
+
     return redirect(redirect_url, code=302)
 
 
@@ -267,7 +272,12 @@ def alert_faking():
             fake_alerts = FakeAlert(user_id=user.userinfo.get("sub"))
             fake_alerts.create_fake_alerts()
 
-    redirect_url = "https://{}/dashboard".format(app.config.get("SERVER_NAME"))
+    # We only want this fix applied on production
+    if app.config.get("SERVER_NAME") == "sso.mozilla.com":
+        redirect_url = "https://{}/dashboard".format(app.config.get("SERVER_NAME"))
+    else:
+        redirect_url = "/dashboard"
+
     return redirect(redirect_url, code=302)
 
 

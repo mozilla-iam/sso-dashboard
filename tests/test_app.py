@@ -1,23 +1,25 @@
 import os
-import tempfile
+# import random
+# import tempfile
+# import subprocess
 import pytest
-from dashboard.app import app
 
 
-@pytest.fixture
-def client():
-    db_fd, app.config['DATABASE'] = tempfile.mkstemp()
-    app.app.config['TESTING'] = True
-    client = app.test_client()
+class TestApp(object):
+    def setup_class(self):
+        os.environ["DASHBOARD_CONFIG_INI"] = "tests/sso-dashboard.ini"
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
+        from dashboard import app
+        app.app.testing = True
+        self.app = app.app.test_client()
 
-    with app.app_context():
-        app.init_db()
+    def test_default_unauthenticated_root(self):
+        response = self.app.get("/", headers={}, follow_redirects=False)
+        assert response.status_code() == 302
+        assert response.headers['Location'] == 'http://localhost/dashboard'
 
-    yield client
-
-    os.close(db_fd)
-    os.unlink(app.config['DATABASE'])
-
-
-def test_root(client):
-    assert client.get('/').status_code() == 302
+    def test_prod_unauthenticated_root(self):
+        self.config['SERVER_NAME'] = 'sso.mozilla.com'
+        response = self.app.get("/", headers={}, follow_redirects=False)
+        assert response.status_code() == 302
+        assert response.headers['Location'] == 'https://sso.mozilla.com/dashboard'

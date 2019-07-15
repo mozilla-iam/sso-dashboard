@@ -5,8 +5,13 @@ class TestApp(object):
     def setup_class(self):
         os.environ["DASHBOARD_CONFIG_INI"] = "tests/sso-dashboard.ini"
         os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
+
         from dashboard import app
         app.app.testing = True
+
+        # TODO: Patch such that any new instances of Alert() to point to a locally mocked DynamoDB client
+        # TODO: Patch such that any new instances of S3Transfer() to point to a locally mocked S3 client
+
         self.app = app.app.test_client()
 
     def test_default_unauthenticated_root(self):

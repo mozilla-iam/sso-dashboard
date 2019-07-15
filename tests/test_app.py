@@ -1,8 +1,6 @@
 import pytest
 from dashboard.app import app
 from flask import url_for
-from flask import create_app
-from flask import client
 
 
 @pytest.fixture

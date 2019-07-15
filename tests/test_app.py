@@ -12,4 +12,4 @@ def app():
 
 def test_root(client):
     res = client.get(url_for('/'))
-    assert res.status_code == 200
+    assert res.status_code == 302

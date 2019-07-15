@@ -1,21 +1,22 @@
 import os
+import tempfile
 import pytest
 from dashboard.app import app
 
 
 @pytest.fixture
 def client():
-    db_fd, dashboard.app.app.config['DATABASE'] = tempfile.mkstemp()
-    dashboard.app.app.config['TESTING'] = True
-    client = dashboard.app.app.test_client()
+    db_fd, app.config['DATABASE'] = tempfile.mkstemp()
+    app.app.config['TESTING'] = True
+    client = app.test_client()
 
-    with dashboard.app.app_context():
-        dashboard.init_db()
+    with app.app_context():
+        app.init_db()
 
     yield client
 
     os.close(db_fd)
-    os.unlink(dashboard.app.app.config['DATABASE'])
+    os.unlink(app.config['DATABASE'])
 
 
 def test_root(client):

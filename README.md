@@ -1,4 +1,4 @@
-# Auth0 Single Sign On Dashboard
+# Mozilla-IAM Single Sign On Dashboard
 A python flask implementation of an SSO dashboard.  OIDC for authentication and message bus for alert pipelines.
 
 [![Build Status](https://travis-ci.org/mozilla-iam/sso-dashboard.svg?branch=master)](https://travis-ci.org/mozilla-iam/sso-dashboard)

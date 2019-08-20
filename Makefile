@@ -12,12 +12,9 @@ all:
 
 .PHONY: setup-codebuild
 setup-codebuild:
-	export TERM=vt102
-	sudo apt-get install -y dpkg
-	apt update && apt install -y apt-transport-https curl
-	curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-	echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
-	apt update && apt install -y kubectl
+	yum update -y
+	curl -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/darwin/amd64/kubectl
+	chmod +x kubectl
 	curl -O https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz
 	tar zxf helm-v2.11.0-linux-amd64.tar.gz
 	mv linux-amd64/helm /usr/local/bin/

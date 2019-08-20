@@ -3,7 +3,6 @@ version: 0.2
 phases:
   install:
     commands:
-      - export DEBIAN_FRONTEND=noninteractive
       - make setup-codebuild
   pre_build:
     commands:

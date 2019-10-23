@@ -62,7 +62,7 @@ pycparser==2.18
 pycryptodome==3.8.1
 pycryptodomex==3.4.7
 pyjwkest==1.4.0
-pyOpenSSL==17.3.0
+pyOpenSSL==17.5.0
 pytest==3.3.1
 pytest-flask==0.10.0
 pytest-forked==0.2

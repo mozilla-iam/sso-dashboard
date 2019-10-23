@@ -2097,7 +2097,7 @@ apps:
     authorized_groups:
     - hris_costcenter_1420
     - vpn_opsec_mozdef
-    - team_moc
+    - vpn_opsec_mozdefqa
     - team_secops
     authorized_users: []
     client_id: lGsSlYNdiV6f5tF05pWN3EbQoDPHx44k

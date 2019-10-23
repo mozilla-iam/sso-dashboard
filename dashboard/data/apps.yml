@@ -1219,7 +1219,6 @@ apps:
     authorized_groups:
     - hris_costcenter_1420
     - vpn_opsec_mozdef
-    - team_moc
     - team_secops
     authorized_users: []
     client_id: PSCl3uIPg5IT2GaiOcAIJprYK7iBK32r
@@ -1233,6 +1232,7 @@ apps:
     authorized_groups:
     - hris_costcenter_1420
     - vpn_opsec_mozdef
+    - vpn_opsec_mozdefqa
     authorized_users: []
     client_id: Dj0vncaBmaHn1zxzRc1cuFQIBxD0YSGp
     display: false
@@ -1240,7 +1240,7 @@ apps:
     logo: mozdef.png
     name: Mozilla Defense Platform QA
     op: auth0
-    url: https://mozdefqa1.private.mdc1.mozilla.com/
+    url: https://qa1.mozdef.infosec.mozilla.org/
 - application:
     authorized_groups:
     - hris_costcenter_1420
@@ -2097,7 +2097,7 @@ apps:
     authorized_groups:
     - hris_costcenter_1420
     - vpn_opsec_mozdef
-    - team_moc
+    - vpn_opsec_mozdefqa
     - team_secops
     authorized_users: []
     client_id: lGsSlYNdiV6f5tF05pWN3EbQoDPHx44k

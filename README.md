@@ -3,6 +3,9 @@ A python flask implementation of an SSO dashboard.  OIDC for authentication and 
 
 [![Build Status](https://travis-ci.org/mozilla-iam/sso-dashboard.svg?branch=master)](https://travis-ci.org/mozilla-iam/sso-dashboard)
 
+!['architecture.png'](docs/images/architecture.png)
+> High Level Architecture Diagram of the Dashboard and related services.  Diagram source is available in [source available here](docs/architecture.mermaid).
+
 !['dashboard.png'](docs/images/dashboard.png)
 > Above is the dashboard prototype as it exists today. This screenshot will be updated as the dashboard UI evolves.
 
@@ -76,3 +79,7 @@ to the fact they are in a responsive grid.
 1. Logos should be uploaded to s3 bucket
 2. Logos should 120px by 40px ( or same aspect )
 3. Logos should be .png
+
+# Development Guide
+
+For more information on developing features for the sso-dashboard see the [development guide](docs/development.md).

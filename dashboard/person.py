@@ -1,6 +1,8 @@
 import http.client
 import json
-import urllib
+# Commenting out in since CISv1 is no longer up and running
+# todo: this will need to get modified to reach out to person api v2
+# import urllib
 
 from dashboard import config
 
@@ -34,17 +36,20 @@ class API(object):
         return json.loads(data.decode("utf-8"))
 
     def get_userinfo(self, auth_zero_id):
-        user_id = urllib.parse.quote(auth_zero_id)
-        conn = http.client.HTTPSConnection("{}".format(self.person_api_url))
-        token = "Bearer {}".format(self.get_bearer().get("access_token"))
+        return
+        # # Commenting out in since CISv1 is no longer up and running
+        # # todo: this will need to get modified to reach out to person api v2
+        # user_id = urllib.parse.quote(auth_zero_id)
+        # conn = http.client.HTTPSConnection("{}".format(self.person_api_url))
+        # token = "Bearer {}".format(self.get_bearer().get("access_token"))
 
-        headers = {"authorization": token}
+        # headers = {"authorization": token}
 
-        conn.request("GET", "/v1/profile/{}".format(user_id), headers=headers)
+        # conn.request("GET", "/v1/profile/{}".format(user_id), headers=headers)
 
-        res = conn.getresponse()
-        data = res.read()
-        return json.loads(json.loads(data.decode("utf-8")).get("body"))
+        # res = conn.getresponse()
+        # data = res.read()
+        # return json.loads(json.loads(data.decode("utf-8")).get("body"))
 
     def _get_url(self):
         if self.config.OIDC_DOMAIN == "auth.mozilla.auth0.com":

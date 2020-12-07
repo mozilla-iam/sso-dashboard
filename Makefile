@@ -12,18 +12,14 @@ all:
 
 .PHONY: setup-codebuild
 setup-codebuild:
-	apt update && apt install -y apt-transport-https curl
-	curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-	echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
-	apt update && apt install -y kubectl
+	curl -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/darwin/amd64/kubectl
+	chmod +x kubectl
 	curl -O https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz
 	tar zxf helm-v2.11.0-linux-amd64.tar.gz
 	mv linux-amd64/helm /usr/local/bin/
 	curl -O https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator
 	chmod +x aws-iam-authenticator
 	mv aws-iam-authenticator /usr/local/bin/
-	apt update && apt install -y python3-pip
-	pip3 install awscli
 
 .PHONY: login
 login:

@@ -34,7 +34,7 @@ greenlet==0.4.15
 gunicorn==19.9.0
 idna==2.6
 itsdangerous==0.24
-Jinja2==2.10
+Jinja2==2.10.1
 jmespath==0.9.3
 josepy==1.0.1
 jsmin==2.2.2

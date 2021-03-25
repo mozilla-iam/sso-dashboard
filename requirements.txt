@@ -71,7 +71,7 @@ pytest-xdist==1.20.1
 python-dateutil==2.6.1
 python-jose==2.0.2
 pytz==2019.1
-PyYAML==5.1
+PyYAML==5.4
 requests==2.18.4
 responses==0.10.6
 rsa==3.4.2

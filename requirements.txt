@@ -74,7 +74,7 @@ pytz==2019.1
 PyYAML==5.1
 requests==2.18.4
 responses==0.10.6
-rsa==3.4.2
+rsa==4.7
 s3transfer==0.1.12
 six==1.11.0
 text-unidecode==1.1

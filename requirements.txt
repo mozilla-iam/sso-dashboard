@@ -78,7 +78,7 @@ rsa==3.4.2
 s3transfer==0.1.12
 six==1.11.0
 text-unidecode==1.1
-urllib3==1.22
+urllib3==1.26.5
 watchdog==0.8.3
 watchtower==0.5.2
 webassets==0.12.1

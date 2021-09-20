@@ -66,7 +66,7 @@ if (
         )
     )
 
-talisman = Talisman(app, content_security_policy=DASHBOARD_CSP, force_https=False)
+talisman = Talisman(app, content_security_policy=DASHBOARD_CSP, force_https=True)
 
 app.config.from_object(config.Config(app).settings)
 app_list = S3Transfer(config.Config(app).settings)

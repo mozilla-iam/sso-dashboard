@@ -23,7 +23,7 @@ setup-codebuild:
 
 .PHONY: login
 login:
-	aws eks update-kubeconfig --name $(CLUSTER_NAME)
+	aws --region us-west-2 eks update-kubeconfig --name $(CLUSTER_NAME)
 	aws ecr get-login --region us-west-2 --no-include-email | bash
 
 .PHONY: build
@@ -36,12 +36,12 @@ push:
 
 .PHONY: release
 release:
-	$(eval ASSUME_ROLE_ARN := $(shell aws ssm get-parameter --name "/iam/sso-dashboard/$(STAGE)/assum_role_arn" --query 'Parameter.Value' --output text))
+	$(eval ASSUME_ROLE_ARN := $(shell aws --region us-west-2 ssm get-parameter --name "/iam/sso-dashboard/$(STAGE)/assum_role_arn" --query 'Parameter.Value' --output text))
 	helm template -f k8s/values.yaml -f k8s/values/$(STAGE).yaml --set registry=$(DOCKER_REPO),namespace=sso-dashboard-$(STAGE),rev=$(COMMIT_SHA),assume_role=$(ASSUME_ROLE_ARN) k8s/ | kubectl apply -f -
 
 .PHONY: run
 run:
-	$(eval ASSUME_ROLE_ARN := $(shell aws ssm get-parameter --name "/iam/sso-dashboard/$(STAGE)/assum_role_arn" --query 'Parameter.Value' --output text))
+	$(eval ASSUME_ROLE_ARN := $(shell aws --region us-west-2 ssm get-parameter --name "/iam/sso-dashboard/$(STAGE)/assum_role_arn" --query 'Parameter.Value' --output text))
 	docker run -e \
 	ENVIRONMENT=Development \
 	-e AWS_DEFAULT_REGION=us-west-2 \

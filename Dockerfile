@@ -16,6 +16,7 @@ COPY ./ansible/roles/dashboard/files/sso-dashboard.ini /etc/dashboard.ini
 RUN chmod 775 /etc/dashboard.ini
 RUN yum install git -y
 RUN yum install rubygem-sass -y
+RUN pip3 install --upgrade setuptools-rust pip
 RUN pip3 install credstash
 RUN useradd -ms /bin/bash flaskuser
 RUN mkdir /dashboard

@@ -55,7 +55,7 @@ pluggy==0.6.0
 prometheus-client==0.3.1
 prometheus-flask-exporter==0.2.2
 psutil==5.6.1
-py==1.5.2
+py==1.10.0
 pyaml==19.4.1
 pyasn1==0.4.3
 pycparser==2.18

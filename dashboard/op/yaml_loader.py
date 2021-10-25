@@ -30,7 +30,6 @@ class Application(object):
     def _render_data(self):
         for app in self.apps["apps"]:
             app["application"]["alt_text"] = app["application"]["name"]
-            app["application"]["name"] = self._truncate(app["application"]["name"])
 
     def _alphabetize(self):
         self.apps["apps"].sort(key=lambda a: a["application"]["name"].lower())
@@ -46,12 +45,6 @@ class Application(object):
             return True
         except Exception:
             return False
-
-    def _truncate(self, app_name):
-        """If name is longer than allowed 18 chars truncate the name."""
-        app_name = (app_name[:16] + "..") if len(app_name) > 18 else app_name
-
-        return app_name
 
     def vanity_urls(self):
         redirects = []

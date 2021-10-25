@@ -92,16 +92,17 @@ vanity_router = vanity.Router(app, app_list).setup()
 
 api = idp.AuthorizeAPI(app, oidc_config)
 
-
 @app.route("/favicon.ico")
 def favicon():
     return send_from_directory(os.path.join(app.root_path, "static/img"), "favicon.ico")
 
-
 @app.route("/")
 def home():
-    return redirect("/dashboard", code=302)
+    if app.env == "development":
+        return redirect("dashboard", code=302)
 
+    url = request.url.replace("http://", "https://", 1)
+    return redirect(url + "dashboard", code=302)
 
 @app.route("/csp_report", methods=["POST"])
 def csp_report():

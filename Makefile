@@ -14,8 +14,8 @@ all:
 setup-codebuild:
 	curl -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/darwin/amd64/kubectl
 	chmod +x kubectl
-	curl -O https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz
-	tar zxf helm-v2.11.0-linux-amd64.tar.gz
+	curl -O https://get.helm.sh/helm-v3.7.0-linux-amd64.tar.gz
+	tar zxf helm-v3.7.0-linux-amd64.tar.gz
 	mv linux-amd64/helm /usr/local/bin/
 	curl -O https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator
 	chmod +x aws-iam-authenticator
@@ -23,7 +23,7 @@ setup-codebuild:
 
 .PHONY: login
 login:
-	aws eks update-kubeconfig --name $(CLUSTER_NAME)
+	aws --region us-west-2 eks update-kubeconfig --name $(CLUSTER_NAME)
 	aws ecr get-login --region us-west-2 --no-include-email | bash
 
 .PHONY: build
@@ -36,12 +36,12 @@ push:
 
 .PHONY: release
 release:
-	$(eval ASSUME_ROLE_ARN := $(shell aws ssm get-parameter --name "/iam/sso-dashboard/$(STAGE)/assum_role_arn" --query 'Parameter.Value' --output text))
+	$(eval ASSUME_ROLE_ARN := $(shell aws --region us-west-2 ssm get-parameter --name "/iam/sso-dashboard/$(STAGE)/assum_role_arn" --query 'Parameter.Value' --output text))
 	helm template -f k8s/values.yaml -f k8s/values/$(STAGE).yaml --set registry=$(DOCKER_REPO),namespace=sso-dashboard-$(STAGE),rev=$(COMMIT_SHA),assume_role=$(ASSUME_ROLE_ARN) k8s/ | kubectl apply -f -
 
 .PHONY: run
 run: login
-	$(eval ASSUME_ROLE_ARN := $(shell aws ssm get-parameter --name "/iam/sso-dashboard/$(STAGE)/assum_role_arn" --query 'Parameter.Value' --output text))
+	$(eval ASSUME_ROLE_ARN := $(shell aws --region us-west-2 ssm get-parameter --name "/iam/sso-dashboard/$(STAGE)/assum_role_arn" --query 'Parameter.Value' --output text))
 	docker run -e \
 	ENVIRONMENT=Development \
 	-e AWS_DEFAULT_REGION=us-west-2 \
@@ -62,7 +62,6 @@ run: login
 	--entrypoint "/usr/local/bin/flask" \
 	$(DOCKER_REPO):$(COMMIT_SHA) \
 	run --host=0.0.0.0 --port 8000
-
 .PHONY: test
 test: build
 	$(eval ASSUME_ROLE_ARN := $(shell aws ssm get-parameter --name "/iam/sso-dashboard/$(STAGE)/assum_role_arn" --query 'Parameter.Value' --output text))

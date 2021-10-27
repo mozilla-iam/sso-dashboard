@@ -1,3 +1,8 @@
+:root {
+    --logo-width: 130px;
+    --logo-padding: 10px;
+    --logo-border: 1px;
+}
 @font-face {
     font-family: 'Open Sans';
     font-weight: normal;
@@ -526,18 +531,18 @@ body {
 
             .app-logo {
                 background-color: white;
-                border: 1px solid $lightgray;
-                padding: 10px;
-                width: 130px;
-                height: 130px;
+                border: var(--logo-border) solid $lightgray;
+                padding: var(--logo-padding);
+                width: var(--logo-width);
+                height: var(--logo-width);
                 display: table-cell;
                 vertical-align: middle;
 
                 img {
                     display: block;
                     margin: 0 auto;
-                    max-width: 120px;
-                    max-height: 120px;
+                    max-width: calc(var(--logo-width) - 10px);
+                    max-height: calc(var(--logo-width) - 10px);
                 }
 
                 &.yellow-border {
@@ -548,6 +553,10 @@ body {
             .app-name {
                 color: black;
                 margin: 10px 0;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                width: calc(var(--logo-width) + (var(--logo-padding) * 2) + (var(--logo-border) * 2));
             }
         }
     }

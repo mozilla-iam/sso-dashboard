@@ -62,6 +62,7 @@ run: login
 	--entrypoint "/usr/local/bin/flask" \
 	$(DOCKER_REPO):$(COMMIT_SHA) \
 	run --host=0.0.0.0 --port 8000
+
 .PHONY: test
 test: build
 	$(eval ASSUME_ROLE_ARN := $(shell aws ssm get-parameter --name "/iam/sso-dashboard/$(STAGE)/assume_role_arn" --query 'Parameter.Value' --output text))

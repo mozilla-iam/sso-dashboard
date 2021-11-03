@@ -23,6 +23,9 @@ setup-codebuild:
 
 .PHONY: login
 login:
+	$(eval DOCKER_ID := $(shell aws --region us-west-2 ssm get-parameter --name "/iam/sso-dashboard/$(STAGE)/docker_user_id" --query 'Parameter.Value' --output text))
+	$(eval DOCKER_ACCESS_TOKEN := $(shell aws --region us-west-2 ssm get-parameter --name "/iam/sso-dashboard/$(STAGE)/docker_access_token" --query 'Parameter.Value' --output text))
+	echo $(DOCKER_ACCESS_TOKEN) | docker login --username $(DOCKER_ID) --password-stdin
 	aws --region us-west-2 eks update-kubeconfig --name $(CLUSTER_NAME)
 	aws ecr get-login --region us-west-2 --no-include-email | bash
 

@@ -20,6 +20,7 @@ spec:
       - path: /
         pathType: ImplementationSpecific
         backend:
-          name: {{ .Values.name }}
-          port:
-            number: 8000
+          service:
+            name: {{ .Values.name }}
+            port:
+              number: 8000

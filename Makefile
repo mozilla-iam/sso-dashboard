@@ -12,7 +12,7 @@ all:
 
 .PHONY: setup-codebuild
 setup-codebuild:
-	curl -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/darwin/amd64/kubectl
+	curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.24.7/2022-10-31/bin/linux/amd64/kubectl
 	chmod +x kubectl
 	curl -O https://get.helm.sh/helm-v3.7.0-linux-amd64.tar.gz
 	tar zxf helm-v3.7.0-linux-amd64.tar.gz

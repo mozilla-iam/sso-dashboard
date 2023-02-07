@@ -15,7 +15,7 @@ click==6.7
 configobj==5.0.6
 cookies==2.2.1
 credstash==1.14.0
-cryptography==2.0
+cryptography==39.0.1
 cssmin==0.2.0
 docker==3.7.2
 docker-pycreds==0.4.0

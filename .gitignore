@@ -9,6 +9,7 @@ dashboard/static/css/gen/
 dashboard/static/.webassets-cache/
 dashboard/static/img/logos/*
 virtualenv.egg-info
+dashboard.egg-info
 bin
 man
 include

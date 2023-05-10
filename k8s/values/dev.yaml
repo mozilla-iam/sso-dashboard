@@ -1,7 +1,0 @@
-env: dev
-environment: Development
-domain_name: sso.allizom.org
-namespace: sso-dashboard-dev
-assume_role:
-registry:
-replicas: 1

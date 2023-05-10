@@ -1,7 +1,0 @@
-env: staging
-environment: Development
-domain_name: sso.allizom.org
-namespace: sso-dashboard-staging
-assume_role:
-registry:
-replicas: 2

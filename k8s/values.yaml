@@ -1,5 +1,0 @@
-name: sso-dashboard
-namespace: sso-dashboard-dev
-rev: latest
-assume_role:
-registry:

@@ -12,12 +12,10 @@ from flask import render_template
 from flask import request
 from flask import send_from_directory
 from flask import session
+
 from flask_assets import Bundle
 from flask_assets import Environment
 from flask_talisman import Talisman
-from prometheus_client import multiprocess
-from prometheus_client.core import CollectorRegistry
-from prometheus_flask_exporter import PrometheusMetrics
 
 from dashboard import oidc_auth
 from dashboard import config
@@ -48,23 +46,6 @@ logger = logging.getLogger("sso-dashboard")
 
 app = Flask(__name__)
 everett_config = get_config()
-# Enable monitoring endpoint
-if (
-    everett_config(
-        "enable_prometheus_monitoring", namespace="sso-dashboard", default="False"
-    ) == "True"
-):
-    os.environ["prometheus_multiproc_dir"] = "/tmp"
-    registry = CollectorRegistry()
-    multiprocess.MultiProcessCollector(registry, path="/tmp")
-    metrics = PrometheusMetrics(app)
-    metrics.start_http_server(
-        int(
-            everett_config(
-                "prometheus_monitoring_port", namespace="sso-dashboard", default="9000"
-            )
-        )
-    )
 
 talisman = Talisman(app, content_security_policy=DASHBOARD_CSP, force_https=False)
 

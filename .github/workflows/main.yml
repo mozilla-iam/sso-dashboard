@@ -3,8 +3,7 @@ name: Build SSO Dashboard and create a release in Cloud Deploy
 on:
   push:
     branches:
-      - $default_branch
-      - workflow_dispatch
+      - 'revamp'
 
 
 jobs:

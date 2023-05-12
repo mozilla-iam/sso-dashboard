@@ -2,6 +2,7 @@ import os
 
 from everett.manager import ConfigManager
 from everett.manager import ConfigIniEnv
+from everett.manager import ConfigOSEnv
 
 
 # -*- coding: utf-8 -*-
@@ -27,5 +28,6 @@ def get_config():
                     "/etc/sso-dashboard.ini",
                 ]
             ),
+            ConfigOSEnv(),
         ]
     )

@@ -11,20 +11,12 @@ handlers:
         level: DEBUG
         formatter: plaintext
         stream: ext://sys.stdout
-    watchtower:
-        formatter: json
-        level: INFO
-        (): watchtower.CloudWatchLogHandler
-        log_group: sso-dashboard
-        stream_name:  flask
-        send_interval: 1
-        create_log_group: False
 loggers:
     sso-dashboard:
-        handlers: [console, watchtower]
+        handlers: [console]
     __main__:
-        handlers: [console, watchtower]
+        handlers: [console]
     root:
-        handlers: [console, watchtower]
+        handlers: [console]
     requests:
-        handlers: [console, watchtower]
+        handlers: [console]

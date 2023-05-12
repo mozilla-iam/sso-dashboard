@@ -5,6 +5,8 @@ on:
     branches:
       - 'revamp'
 
+env:
+  GAR_LOCATION: us-east1
 
 jobs:
   deploy:
@@ -23,3 +25,7 @@ jobs:
         with:
           workload_identity_provider: '${{ secrets.WIF_PROVIDER }}'
           service_account: '${{ secrets.WIF_SERVICE_ACCOUNT }}' 
+
+      - name: 'Docker auth'
+        run: |-
+          gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev

@@ -10,7 +10,6 @@ click==8.0.4
 configobj==5.0.8
 cookies==2.2.1
 cryptography==40.0.2
--e git+ssh://git@github.com/mozilla-iam/sso-dashboard.git@4520883e89ce20712266fb064e4b91c7bf7a0d39#egg=dashboard
 dataclasses==0.8
 defusedxml==0.7.1
 docker==5.0.3

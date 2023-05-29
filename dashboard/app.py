@@ -126,7 +126,7 @@ def forbidden():
 
 
 @app.route("/logout")
-@oidc.oidc_logout
+#@oidc.oidc_logout
 def logout():
     """
     Redirect to new feature in NLX that destroys autologin preferences.

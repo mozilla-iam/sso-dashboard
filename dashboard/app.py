@@ -156,7 +156,7 @@ def signout():
 
 
 @app.route("/dashboard")
-@oidc.oidc_auth
+@oidc.oidc_auth('default')
 def dashboard():
     """Primary dashboard the users will interact with."""
     logger.info(
@@ -207,20 +207,20 @@ def styleguide_dashboard():
 
 
 @app.route("/styleguide/notifications")
-@oidc.oidc_auth
+@oidc.oidc_auth('default')
 def styleguide_notifications():
     user = FakeUser(config.Config(app).settings)
     return render_template("notifications.html", config=app.config, user=user)
 
 
 @app.route("/notifications")
-@oidc.oidc_auth
+@oidc.oidc_auth('default')
 def notifications():
     user = User(session, config.Config(app).settings)
     return render_template("notifications.html", config=app.config, user=user)
 
 
-@oidc.oidc_auth
+@oidc.oidc_auth('default')
 @app.route("/alert/<alert_id>", methods=["POST"])
 def alert_operation(alert_id):
     if request.method == "POST":
@@ -238,7 +238,7 @@ def alert_operation(alert_id):
             return "500"
 
 
-@oidc.oidc_auth
+@oidc.oidc_auth('default')
 @app.route("/alert/fake", methods=["GET"])
 def alert_faking():
     if request.method == "GET":
@@ -266,7 +266,7 @@ def alert_api():
 
 
 @app.route("/info")
-@oidc.oidc_auth
+@oidc.oidc_auth('default')
 def info():
     """Return the JSONified user session for debugging."""
     return jsonify(

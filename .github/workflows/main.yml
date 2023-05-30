@@ -30,8 +30,7 @@ jobs:
           service_account: '${{ secrets.WIF_SERVICE_ACCOUNT }}' 
 
       - name: 'Docker auth'
-        run: |-
-          gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
+        run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
 
       - name: 'Build and push container'
         run: |-
@@ -52,3 +51,13 @@ jobs:
       - name: 'Create release name'
         run: |-
           echo "RELEASE_NAME=${{ env.APP }}-${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}" >> ${GITHUB_ENV}
+
+      - name: 'Create Cloud Deploy release'
+        uses: 'google-github-actions/create-cloud-deploy-release@v0'
+        with:
+          delivery_pipeline: '${{ env.APP }}'
+          name: '${{ env.RELEASE_NAME }}'
+          region: '${{ env.REGION }}'
+          description: '${{ env.GITHUB_COMMIT_MSG }}'
+          skaffold_file: 'config/skaffold.yaml'
+          images: 'app=${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}'

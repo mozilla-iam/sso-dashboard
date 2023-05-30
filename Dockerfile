@@ -1,7 +1,8 @@
 FROM python:3.7-bullseye
 
-RUN apt update && apt install -y ruby-sass \
+RUN apt update && apt install -y nodejs npm \
     && rm -rf /var/lib/apt/lists/*
+RUN npm install -g sass
 COPY ./files/start.sh /start.sh
 RUN chmod 755 /start.sh
 RUN pip3 install --upgrade pip

@@ -15,15 +15,15 @@
 apiVersion: skaffold/v3alpha1
 kind: Config
 metadata:
-  name: 'app'
+  name: 'sso-dashboard'
 deploy:
   cloudrun: {}
 profiles:
   - name: 'staging'
     manifests:
       rawYaml:
-        - 'app-staging.yaml'
+        - 'sso-dashboard-staging.yaml'
   - name: 'prod'
     manifests:
       rawYaml:
-        - 'app-prod.yaml'
+        - 'sso-dashboard-prod.yaml'

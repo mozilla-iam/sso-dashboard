@@ -15,7 +15,7 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: 'app-staging'
+  name: 'sso-dashboard-prod'
 spec:
   template:
     metadata:
@@ -23,8 +23,8 @@ spec:
         autoscaling.knative.dev/maxScale: '1'
     spec:
       containers:
-      - name: 'app'
-        image: 'app'
+      - name: 'sso-dashboard'
+        image: 'sso-dashboard'
         env:
           - name: 'TARGET'
-            value: 'Staging'
+            value: 'Prod'

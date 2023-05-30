@@ -15,8 +15,8 @@
 apiVersion: deploy.cloud.google.com/v1
 kind: DeliveryPipeline
 metadata:
-  name: 'app'
-description: 'Deployment pipeline for demo app'
+  name: 'sso-dashboard'
+description: 'Deployment pipeline for sso-dashboard'
 serialPipeline:
   stages:
     - targetId: 'staging'

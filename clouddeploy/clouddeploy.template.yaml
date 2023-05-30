@@ -31,6 +31,8 @@ metadata:
 description: 'Staging target'
 run:
   location: 'projects/${PROJECT_ID}/locations/${REGION}'
+executionConfigs:
+  serviceAccount: sso-dashboard-staging@iam-auth0.iam.gserviceaccount.com 
 ---
 apiVersion: deploy.cloud.google.com/v1
 kind: Target
@@ -39,3 +41,5 @@ metadata:
 description: 'Production target'
 run:
   location: 'projects/${PROJECT_ID}/locations/${REGION}'
+executionConfigs:
+  serviceAccount: sso-dashboard-prod@iam-auth0.iam.gserviceaccount.com 

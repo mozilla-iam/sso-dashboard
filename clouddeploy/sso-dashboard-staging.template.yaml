@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: 'sso-dashboard'
-        image: 'sso-dashboard'
+        image: 'app'
         env:
           - name: 'TARGET'
             value: 'Staging'

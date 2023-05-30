@@ -25,6 +25,7 @@ spec:
       containers:
       - name: 'sso-dashboard'
         image: 'app'
+        serviceAccountName: sso-dashboard-prod@iam-auth0.iam.gserviceaccount.com
         command:
           - gunicorn
           - 'dashboard.app:app'

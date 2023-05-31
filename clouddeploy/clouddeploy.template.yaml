@@ -33,7 +33,6 @@ run:
   location: 'projects/${PROJECT_ID}/locations/${REGION}'
 executionConfigs:
 - usages:
-  - RENDER
   - DEPLOY
   serviceAccount: sso-dashboard-staging@iam-auth0.iam.gserviceaccount.com 
 ---
@@ -46,6 +45,5 @@ run:
   location: 'projects/${PROJECT_ID}/locations/${REGION}'
 executionConfigs:
 - usages:
-  - RENDER
   - DEPLOY
   serviceAccount: sso-dashboard-prod@iam-auth0.iam.gserviceaccount.com 

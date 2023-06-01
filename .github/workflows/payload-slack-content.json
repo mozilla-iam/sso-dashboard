@@ -15,7 +15,14 @@
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": "Deployment status: ${{ job.status }}"
+				"text": "Deployment status: {{ env.DEPLOY_STATUS }}"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "Build name: {{ env.RELEASE_NAME }}"
 			}
 		},
 		{
@@ -32,7 +39,7 @@
 					"emoji": true
 				},
 				"value": "action_url",
-				"url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+				"url": "https://github.com/{{ github.repository }}/actions/runs/{{ github.run_id }}",
 				"action_id": "button-action"
 			}
 		},
@@ -48,7 +55,7 @@
 					{
 						"text": {
 							"type": "plain_text",
-							"text": "SHA: ${{ github.sha }}",
+							"text": "SHA: {{ github.sha }}",
 							"emoji": true
 						},
 						"value": "value-0"

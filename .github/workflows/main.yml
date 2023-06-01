@@ -100,7 +100,6 @@ jobs:
           update-ts: ${{ steps.slack.outputs.ts }}
           payload: |
             {
-              "text": "Deployment started (In Progress)",
               "attachments": [
                 {
                   "color": "dbab09",

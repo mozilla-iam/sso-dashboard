@@ -56,25 +56,14 @@ jobs:
         uses: slackapi/slack-github-action@v1.24.0
         with:
           update-ts: ${{ steps.slack.outputs.ts }}
-          payload: |
-            {
-              "text": "Docker Build started (In Progress)",
-              "attachments": [
-                {
-                  "color": "dbab09",
-                  "fields": [
-                    {
-                      "title": "Status",
-                      "short": true,
-                      "value": "In Progress"
-                    }
-                  ]
-                }
-              ]
-            }
+          payload-file-path: ".github/workflows/payload-slack-status.json"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+          STATUS_COLOR: dbab09
+          STATUS_TITLE: Docker Build
+          STATUS_VALUE: In Progress
+
 
 
       - name: 'Build and push container'
@@ -98,24 +87,13 @@ jobs:
         uses: slackapi/slack-github-action@v1.24.0
         with:
           update-ts: ${{ steps.slack.outputs.ts }}
-          payload: |
-            {
-              "attachments": [
-                {
-                  "color": "dbab09",
-                  "fields": [
-                    {
-                      "title": "Status",
-                      "short": true,
-                      "value": "In Progress"
-                    }
-                  ]
-                }
-              ]
-            }
+          payload-file-path: ".github/workflows/payload-slack-status.json"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+          STATUS_COLOR: dbab09
+          STATUS_TITLE: Deploying Docker Container
+          STATUS_VALUE: In Progress
 
       - name: 'Create Cloud Deploy release'
         uses: 'google-github-actions/create-cloud-deploy-release@v0'
@@ -132,23 +110,11 @@ jobs:
         uses: slackapi/slack-github-action@v1.24.0
         with:
           update-ts: ${{ steps.slack.outputs.ts }}
-          payload: |
-            {
-              "text": "Deployment finished (Completed)",
-              "attachments": [
-                {
-                  "color": "28a745",
-                  "fields": [
-                    {
-                      "title": "Status",
-                      "short": true,
-                      "value": "Completed"
-                    }
-                  ]
-                }
-              ]
-            }
+          payload-file-path: ".github/workflows/payload-slack-status.json"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+          STATUS_COLOR: 28a745
+          STATUS_TITLE: Deploying Docker Container
+          STATUS_VALUE: Completed
 

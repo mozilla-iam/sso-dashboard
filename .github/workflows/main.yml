@@ -62,11 +62,12 @@ jobs:
           skaffold_file: 'clouddeploy/skaffold.yaml'
           images: 'app=${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}'
 
-      - name: Send notification to Slackw
+      - name: Send notification to Slack
+        if: always()
         id: slack
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          payload-file-path: "./payload-slack-content.json"
+          payload-file-path: ".github/workflows/payload-slack-content.json"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

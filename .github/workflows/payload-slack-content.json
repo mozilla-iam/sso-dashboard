@@ -16,31 +16,6 @@
 			}
 		},
 		{
-			"type": "section",
-			"fields": [
-				{
-					"type": "plain_text",
-					"text": "Repo: ${{ github.ref }}",
-					"emoji": true
-				},
-				{
-					"type": "plain_text",
-					"text": "SHA: ${{ github.sha }}",
-					"emoji": true
-				},
-				{
-					"type": "plain_text",
-					"text": "Actor: ${{ github.actor }}",
-					"emoji": true
-				},
-				{
-					"type": "plain_text",
-					"text": "Event: ${{ github.event_name }}",
-					"emoji": true
-				}
-			]
-		},
-		{
 			"type": "divider"
 		},
 		{
@@ -57,7 +32,7 @@
 					"emoji": true
 				},
 				"value": "action_url",
-				"url": "https://github.com/mozilla-iam/sso-dashboard/actions/runs/${{ github.run_id }}",
+				"url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
 				"action_id": "button-action"
 			}
 		}

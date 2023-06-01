@@ -1,0 +1,70 @@
+{
+	"blocks": [
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": ":link-run: Github Action Notification",
+				"emoji": true
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "Deployment status: :white_check_mark: ${{ github.action_status }}"
+			}
+		},
+		{
+			"type": "section",
+			"fields": [
+				{
+					"type": "plain_text",
+					"text": "Repo: ${{ github.repository }}",
+					"emoji": true
+				},
+				{
+					"type": "plain_text",
+					"text": "SHA: ${{ github.sha }}",
+					"emoji": true
+				},
+				{
+					"type": "plain_text",
+					"text": "Branch/Tag: ${{ github.ref_type }}",
+					"emoji": true
+				},
+				{
+					"type": "plain_text",
+					"text": "Actor: ${{ github.actor }}",
+					"emoji": true
+				},
+				{
+					"type": "plain_text",
+					"text": "Workflow: ${{ github.workflow }}",
+					"emoji": true
+				}
+			]
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "Build action URL:"
+			},
+			"accessory": {
+				"type": "button",
+				"text": {
+					"type": "plain_text",
+					"text": ":link: Link to Action",
+					"emoji": true
+				},
+				"value": "action_url",
+				"url": "https://github.com/mozilla-iam/sso-dashboard/actions/runs/${{ github.run_id }}",
+				"action_id": "button-action"
+			}
+		}
+	]
+}

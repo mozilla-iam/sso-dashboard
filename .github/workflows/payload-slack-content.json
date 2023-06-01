@@ -8,16 +8,19 @@
 				"emoji": true
 			}
 		},
-		{
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": "Build Name: {{ env.RELEASE_NAME }}\nStatus: {{ env.DEPLOY_STATUS }}"
-			}
-		},
     {
 			"type": "section",
 			"fields": [
+				{
+					"type": "plain_text",
+					"text": "Build Name: {{ env.RELEASE_NAME }}",
+					"emoji": true
+				},
+				{
+					"type": "plain_text",
+					"text": "Actor: {{ env.ACTOR }}",
+					"emoji": true
+				},
 				{
 					"type": "plain_text",
 					"text": "Repo: {{ env.REPOSITORY }}",
@@ -26,16 +29,6 @@
 				{
 					"type": "plain_text",
 					"text": "Branch/Tag: {{ env.REF_NAME }}",
-					"emoji": true
-				},
-				{
-					"type": "plain_text",
-					"text": "SHA: {{ env.GITHUB_SHA }}",
-					"emoji": true
-				},
-				{
-					"type": "plain_text",
-					"text": "Actor: {{ env.ACTOR }}",
 					"emoji": true
 				}
 			]
@@ -57,6 +50,7 @@
 				"url": "https://github.com/${{ env.REPOSITORY }/actions/runs/${{ env.RUN_ID }}",
 				"action_id": "button-action"
 			}
+		}
 		}
 	]
 }

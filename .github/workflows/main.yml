@@ -1,6 +1,6 @@
 name: Build SSO Dashboard and create a release in Cloud Deploy
 
-on:
+on: 
   push:
     branches:
       - 'revamp'
@@ -37,7 +37,6 @@ jobs:
           echo "RELEASE_NAME=${{ env.APP }}-${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}" >> ${GITHUB_ENV}
 
       - name: Send initial slack notification
-        id: slack
         if: always()
         uses: slackapi/slack-github-action@v1.24.0
         with:
@@ -45,13 +44,40 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-          DEPLOY_STATUS: Building Docker Container (In Progress)
           REPOSITORY: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
           ACTOR: ${{ github.actor }}
           GITHUB_SHA: ${{ github.sha }}
           REF_NAME: ${{ github.ref_name }}
           WORKFLOW_NAME: ${{ github.workflow }}
+
+      - name: Update build status
+        id: slack
+        if: always()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          update-ts: ${{ steps.slack.outputs.ts }}
+          payload: |
+            {
+              "text": "Docker Build started (In Progress)",
+              "attachments": [
+                {
+                  "pretext": "Docker Build started",
+                  "color": "dbab09",
+                  "fields": [
+                    {
+                      "title": "Status",
+                      "short": true,
+                      "value": "In Progress"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
 
       - name: 'Build and push container'
         run: |-
@@ -69,23 +95,31 @@ jobs:
         run: |-
           gcloud deploy apply --file clouddeploy/clouddeploy.yaml --region ${{ env.GAR_LOCATION }}
 
-      - name: update slack is deployment
+      - name: Update slack starting deployment
         if: always()
         uses: slackapi/slack-github-action@v1.24.0
         with:
           update-ts: ${{ steps.slack.outputs.ts }}
-          payload-file-path: ".github/workflows/payload-slack-content.json"
+          payload: |
+            {
+              "text": "Deployment started (In Progress)",
+              "attachments": [
+                {
+                  "pretext": "Deployment started",
+                  "color": "dbab09",
+                  "fields": [
+                    {
+                      "title": "Status",
+                      "short": true,
+                      "value": "In Progress"
+                    }
+                  ]
+                }
+              ]
+            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-          DEPLOY_STATUS: Docker Container Build (Complete).  Deploying (In Progress)
-          REPOSITORY: ${{ github.repository }}
-          RUN_ID: ${{ github.run_id }}
-          ACTOR: ${{ github.actor }}
-          GITHUB_SHA: ${{ github.sha }}
-          REF_NAME: ${{ github.ref_name }}
-          WORKFLOW_NAME: ${{ github.workflow }}
-
 
       - name: 'Create Cloud Deploy release'
         uses: 'google-github-actions/create-cloud-deploy-release@v0'
@@ -97,20 +131,29 @@ jobs:
           skaffold_file: 'clouddeploy/skaffold.yaml'
           images: 'app=${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}'
 
-      - name: update slack is deployment
+      - name: Update slack deployment complete
         if: always()
         uses: slackapi/slack-github-action@v1.24.0
         with:
           update-ts: ${{ steps.slack.outputs.ts }}
-          payload-file-path: ".github/workflows/payload-slack-content.json"
+          payload: |
+            {
+              "text": "Deployment finished (Completed)",
+              "attachments": [
+                {
+                  "pretext": "Deployment finished",
+                  "color": "28a745",
+                  "fields": [
+                    {
+                      "title": "Status",
+                      "short": true,
+                      "value": "Completed"
+                    }
+                  ]
+                }
+              ]
+            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-          DEPLOY_STATUS: Deployed to Google Deploy (Complete)
-          REPOSITORY: ${{ github.repository }}
-          RUN_ID: ${{ github.run_id }}
-          ACTOR: ${{ github.actor }}
-          GITHUB_SHA: ${{ github.sha }}
-          REF_NAME: ${{ github.ref_name }}
-          WORKFLOW_NAME: ${{ github.workflow }}
 

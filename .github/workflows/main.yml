@@ -32,6 +32,28 @@ jobs:
       - name: 'Docker auth'
         run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
 
+      - name: 'Create release name'
+        run: |-
+          echo "RELEASE_NAME=${{ env.APP }}-${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}" >> ${GITHUB_ENV}
+
+      - name: Send initial slack notification
+        id: slack
+        if: always()
+        id: slack
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload-file-path: ".github/workflows/payload-slack-content.json"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+          DEPLOY_STATUS: Building Docker Container (In Progress)
+          REPOSITORY: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          ACTOR: ${{ github.actor }}
+          GITHUB_SHA: ${{ github.sha }}
+          REF_NAME: ${{ github.ref_name }}
+          WORKFLOW_NAME: ${{ github.workflow }}
+
       - name: 'Build and push container'
         run: |-
           docker build \
@@ -48,9 +70,24 @@ jobs:
         run: |-
           gcloud deploy apply --file clouddeploy/clouddeploy.yaml --region ${{ env.GAR_LOCATION }}
 
-      - name: 'Create release name'
-        run: |-
-          echo "RELEASE_NAME=${{ env.APP }}-${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}" >> ${GITHUB_ENV}
+      - name: update slack is deployment
+        if: always()
+        id: slack
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          update-ts: ${{ steps.slack.outputs.ts }}
+          payload-file-path: ".github/workflows/payload-slack-content.json"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+          DEPLOY_STATUS: Docker Container Build (Complete).  Deploying (In Progress)
+          REPOSITORY: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          ACTOR: ${{ github.actor }}
+          GITHUB_SHA: ${{ github.sha }}
+          REF_NAME: ${{ github.ref_name }}
+          WORKFLOW_NAME: ${{ github.workflow }}
+
 
       - name: 'Create Cloud Deploy release'
         uses: 'google-github-actions/create-cloud-deploy-release@v0'
@@ -62,15 +99,21 @@ jobs:
           skaffold_file: 'clouddeploy/skaffold.yaml'
           images: 'app=${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}'
 
-      - name: Send notification to Slack
+      - name: update slack is deployment
         if: always()
         id: slack
         uses: slackapi/slack-github-action@v1.24.0
         with:
+          update-ts: ${{ steps.slack.outputs.ts }}
           payload-file-path: ".github/workflows/payload-slack-content.json"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-          DEPLOY_STATUS: ${{ job.status }}
+          DEPLOY_STATUS: Deployed to Google Deploy (Complete)
           REPOSITORY: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
+          ACTOR: ${{ github.actor }}
+          GITHUB_SHA: ${{ github.sha }}
+          REF_NAME: ${{ github.ref_name }}
+          WORKFLOW_NAME: ${{ github.workflow }}
+

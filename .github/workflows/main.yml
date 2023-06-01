@@ -19,9 +19,6 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - name: Dump job context
-        run: echo '${{ toJSON(job) }}'
-
       - name: 'Checkout'
         uses: 'actions/checkout@v3'
 

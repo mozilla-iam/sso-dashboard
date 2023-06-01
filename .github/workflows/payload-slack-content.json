@@ -12,7 +12,7 @@
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": "Deployment status: :white_check_mark: ${{ github.action_status }}"
+				"text": "Deployment status: :white_check_mark: ${{ job.status }}"
 			}
 		},
 		{
@@ -20,7 +20,7 @@
 			"fields": [
 				{
 					"type": "plain_text",
-					"text": "Repo: ${{ github.repository }}",
+					"text": "Repo: ${{ github.ref }}",
 					"emoji": true
 				},
 				{
@@ -30,17 +30,12 @@
 				},
 				{
 					"type": "plain_text",
-					"text": "Branch/Tag: ${{ github.ref_type }}",
-					"emoji": true
-				},
-				{
-					"type": "plain_text",
 					"text": "Actor: ${{ github.actor }}",
 					"emoji": true
 				},
 				{
 					"type": "plain_text",
-					"text": "Workflow: ${{ github.workflow }}",
+					"text": "Event: ${{ github.event_name }}",
 					"emoji": true
 				}
 			]

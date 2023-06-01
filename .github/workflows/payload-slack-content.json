@@ -39,7 +39,7 @@
 					"emoji": true
 				},
 				"value": "action_url",
-				"url": "https://github.com/{{ github.repository }}/actions/runs/{{ github.run_id }}",
+				"url": "https://github.com/{{ env.REPOSITORY }}/actions/runs/{{ env.RUN_ID }}",
 				"action_id": "button-action"
 			}
 		},

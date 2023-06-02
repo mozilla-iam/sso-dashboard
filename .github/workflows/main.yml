@@ -75,6 +75,7 @@ jobs:
 
       - name: Update slack starting deployment
         if: success()
+        id: slack-deploy
         uses: slackapi/slack-github-action@v1.24.0
         with:
           update-ts: ${{ steps.slack.outputs.ts }}
@@ -99,7 +100,7 @@ jobs:
         if: success()
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          update-ts: ${{ steps.slack.outputs.ts }}
+          update-ts: ${{ steps.slack-deploy.outputs.ts }}
           channel-id: ${{ env.CHANNEL_IDS }}
           payload-file-path: ".github/workflows/payload-slack-status.json"
         env:

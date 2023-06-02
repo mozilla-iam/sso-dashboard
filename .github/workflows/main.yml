@@ -39,7 +39,6 @@ jobs:
           echo "RELEASE_NAME=${{ env.APP }}-${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}" >> ${GITHUB_ENV}
 
       - name: Send initial slack notification
-        id: slack
         uses: slackapi/slack-github-action@v1.24.0
         with:
           channel-id: ${{ env.CHANNEL_IDS }}
@@ -54,6 +53,7 @@ jobs:
 
       - name: Update slack build in progress
         if: success()
+        id: slack
         uses: slackapi/slack-github-action@v1.24.0
         with:
           update-ts: ${{ steps.slack.outputs.ts }}

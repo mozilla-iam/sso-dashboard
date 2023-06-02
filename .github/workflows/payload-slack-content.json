@@ -37,7 +37,7 @@
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": "<https://github.com/{{ env.REPOSITORY }/actions/runs/{{ env.RUN_ID }}|https://github.com/${{ env.REPOSITORY }/actions/runs/${{ env.RUN_ID }}>"
+				"text": "<https://github.com/{{ env.REPOSITORY }}/actions/runs/{{ env.RUN_ID }}|https://github.com/${{ env.REPOSITORY }}/actions/runs/${{ env.RUN_ID }}>"
 			}
 		}
 	]

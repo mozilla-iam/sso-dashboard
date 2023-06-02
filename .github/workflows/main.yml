@@ -1,4 +1,4 @@
-name: Build SSO Dashboard and create a release in Cloud Deploy
+name: Build and Deploy SSO Dashboard
 
 on: 
   push:
@@ -61,7 +61,7 @@ jobs:
           payload-file-path: ".github/workflows/payload-slack-status.json"
         env:
           STATUS_COLOR: dbab09
-          STATUS_TITLE: Docker Build
+          STATUS_TITLE: Building and deploying SSO Dashboard
           STATUS_VALUE: In Progress
 
       - name: 'Build and push container'
@@ -72,19 +72,6 @@ jobs:
 
       - name: 'Render cloud deploy config manifests from templates'
         run: for template in $(ls clouddeploy/*.template.yaml); do envsubst < ${template} > ${template%%.*}.yaml ; done
-
-      - name: Update slack starting deployment
-        if: success()
-        id: slack-deploy
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          update-ts: ${{ steps.slack.outputs.ts }}
-          channel-id: ${{ env.CHANNEL_IDS }}
-          payload-file-path: ".github/workflows/payload-slack-status.json"
-        env:
-          STATUS_COLOR: dbab09
-          STATUS_TITLE: Deploying Docker Container
-          STATUS_VALUE: In Progress
 
       - name: 'Create Cloud Deploy release'
         uses: 'google-github-actions/create-cloud-deploy-release@v0'
@@ -100,12 +87,12 @@ jobs:
         if: success()
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          update-ts: ${{ steps.slack-deploy.outputs.ts }}
+          update-ts: ${{ steps.slack.outputs.ts }}
           channel-id: ${{ env.CHANNEL_IDS }}
           payload-file-path: ".github/workflows/payload-slack-status.json"
         env:
           STATUS_COLOR: 28a745
-          STATUS_TITLE: Deploying Docker Container
+          STATUS_TITLE: Building and Deploying Docker Container
           STATUS_VALUE: Completed
 
       - name: Update slack deployment failed
@@ -117,6 +104,6 @@ jobs:
           payload-file-path: ".github/workflows/payload-slack-status.json"
         env:
           STATUS_COLOR: d81313
-          STATUS_TITLE: Deploying Docker Container
+          STATUS_TITLE: Building and Deploying Docker Container
           STATUS_VALUE: Failed
 

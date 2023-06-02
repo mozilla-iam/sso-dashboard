@@ -37,6 +37,7 @@ jobs:
           echo "RELEASE_NAME=${{ env.APP }}-${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}" >> ${GITHUB_ENV}
 
       - name: Send initial slack notification
+        id: slack
         uses: slackapi/slack-github-action@v1.24.0
         with:
           payload-file-path: ".github/workflows/payload-slack-content.json"
@@ -51,7 +52,6 @@ jobs:
           WORKFLOW_NAME: ${{ github.workflow }}
 
       - name: Update build status
-        id: slack
         if: success()
         uses: slackapi/slack-github-action@v1.24.0
         with:
@@ -63,8 +63,6 @@ jobs:
           STATUS_COLOR: dbab09
           STATUS_TITLE: Docker Build
           STATUS_VALUE: In Progress
-
-
 
       - name: 'Build and push container'
         run: |-
@@ -117,4 +115,17 @@ jobs:
           STATUS_COLOR: 28a745
           STATUS_TITLE: Deploying Docker Container
           STATUS_VALUE: Completed
+
+      - name: Update slack deployment failed
+        if: failure()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          update-ts: ${{ steps.slack.outputs.ts }}
+          payload-file-path: ".github/workflows/payload-slack-status.json"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+          STATUS_COLOR: d81313
+          STATUS_TITLE: Deploying Docker Container
+          STATUS_VALUE: Failed
 

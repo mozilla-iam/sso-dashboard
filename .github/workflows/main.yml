@@ -10,6 +10,7 @@ env:
   GAR_LOCATION: us-east1
   PROJECT_ID: iam-auth0
   REGION: us-east1
+  CHANNEL_IDS: C05AMLCL4JX,G01AC4VU4UV
 
 jobs:
   deploy:
@@ -17,8 +18,7 @@ jobs:
       contents: 'read'
       id-token: 'write'
     env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout'
@@ -42,6 +42,7 @@ jobs:
         id: slack
         uses: slackapi/slack-github-action@v1.24.0
         with:
+          channel-id: ${{ env.CHANNEL_IDS }}
           payload-file-path: ".github/workflows/payload-slack-content.json"
         env:
           REPOSITORY: ${{ github.repository }}
@@ -56,6 +57,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.24.0
         with:
           update-ts: ${{ steps.slack.outputs.ts }}
+          channel-id: ${{ env.CHANNEL_IDS }}
           payload-file-path: ".github/workflows/payload-slack-status.json"
         env:
           STATUS_COLOR: dbab09
@@ -71,14 +73,12 @@ jobs:
       - name: 'Render cloud deploy config manifests from templates'
         run: for template in $(ls clouddeploy/*.template.yaml); do envsubst < ${template} > ${template%%.*}.yaml ; done
 
-#      - name: 'Create Cloud Deploy delivery pipeline'
-#        run: gcloud deploy apply --file clouddeploy/clouddeploy.yaml --region ${{ env.GAR_LOCATION }}
-
       - name: Update slack starting deployment
         if: success()
         uses: slackapi/slack-github-action@v1.24.0
         with:
           update-ts: ${{ steps.slack.outputs.ts }}
+          channel-id: ${{ env.CHANNEL_IDS }}
           payload-file-path: ".github/workflows/payload-slack-status.json"
         env:
           STATUS_COLOR: dbab09
@@ -100,6 +100,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.24.0
         with:
           update-ts: ${{ steps.slack.outputs.ts }}
+          channel-id: ${{ env.CHANNEL_IDS }}
           payload-file-path: ".github/workflows/payload-slack-status.json"
         env:
           STATUS_COLOR: 28a745
@@ -111,6 +112,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.24.0
         with:
           update-ts: ${{ steps.slack.outputs.ts }}
+          channel-id: ${{ env.CHANNEL_IDS }}
           payload-file-path: ".github/workflows/payload-slack-status.json"
         env:
           STATUS_COLOR: d81313

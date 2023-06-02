@@ -4,9 +4,9 @@
       "color": "{{ env.STATUS_COLOR }}",
       "fields": [
         {
-          "title": "[{{ env.RELEASE_NAME }}]\n{{ env.STATUS_TITLE }}",
+          "title": "{{ env.STATUS_TITLE }}",
           "short": true,
-          "value": "Status: {{ env.STATUS_VALUE }}"
+          "value": "[{{ env.RELEASE_NAME }}]\nStatus: {{ env.STATUS_VALUE }}"
         }
       ]
     }

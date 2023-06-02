@@ -88,7 +88,6 @@ jobs:
         uses: slackapi/slack-github-action@v1.24.0
         with:
           update-ts: ${{ steps.slack.outputs.ts }}
-          channel-id: ${{ env.CHANNEL_IDS }}
           payload-file-path: ".github/workflows/payload-slack-status.json"
         env:
           STATUS_COLOR: 28a745
@@ -100,7 +99,6 @@ jobs:
         uses: slackapi/slack-github-action@v1.24.0
         with:
           update-ts: ${{ steps.slack.outputs.ts }}
-          channel-id: ${{ env.CHANNEL_IDS }}
           payload-file-path: ".github/workflows/payload-slack-status.json"
         env:
           STATUS_COLOR: d81313

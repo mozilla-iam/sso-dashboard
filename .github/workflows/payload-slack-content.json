@@ -37,18 +37,7 @@
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": "Github Action URL"
-			},
-			"accessory": {
-				"type": "button",
-				"text": {
-					"type": "plain_text",
-					"text": ":link: Click Me",
-					"emoji": true
-				},
-				"value": "github_action_url",
-				"url": "https://github.com/${{ env.REPOSITORY }/actions/runs/${{ env.RUN_ID }}",
-				"action_id": "button-action"
+				"text": "<https://github.com/{{ env.REPOSITORY }/actions/runs/{{ env.RUN_ID }}|https://github.com/${{ env.REPOSITORY }/actions/runs/${{ env.RUN_ID }}>"
 			}
 		}
 	]

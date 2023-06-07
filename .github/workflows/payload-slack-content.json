@@ -1,45 +1,50 @@
 {
-  "color": "dbab09",
-	"blocks": [
-		{
-			"type": "header",
-			"text": {
-				"type": "plain_text",
-				"text": ":link-run: Github Action Notification :link-run:\n{{ env.WORKFLOW_NAME }}",
-				"emoji": true
-			}
-		},
+  "text": "test",
+  "attachments": [
     {
-			"type": "section",
-			"fields": [
-				{
-					"type": "plain_text",
-					"text": "Build Name: {{ env.RELEASE_NAME }}",
-					"emoji": true
-				},
-				{
-					"type": "plain_text",
-					"text": "Actor: {{ env.ACTOR }}",
-					"emoji": true
-				},
-				{
-					"type": "plain_text",
-					"text": "Repo: {{ env.REPOSITORY }}",
-					"emoji": true
-				},
-				{
-					"type": "plain_text",
-					"text": "Branch/Tag: {{ env.REF_NAME }}",
-					"emoji": true
-				}
-			]
-		},
-    {
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": "<https://github.com/{{ env.REPOSITORY }}/actions/runs/{{ env.RUN_ID }}|https://github.com/${{ env.REPOSITORY }}/actions/runs/${{ env.RUN_ID }}>"
-			}
-		}
-	]
+      "color": "dbab09",
+      "blocks": [
+        {
+          "type": "header",
+          "text": {
+            "type": "plain_text",
+            "text": ":link-run: Github Action Notification :link-run:\n{{ env.WORKFLOW_NAME }}",
+            "emoji": true
+          }
+        },
+        {
+          "type": "section",
+          "fields": [
+            {
+              "type": "plain_text",
+              "text": "Build Name: {{ env.RELEASE_NAME }}",
+              "emoji": true
+            },
+            {
+              "type": "plain_text",
+              "text": "Actor: {{ env.ACTOR }}",
+              "emoji": true
+            },
+            {
+              "type": "plain_text",
+              "text": "Repo: {{ env.REPOSITORY }}",
+              "emoji": true
+            },
+            {
+              "type": "plain_text",
+              "text": "Branch/Tag: {{ env.REF_NAME }}",
+              "emoji": true
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "text": {
+            "type": "mrkdwn",
+            "text": "<https://github.com/{{ env.REPOSITORY }}/actions/runs/{{ env.RUN_ID }}|https://github.com/${{ env.REPOSITORY }}/actions/runs/${{ env.RUN_ID }}>"
+          }
+        }
+      ]
+    }
+  ]
 }

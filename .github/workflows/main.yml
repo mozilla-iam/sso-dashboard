@@ -10,7 +10,7 @@ env:
   GAR_LOCATION: us-east1
   PROJECT_ID: iam-auth0
   REGION: us-east1
-  CHANNEL_IDS: C05AMLCL4JX,G01AC4VU4UV
+  CHANNEL_IDS: C05AMLCL4JX
 
 jobs:
   deploy:
@@ -45,7 +45,6 @@ jobs:
           payload-file-path: ".github/workflows/payload-slack-content.json"
         env:
           REPOSITORY: ${{ github.repository }}
-          RUN_ID: ${{ github.run_id }}
           ACTOR: ${{ github.actor }}
           GITHUB_SHA: ${{ github.sha }}
           REF_NAME: ${{ github.ref_name }}
@@ -56,7 +55,6 @@ jobs:
         id: slack
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          update-ts: ${{ steps.slack.outputs.ts }}
           channel-id: ${{ env.CHANNEL_IDS }}
           payload-file-path: ".github/workflows/payload-slack-status.json"
         env:
@@ -88,6 +86,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.24.0
         with:
           update-ts: ${{ steps.slack.outputs.ts }}
+          channel-id: ${{ env.CHANNEL_IDS }}
           payload-file-path: ".github/workflows/payload-slack-status.json"
         env:
           STATUS_COLOR: 28a745
@@ -99,6 +98,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.24.0
         with:
           update-ts: ${{ steps.slack.outputs.ts }}
+          channel-id: ${{ env.CHANNEL_IDS }}
           payload-file-path: ".github/workflows/payload-slack-status.json"
         env:
           STATUS_COLOR: d81313

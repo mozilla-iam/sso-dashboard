@@ -22,17 +22,17 @@
             },
             {
               "type": "plain_text",
-              "text": "{{ github.actor }}",
+              "text": "{{ env.GITHUB_ACTOR }}",
               "emoji": true
             },
             {
               "type": "plain_text",
-              "text": "{{ github.repository }}",
+              "text": "{{ env.GITHUB_REPOSITORY }}",
               "emoji": true
             },
             {
               "type": "plain_text",
-              "text": "{{ github.ref_name }}",
+              "text": "{{ env.GITHUB_REF_NAME }}",
               "emoji": true
             }
           ]
@@ -41,14 +41,14 @@
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": "<https://github.com/{{ github.repository }}/actions/runs/{{ github.run_id }}|https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}>"
+            "text": "<https://github.com/{{ env.GITHUB_REPOSITORY }}/actions/runs/{{ env.GITHUB_RUN_ID }}|https://github.com/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}>"
           }
         },
         {
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": "Action: {{ env.STATUS_TITLE }} Status: {{ env.STATUS_VALUE }}"
+            "text": "{{ env.STATUS_TITLE }} (__{{ env.STATUS_VALUE }}__)"
           }
         }
       ]

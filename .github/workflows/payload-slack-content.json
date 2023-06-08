@@ -49,11 +49,11 @@
           "elements": [
             {
               "type": "mrkdwn",
-              "text": "Action: *{{ env.STATUS_TITLE }}*"
+              "text": "Action: {{ env.STATUS_TITLE }}"
             },
             {
               "type": "mrkdwn",
-              "text": "Status: *{{ env.STATUS_VALUE }}*"
+              "text": "Status: {{ env.STATUS_VALUE }}"
             }
           ]
         }

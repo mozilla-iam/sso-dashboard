@@ -1,5 +1,5 @@
 {
-  "text": "{{ env.RELEASE_NAME  }} Ready for Promotion",
+  "text": "",
   "attachments": [
     {
       "color": "28a745",
@@ -8,7 +8,7 @@
           "type": "header",
           "text": {
             "type": "plain_text",
-            "text": ":rocket: SSO Dashboard ({{ env.RELEASE_NAME  }}) is ready for Promotion",
+            "text": ":rocket: SSO Dashboard is ready for Promotion",
             "emoji": true
           }
         },
@@ -16,7 +16,22 @@
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": ":link: <https://console.cloud.google.com/deploy/delivery-pipelines/us-east1/sso-dashboard?project=iam-auth0>|Click here to view deploy pipeline"
+            "text": ":link: <https://console.cloud.google.com/deploy/delivery-pipelines/us-east1/sso-dashboard?project=iam-auth0|Click here to view deploy pipeline>"
+          }
+        },
+       
+        {
+          "type": "section",
+          "text": {
+            "type": "mrkdwn",
+            "text": "Build: *{{ env.RELEASE_NAME }}*"
+          }
+        },
+        {
+          "type": "section",
+          "text": {
+            "type": "mrkdwn",
+            "text": ":link: <https://console.cloud.google.com/deploy/delivery-pipelines/us-east1/sso-dashboard?project=iam-auth0|Click here to view deploy pipeline>"
           }
         }
       ]

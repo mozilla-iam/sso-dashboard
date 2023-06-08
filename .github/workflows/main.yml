@@ -93,6 +93,13 @@ jobs:
           STATUS_TITLE: Building and Deploy
           STATUS_VALUE: ':link-zelda: *Completed*'
 
+      - name: Update slack deployment ready for promotion
+        if: success()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: ${{ env.CHANNEL_IDS }}
+          payload-file-path: ".github/workflows/payload-slack-deploy.json"
+
       - name: Update slack deployment failed
         if: failure()
         uses: slackapi/slack-github-action@v1.24.0

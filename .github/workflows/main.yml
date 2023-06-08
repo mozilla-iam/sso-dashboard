@@ -91,7 +91,7 @@ jobs:
         env:
           STATUS_COLOR: 28a745
           STATUS_TITLE: Building and Deploy
-          STATUS_VALUE: ':link-love *Completed* :link-love:'
+          STATUS_VALUE: ':link-zelda: *Completed* :link-zelda:'
 
       - name: Update slack deployment failed
         if: failure()

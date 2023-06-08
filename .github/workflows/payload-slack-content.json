@@ -8,7 +8,7 @@
           "type": "header",
           "text": {
             "type": "plain_text",
-            "text": ":link-run: Github Action Notification :link-run:\n{{ github.workflow }}",
+            "text": ":link-wut: Github Action Notification :link-wut:\n{{ github.workflow }}",
             "emoji": true
           }
         },
@@ -45,11 +45,17 @@
           }
         },
         {
-          "type": "section",
-          "text": {
-            "type": "mrkdwn",
-            "text": "{{ env.STATUS_TITLE }} (__{{ env.STATUS_VALUE }}__)"
-          }
+          "type": "context",
+          "elements": [
+            {
+              "type": "mrkdwn",
+              "text": "Action: *{{ env.STATUS_TITLE }}*"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "Status: *{{ env.STATUS_VALUE }}*"
+            }
+          ]
         }
       ]
     }

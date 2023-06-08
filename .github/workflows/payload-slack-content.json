@@ -1,14 +1,14 @@
 {
-  "text": "test",
+  "text": "",
   "attachments": [
     {
-      "color": "dbab09",
+      "color": "{{ env.STATUS_COLOR }}",
       "blocks": [
         {
           "type": "header",
           "text": {
             "type": "plain_text",
-            "text": ":link-run: Github Action Notification :link-run:\n{{ env.WORKFLOW_NAME }}",
+            "text": ":link-run: Github Action Notification :link-run:\n{{ github.workflow }}",
             "emoji": true
           }
         },
@@ -17,22 +17,22 @@
           "fields": [
             {
               "type": "plain_text",
-              "text": "Build Name: {{ env.RELEASE_NAME }}",
+              "text": "{{ env.RELEASE_NAME }}",
               "emoji": true
             },
             {
               "type": "plain_text",
-              "text": "Actor: {{ env.ACTOR }}",
+              "text": "{{ github.actor }}",
               "emoji": true
             },
             {
               "type": "plain_text",
-              "text": "Repo: {{ env.REPOSITORY }}",
+              "text": "{{ github.repository }}",
               "emoji": true
             },
             {
               "type": "plain_text",
-              "text": "Branch/Tag: {{ env.REF_NAME }}",
+              "text": "{{ github.ref_name }}",
               "emoji": true
             }
           ]
@@ -41,7 +41,14 @@
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": "<https://github.com/{{ env.REPOSITORY }}/actions/runs/{{ env.RUN_ID }}|https://github.com/${{ env.REPOSITORY }}/actions/runs/${{ env.RUN_ID }}>"
+            "text": "<https://github.com/{{ github.repository }}/actions/runs/{{ github.run_id }}|https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}>"
+          }
+        },
+        {
+          "type": "section",
+          "text": {
+            "type": "mrkdwn",
+            "text": "Action: {{ env.STATUS_TITLE }} Status: {{ env.STATUS_VALUE }}"
           }
         }
       ]

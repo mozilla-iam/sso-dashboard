@@ -47,8 +47,8 @@ jobs:
           payload-file-path: ".github/workflows/payload-slack-content.json"
         env:
           STATUS_COLOR: dbab09
-          STATUS_TITLE: Building SSO Dashboard Docker Image
-          STATUS_VALUE: ':link-run: *Running* :link-run:'
+          STATUS_TITLE: Building Docker Image
+          STATUS_VALUE: ':link-run: *Running*'
 
       - name: 'Build and push container'
         run: |-
@@ -66,7 +66,7 @@ jobs:
         env:
           STATUS_COLOR: dbab09
           STATUS_TITLE: Sending to Cloud Deploy
-          STATUS_VALUE: ':link-run: *Running* :link-run:'
+          STATUS_VALUE: ':link-run: *Running*'
 
       - name: 'Render cloud deploy config manifests from templates'
         run: for template in $(ls clouddeploy/*.template.yaml); do envsubst < ${template} > ${template%%.*}.yaml ; done
@@ -91,7 +91,7 @@ jobs:
         env:
           STATUS_COLOR: 28a745
           STATUS_TITLE: Building and Deploy
-          STATUS_VALUE: ':link-zelda: *Completed* :link-zelda:'
+          STATUS_VALUE: ':link-zelda: *Completed*'
 
       - name: Update slack deployment failed
         if: failure()
@@ -103,5 +103,5 @@ jobs:
         env:
           STATUS_COLOR: d81313
           STATUS_TITLE: Building and Deploy
-          STATUS_VALUE: ':skull_and_crossbones: *Failed* :skull_and_crossbones:'
+          STATUS_VALUE: ':skull_and_crossbones: *Failed*'
 

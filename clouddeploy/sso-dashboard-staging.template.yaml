@@ -15,12 +15,12 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: 'sso-dashboard-prod'
+  name: 'sso-dashboard-staging'
 spec:
   template:
     metadata:
       annotations:
-        autoscaling.knative.dev/maxScale: '1'
+        autoscaling.knative.dev/maxScale: '2'
     spec:
       containers:
       - name: 'sso-dashboard'

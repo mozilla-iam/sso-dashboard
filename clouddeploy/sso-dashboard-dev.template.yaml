@@ -15,7 +15,7 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: 'sso-dashboard-staging'
+  name: 'sso-dashboard-dev'
 spec:
   template:
     metadata:

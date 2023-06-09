@@ -19,6 +19,10 @@ metadata:
 deploy:
   cloudrun: {}
 profiles:
+  - name: 'dev'
+    manifests:
+      rawYaml:
+        - 'sso-dashboard-dev.yaml'
   - name: 'staging'
     manifests:
       rawYaml:

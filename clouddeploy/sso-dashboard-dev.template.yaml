@@ -15,7 +15,7 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: 'sso-dashboard-prod'
+  name: 'sso-dashboard-staging'
 spec:
   template:
     metadata:
@@ -39,8 +39,8 @@ spec:
           - name: http1
             containerPort: 8000 
         env:
-          - name: TARGET
-            value: Prod
+          - name: 'TARGET'
+            value: 'Staging'
           - name: SSO-DASHBOARD_DEBUG
             value: False
           - name: SSO-DASHBOARD_TESTING
@@ -58,11 +58,11 @@ spec:
           - name: SSO-DASHBOARD_PREFERRED_URL_SCHEME
             value: https
           - name: SSO-DASHBOARD_OIDC_CLIENT_ID
-            value: UCOY390lYDxgj5rU8EeXRtN6EP005k7V
+            value: 2KNOUCxN8AFnGGjDCGtqiDIzq8MKXi2h
           - name: SSO-DASHBOARD_OIDC_DOMAIN
-            value: auth.mozilla.auth0.com
+            value: dev.mozilla-dev.auth0.com
           - name: SSO-DASHBOARD_SERVER_NAME
-            value: staging.sso.mozilla.com
+            value: sso.allizom.org
           - name: SSO-DASHBOARD_CDN
             value: https://cdn.sso.mozilla.com
           - name: SSO-DASHBOARD_S3_BUCKET
@@ -72,7 +72,7 @@ spec:
           - name: AWS_DEFAULT_REGION
             value: us-west-2
           - name: ENVIRONMENT
-            value: Prod
+            value: Staging
           - name: MOZILLIANS_API_URL
             value: https://mozillians.org/api/v2/users/
           - name: DASHBOARD_GUNICORN_WORKERS
@@ -86,7 +86,7 @@ spec:
           - name: FLASK_APP
             value: dashboard/app.py
           - name: OIDC_REDIRECT_URI
-            value: https://sso.mozilla.com/redirect_uri
+            value: https://sso.allizom.org/redirect_uri
           - name: AWS_SECRET_ACCESS_KEY
             valueFrom:
               secretKeyRef:
@@ -96,12 +96,12 @@ spec:
             valueFrom:
               secretKeyRef:
                 key: latest
-                name: sso-dashboard-prod-secret-key
+                name: sso-dashboard-dev-secret-key
           - name: SSO-DASHBOARD_OIDC_CLIENT_SECRET
             valueFrom:
               secretKeyRef:
                 key: latest
-                name: sso-dashboard-prod-oidc-client-secret
+                name: sso-dashboard-dev-oidc-client-secret
           - name: AWS_ACCESS_KEY_ID
             valueFrom:
               secretKeyRef:

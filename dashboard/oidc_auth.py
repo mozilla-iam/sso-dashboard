@@ -24,7 +24,7 @@ class OpenIDConnect(object):
         return client_info
 
     def provider_info(self):
-        auth_request_params = {"scope": ["openid", "profile"]}
+        auth_request_params = {"scope": ["openid", "profile", "email"]}
         provider_config = ProviderConfiguration(
             issuer="https://{DOMAIN}".format(DOMAIN=self.oidc_config.OIDC_DOMAIN),
             client_metadata=self.client_info(),

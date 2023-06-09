@@ -20,7 +20,6 @@ from flask_talisman import Talisman
 from dashboard import oidc_auth
 from dashboard import config
 from dashboard import get_config
-from dashboard import person
 from dashboard import vanity
 
 from dashboard.api import idp
@@ -67,7 +66,6 @@ mimetypes.add_type("image/svg+xml", ".svg")
 oidc_config = config.OIDCConfig()
 authentication = oidc_auth.OpenIDConnect(oidc_config)
 oidc = authentication.get_oidc(app)
-person_api = person.API()
 
 vanity_router = vanity.Router(app, app_list).setup()
 
@@ -165,19 +163,6 @@ def dashboard():
         )
     )
 
-    if "Mozilla-LDAP" in session.get("userinfo")["sub"]:
-        logger.info("Mozilla IAM user detected. Attempt enriching with ID-Vault data.")
-        try:
-            session["idvault_userinfo"] = person_api.get_userinfo(
-                session.get("id_token")["sub"]
-            )
-        except Exception as e:
-            logger.error(
-                "Could not enrich profile due to: {}.  Perhaps it doesn't exist?".format(
-                    e
-                )
-            )
-
     # Hotfix to set user id for firefox alert
     # XXXTBD Refactor rules later to support full id_conformant session
     session["userinfo"]["user_id"] = session.get("id_token")["sub"]
@@ -272,7 +257,6 @@ def info():
     return jsonify(
         id_token=session.get("id_token"),
         userinfo=session.get("userinfo"),
-        person_api_v1=session.get("idvault_userinfo"),
     )
 
 

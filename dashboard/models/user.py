@@ -15,7 +15,6 @@ class User(object):
         self.id_token = session.get("id_token", None)
         self.app_config = app_config
         self.userinfo = session.get("userinfo")
-        self.idvault_info = session.get("idvault_userinfo")
 
     def email(self):
         try:
@@ -44,12 +43,7 @@ class User(object):
 
     @property
     def avatar(self):
-        if self.idvault_info:
-            picture_url = self.idvault_info.get("picture")
-        else:
-            picture_url = None
-
-        return picture_url
+        return None
 
     def group_membership(self):
         """Return list of group membership if user is asserted from ldap."""
@@ -77,22 +71,12 @@ class User(object):
     @property
     def first_name(self):
         """Return user first_name."""
-        try:
-            return self.idvault_info.get("firstName", "")
-        except KeyError:
-            return ""
-        except AttributeError:
-            return ""
+        return ""
 
     @property
     def last_name(self):
         """Return user last_name."""
-        try:
-            return self.idvault_info.get("lastName", "")
-        except KeyError:
-            return ""
-        except AttributeError:
-            return ""
+        return ""
 
     def user_identifiers(self):
         """Construct a list of potential user identifiers to match on."""

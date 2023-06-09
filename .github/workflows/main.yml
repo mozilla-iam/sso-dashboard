@@ -11,7 +11,7 @@ env:
   GAR_LOCATION: us-east1
   PROJECT_ID: iam-auth0
   REGION: us-east1
-  CHANNEL_IDS: G01AC4VU4UV
+  CHANNEL_IDS: C05AMLCL4JX
 
 jobs:
   deploy:

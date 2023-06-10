@@ -90,7 +90,7 @@ def csp_report():
 @app.route("/version", methods=["GET"])
 def get_version():
     with open("/version.json", "r") as version:
-        v = version.read()
+        v = version.read().replace("\n","")
     return jsonify(build_version=v)
 
 # XXX This needs to load the schema from a better location

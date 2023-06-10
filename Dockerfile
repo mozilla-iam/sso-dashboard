@@ -1,5 +1,7 @@
 FROM python:3.7-bullseye
+ARG RELEASE_NAME
 
+RUN echo "{\"version\":\"$RELEASE_NAME\"}" > /version.json
 RUN apt update && apt install -y nodejs npm \
     && rm -rf /var/lib/apt/lists/*
 RUN npm install -g sass

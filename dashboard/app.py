@@ -87,6 +87,11 @@ def home():
 def csp_report():
     return "200"
 
+@app.route("/version", methods=["GET"])
+def get_version():
+    with open("/version.json", "r") as version:
+        v = version.read()
+    return v
 
 # XXX This needs to load the schema from a better location
 # See also https://github.com/mozilla/iam-project-backlog/issues/161

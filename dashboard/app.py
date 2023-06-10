@@ -91,7 +91,7 @@ def csp_report():
 def get_version():
     with open("/version.json", "r") as version:
         v = version.read()
-    return v
+    return jsonify(build_version=v)
 
 # XXX This needs to load the schema from a better location
 # See also https://github.com/mozilla/iam-project-backlog/issues/161

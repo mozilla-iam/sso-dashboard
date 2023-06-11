@@ -179,7 +179,7 @@ jobs:
       RELEASE_NAME: ${{needs.init.outputs.release_name}}
     steps:
       - name: Update slack deployment complete
-        if: needs.deploy.result == success
+        if: needs.deploy.result == 'success'
         uses: slackapi/slack-github-action@v1.24.0
         with:
           update-ts: ${{ needs.init.outputs.slack_ts }}
@@ -191,14 +191,14 @@ jobs:
           STATUS_VALUE: ':link-zelda: *Completed*'
 
       - name: Update slack deployment ready for promotion
-        if: needs.deploy.result == success
+        if: needs.deploy.result == 'success'
         uses: slackapi/slack-github-action@v1.24.0
         with:
           channel-id: ${{ env.CHANNEL_IDS }}
           payload-file-path: ".github/workflows/payload-slack-deploy.json"
 
       - name: Update slack deployment failed
-        if: needs.lint.result == failure || needs.build.result == failure || needs.testing.result == failure || needs.deploy.result == failure
+        if: needs.lint.result == 'failure' || needs.build.result == 'failure' || needs.testing.result == 'failure' || needs.deploy.result == 'failure'
         uses: slackapi/slack-github-action@v1.24.0
         with:
           update-ts: ${{ needs.init.outputs.slack_ts }}

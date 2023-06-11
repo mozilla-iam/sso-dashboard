@@ -109,11 +109,6 @@ jobs:
       - name: 'Docker auth'
         run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
 
-#      - name: 'Build and push container'
-#        run: |-
-#          docker build --build-arg RELEASE_NAME=${{ env.RELEASE_NAME }} -t "${{ env.DOCKER_TAG }}" .
-#         docker push "${{ env.DOCKER_TAG }}"
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -122,11 +117,16 @@ jobs:
         with:
           context: .
           build-args: RELEASE_NAME=${{ env.RELEASE_NAME }}
-          push: true
           tags: "${{ env.DOCKER_TAG }}"
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          outputs: type=docker,dest=/tmp/image.tar
 
+      - name: Upload docker image as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: "${{ env.DOCKER_TAG }}"
+          path: /tmp/image.tar
 
   testing:
     name: Testing
@@ -150,18 +150,19 @@ jobs:
           STATUS_TITLE: Testing
           STATUS_VALUE: ':link-run: *Running*'
 
-      - name: 'Google auth'
-        id: 'auth'
-        uses: 'google-github-actions/auth@v1'
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Download artifact
+        uses: actions/download-artifact@v3
         with:
-          workload_identity_provider: '${{ secrets.WIF_PROVIDER }}'
-          service_account: '${{ secrets.WIF_SERVICE_ACCOUNT }}' 
+          name: "${{ env.DOCKER_TAG }}"
+          path: /tmp
 
-      - name: 'Docker auth'
-        run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
-
-      - name: Pull docker image
-        run: docker pull "${{ env.DOCKER_TAG }}"
+      - name: Load image
+        run: |
+          docker load --input /tmp/image.tar
+          docker image ls -a
 
       - name: Run tests
         uses: addnab/docker-run-action@v3

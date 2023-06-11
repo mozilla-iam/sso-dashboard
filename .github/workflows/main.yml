@@ -6,9 +6,6 @@ on:
     branches:
       - 'revamp'
 
-defaults:
-  runs-on: ubuntu-latest
-
 permissions:
   contents: 'read'
   id-token: 'write'
@@ -24,6 +21,7 @@ env:
 jobs:
   init:
     name: Init
+    runs-on: ubuntu-latest
     outputs:
       release_name: ${{ steps.release_name.outputs.release_name }}
       slack_ts: ${{ steps.slack_ts.outputs.ts }}
@@ -51,6 +49,7 @@ jobs:
   lint:
     name: Linting
     needs: init
+    runs-on: ubuntu-latest
     env:
       RELEASE_NAME: ${{needs.init.outputs.release_name}}
     steps:
@@ -74,6 +73,7 @@ jobs:
   build:
     name: Building
     needs: [ init, lint ]
+    runs-on: ubuntu-latest
     env:
       RELEASE_NAME: ${{needs.init.outputs.release_name}}
       DOCKER_TAG: "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}"
@@ -110,6 +110,7 @@ jobs:
   testing:
     name: Testing
     needs: [ init, lint, build ]
+    runs-on: ubuntu-latest
     env:
       RELEASE_NAME: ${{needs.init.outputs.release_name}}
     steps:
@@ -130,6 +131,7 @@ jobs:
   deploy:
     name: Sending to Cloud Deploy
     needs: [ init, lint, build, testing ]
+    runs-on: ubuntu-latest
     env:
       RELEASE_NAME: ${{needs.init.outputs.release_name}}
     steps:
@@ -167,6 +169,7 @@ jobs:
   final:
     name: Send final Slack notification
     needs: [ init, lint, build, testing, deploy ]
+    runs-on: ubuntu-latest
     if: always()
     env:
       RELEASE_NAME: ${{needs.init.outputs.release_name}}

@@ -20,14 +20,8 @@ class User(object):
         try:
             email = self.userinfo.get("email")
         except Exception as e:
-            logger.error(
-                "The email attribute does no exists falling back to OIDC Conformant: {}.".format(
-                    e
-                )
-            )
-            email = self.userinfo.get("https://sso.mozilla.com/claim/emails")[0][
-                "emails"
-            ]
+            logger.error("The email attribute does no exists falling back to OIDC Conformant: {}.".format(e))
+            email = self.userinfo.get("https://sso.mozilla.com/claim/emails")[0]["emails"]
         return email
 
     def apps(self, app_list):
@@ -48,18 +42,14 @@ class User(object):
     def group_membership(self):
         """Return list of group membership if user is asserted from ldap."""
         if self.userinfo.get("https://sso.mozilla.com/claim/groups", []) != []:
-            group_count = len(
-                self.userinfo.get("https://sso.mozilla.com/claim/groups", [])
-            )
+            group_count = len(self.userinfo.get("https://sso.mozilla.com/claim/groups", []))
         else:
             if self.userinfo.get("groups"):
                 group_count = len(self.userinfo.get("groups", []))
             else:
                 group_count = 0
 
-        if (
-            "https://sso.mozilla.com/claim/groups" in self.userinfo.keys() and group_count > 0
-        ):
+        if "https://sso.mozilla.com/claim/groups" in self.userinfo.keys() and group_count > 0:
             return self.userinfo["https://sso.mozilla.com/claim/groups"]
 
         if "groups" in self.userinfo.keys() and group_count > 0:
@@ -94,21 +84,15 @@ class User(object):
         alert_dict["last_update"] = int(time.time())
 
         if alert_action == "acknowledge":
-            logger.info(
-                "An alert was acked for {uid}.".format(uid=self.userinfo["sub"])
-            )
+            logger.info("An alert was acked for {uid}.".format(uid=self.userinfo["sub"]))
             alert_dict["state"] = alert_action
             res = a.update(alert_id=alert_id, alert_dict=alert_dict)
         elif alert_action == "escalate":
-            logger.info(
-                "An alert was escalated for {uid}.".format(uid=self.userinfo["sub"])
-            )
+            logger.info("An alert was escalated for {uid}.".format(uid=self.userinfo["sub"]))
             alert_dict["state"] = alert_action
             res = a.update(alert_id=alert_id, alert_dict=alert_dict)
         elif alert_action == "indicate-helpfulness":
-            logger.info(
-                "Alert helpfulness was set for {uid}.".format(uid=self.userinfo["sub"])
-            )
+            logger.info("Alert helpfulness was set for {uid}.".format(uid=self.userinfo["sub"]))
             alert_dict["helpfulness"] = helpfulness
             res = a.update(alert_id=alert_id, alert_dict=alert_dict)
         else:
@@ -126,9 +110,7 @@ class User(object):
             return False
         elif "everyone" in app["application"]["authorized_groups"]:
             return True
-        elif set(app["application"]["authorized_groups"]) & set(
-            self.group_membership()
-        ):
+        elif set(app["application"]["authorized_groups"]) & set(self.group_membership()):
             return True
         elif set(app["application"]["authorized_users"]) & set(self.user_identifiers()):
             return True
@@ -189,21 +171,15 @@ class FakeUser(object):
                     "description": "This alert is created based on geo ip information about the last login of a user.",
                     "duplicate": True,
                     "risk": "medium",
-                    "summary": "Did you recently login from {}, {}?".format(
-                        fake.city(), fake.country()
-                    ),
+                    "summary": "Did you recently login from {}, {}?".format(fake.city(), fake.country()),
                     "url": "https://mana.mozilla.org/wiki/display/SECURITY/Alert%3A+Change+in+Country",
                     "url_title": "Get Help",
                     "user_id": "ad|Mozilla-LDAP|fakeuser",
                     "details": {
-                        "Timestamp": fake.date_time_this_year().strftime(
-                            "%A, %B %d %Y %H:%M UTC"
-                        ),
+                        "Timestamp": fake.date_time_this_year().strftime("%A, %B %d %Y %H:%M UTC"),
                         "New Location": "{}, {}".format(fake.city(), fake.country()),
                         "New IP": "{} ({})".format(fake.ipv4(), fake.company()),
-                        "Previous Location": "{}, {}".format(
-                            fake.city(), fake.country()
-                        ),
+                        "Previous Location": "{}, {}".format(fake.city(), fake.country()),
                     },
                 },
                 {

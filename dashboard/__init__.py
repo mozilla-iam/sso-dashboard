@@ -16,7 +16,6 @@ __version__ = "0.0.1"
 __all__ = ["app", "auth", "config", "models", "s3", "utils", "vanity"]
 
 
-
 def get_config():
     return ConfigManager(
         [

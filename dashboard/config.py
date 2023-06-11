@@ -22,24 +22,14 @@ class DefaultConfig(object):
     DEBUG = bool(CONFIG("debug", namespace="sso-dashboard", default="True"))
     TESTING = bool(CONFIG("testing", namespace="sso-dashboard", default="False"))
     CSRF_ENABLED = bool(CONFIG("csrf_enabled", default="True"))
-    PERMANENT_SESSION = bool(
-        CONFIG("permanent_session", namespace="sso-dashboard", default="True")
-    )
-    PERMANENT_SESSION_LIFETIME = int(
-        CONFIG("permanent_session_lifetime", namespace="sso-dashboard", default="86400")
-    )
+    PERMANENT_SESSION = bool(CONFIG("permanent_session", namespace="sso-dashboard", default="True"))
+    PERMANENT_SESSION_LIFETIME = int(CONFIG("permanent_session_lifetime", namespace="sso-dashboard", default="86400"))
 
-    SESSION_COOKIE_HTTPONLY = bool(
-        CONFIG("session_cookie_httponly", namespace="sso-dashboard", default="True")
-    )
-    LOGGER_NAME = CONFIG(
-        "logger_name", namespace="sso-dashboard", default="sso-dashboard"
-    )
+    SESSION_COOKIE_HTTPONLY = bool(CONFIG("session_cookie_httponly", namespace="sso-dashboard", default="True"))
+    LOGGER_NAME = CONFIG("logger_name", namespace="sso-dashboard", default="sso-dashboard")
 
     SECRET_KEY = CONFIG("secret_key", namespace="sso-dashboard")
-    SERVER_NAME = CONFIG(
-        "server_name", namespace="sso-dashboard", default="localhost:8000"
-    )
+    SERVER_NAME = CONFIG("server_name", namespace="sso-dashboard", default="localhost:8000")
 
     S3_BUCKET = CONFIG("s3_bucket", namespace="sso-dashboard")
 
@@ -49,13 +39,9 @@ class DefaultConfig(object):
         default="https://cdn.{SERVER_NAME}".format(SERVER_NAME=SERVER_NAME),
     )
 
-    FORBIDDEN_PAGE_PUBLIC_KEY = base64.b64decode(
-        CONFIG("forbidden_page_public_key", namespace="sso-dashboard")
-    )
+    FORBIDDEN_PAGE_PUBLIC_KEY = base64.b64decode(CONFIG("forbidden_page_public_key", namespace="sso-dashboard"))
 
-    PREFERRED_URL_SCHEME = CONFIG(
-        "preferred_url_scheme", namespace="sso-dashboard", default="https"
-    )
+    PREFERRED_URL_SCHEME = CONFIG("preferred_url_scheme", namespace="sso-dashboard", default="https")
 
 
 class OIDCConfig(object):
@@ -66,9 +52,7 @@ class OIDCConfig(object):
         CONFIG = get_config()
         self.OIDC_DOMAIN = CONFIG("oidc_domain", namespace="sso-dashboard")
         self.OIDC_CLIENT_ID = CONFIG("oidc_client_id", namespace="sso-dashboard")
-        self.OIDC_CLIENT_SECRET = CONFIG(
-            "oidc_client_secret", namespace="sso-dashboard"
-        )
+        self.OIDC_CLIENT_SECRET = CONFIG("oidc_client_secret", namespace="sso-dashboard")
         self.LOGIN_URL = "https://{DOMAIN}/login?client={CLIENT_ID}".format(
             DOMAIN=self.OIDC_DOMAIN, CLIENT_ID=self.OIDC_CLIENT_ID
         )

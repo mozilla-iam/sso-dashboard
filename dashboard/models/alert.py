@@ -36,9 +36,7 @@ class Feedback(object):
     def get_sns_arn(self):
         self.connect_ssm()
 
-        response = self.ssm.get_parameter(
-            Name="sso-dashboard-alerts-sns", WithDecryption=False
-        )
+        response = self.ssm.get_parameter(Name="sso-dashboard-alerts-sns", WithDecryption=False)
 
         return response.get("Parameter").get("Value")
 
@@ -109,18 +107,12 @@ class Alert(object):
         # If the alert is duplicate false do not create another instance of it.
         for alert in current_alerts.get("visible_alerts"):
             try:
-                if (
-                    alert.get("alert_code") == alert_dict.get("alert_code") and alert_dict.get("duplicate") is False
-                ):
+                if alert.get("alert_code") == alert_dict.get("alert_code") and alert_dict.get("duplicate") is False:
                     return None
                 else:
                     continue
             except AttributeError as e:
-                logger.error(
-                    "Bad data in alerts table for user: {}, exception was {}".format(
-                        user_id, e
-                    )
-                )
+                logger.error("Bad data in alerts table for user: {}, exception was {}".format(user_id, e))
 
         # Else create another alert.
         return self.create(alert_dict)
@@ -146,9 +138,7 @@ class Alert(object):
         """
         self.connect_dynamodb()
 
-        response = self.dynamodb.delete_item(
-            Key={"alert_id": alert_id, "user_id": user_id}
-        )
+        response = self.dynamodb.delete_item(Key={"alert_id": alert_id, "user_id": user_id})
 
         return response
 
@@ -194,9 +184,7 @@ class Alert(object):
                     )
                     alerts.extend(response["Items"])
         except Exception as e:
-            logger.error(
-                "Could not load alerts for user: {} due to: {}.".format(user_id, e)
-            )
+            logger.error("Could not load alerts for user: {} due to: {}.".format(user_id, e))
             alerts = []
 
         inactive_alerts = []
@@ -272,9 +260,7 @@ class Alert(object):
         """
         self.connect_dynamodb()
 
-        response = self.dynamodb.query(
-            KeyConditionExpression=Key("alert_id").eq(alert_id)
-        )
+        response = self.dynamodb.query(KeyConditionExpression=Key("alert_id").eq(alert_id))
 
         if response.get("Items"):
             return response.get("Items")[0]
@@ -319,23 +305,17 @@ class Rules(object):
                 "url_title": "Download",
                 "duplicate": False,
             }
-            self.alert.find_or_create_by(
-                alert_dict=alert_dict, user_id=self.userinfo.get("user_id")
-            )
+            self.alert.find_or_create_by(alert_dict=alert_dict, user_id=self.userinfo.get("user_id"))
 
         else:
             # Clear any active alerts for firefox out of date.
             alerts = self.alert.find(self.userinfo.get("user_id"))
             for alert in alerts.get("visible_alerts"):
                 if alert.get("alert_code") == "63f675d8896f4fb2b3caa204c8c2761e":
-                    self.alert.destroy(
-                        alert_id=alert.get("alert_id"), user_id=alert.get("user_id")
-                    )
+                    self.alert.destroy(alert_id=alert.get("alert_id"), user_id=alert.get("user_id"))
 
     def _firefox_info(self):
-        release_json = requests.get(
-            "https://product-details.mozilla.org/1.0/firefox_versions.json"
-        )
+        release_json = requests.get("https://product-details.mozilla.org/1.0/firefox_versions.json")
         if release_json.status_code == 200:
             return release_json.json()
         else:
@@ -375,9 +355,8 @@ class Rules(object):
                 if u_version.get("minor_version") < f_version.get("minor_version"):
                     return True
                 elif (
-                    u_version.get(
-                        "minor_version"
-                    ) == f_version.get("minor_version") and u_version.get("dot_version") is not None
+                    u_version.get("minor_version") == f_version.get("minor_version")
+                    and u_version.get("dot_version") is not None
                 ):
                     if u_version.get("dot_version") < f_version.get("dot_version"):
                         return True
@@ -436,9 +415,7 @@ class FakeAlert(object):
                 "source_ip": fake_ip,
             },
             "severity": "NOTICE",
-            "summary": "{} NEWCOUNTRY {}, {} access from {}".format(
-                fake_email, fake_state, fake_country, fake_ip
-            ),
+            "summary": "{} NEWCOUNTRY {}, {} access from {}".format(fake_email, fake_state, fake_country, fake_ip),
             "tags": ["geomodel"],
             "url": "https://www.mozilla.org/alert",
             "utctimestamp": "{}+00:00".format(fake.iso8601()),
@@ -448,9 +425,7 @@ class FakeAlert(object):
             "alert_code": "416c65727447656f6d6f64656c",
             "user_id": self.user_id,
             "risk": "high",
-            "summary": "Did you recently login from {}, {} ({})?".format(
-                fake_state, fake_country, fake_ip
-            ),
+            "summary": "Did you recently login from {}, {} ({})?".format(fake_state, fake_country, fake_ip),
             "alert_str_json": json.dumps(original_alert_dict),
             "description": "This alert is created based on geo ip information about the last login of a user.",
             "date": str(fake.date(pattern="%Y-%m-%d", end_datetime=None)),

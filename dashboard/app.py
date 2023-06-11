@@ -71,9 +71,11 @@ vanity_router = vanity.Router(app, app_list).setup()
 
 api = idp.AuthorizeAPI(app, oidc_config)
 
+
 @app.route("/favicon.ico")
 def favicon():
     return send_from_directory(os.path.join(app.root_path, "static/img"), "favicon.ico")
+
 
 @app.route("/")
 def home():
@@ -83,15 +85,18 @@ def home():
     url = request.url.replace("http://", "https://", 1)
     return redirect(url + "dashboard", code=302)
 
+
 @app.route("/csp_report", methods=["POST"])
 def csp_report():
     return "200"
 
+
 @app.route("/version", methods=["GET"])
 def get_version():
     with open("/version.json", "r") as version:
-        v = version.read().replace("\n","")
+        v = version.read().replace("\n", "")
     return jsonify(build_version=v)
+
 
 # XXX This needs to load the schema from a better location
 # See also https://github.com/mozilla/iam-project-backlog/issues/161
@@ -99,9 +104,7 @@ def get_version():
 def claim():
     """Show the user schema - this path is refered to by
     our OIDC Claim namespace, i.e.: https://sso.mozilla.com/claim/*"""
-    return redirect(
-        "https://github.com/mozilla-iam/cis/blob/master/cis/schema.json", code=302
-    )
+    return redirect("https://github.com/mozilla-iam/cis/blob/master/cis/schema.json", code=302)
 
 
 @app.errorhandler(404)
@@ -120,9 +123,7 @@ def forbidden():
     else:
         jws = request.args.get("error").encode()
 
-    token_verifier = oidc_auth.tokenVerification(
-        jws=jws, public_key=app.config["FORBIDDEN_PAGE_PUBLIC_KEY"]
-    )
+    token_verifier = oidc_auth.tokenVerification(jws=jws, public_key=app.config["FORBIDDEN_PAGE_PUBLIC_KEY"])
     token_verifier.verify
 
     return render_template("forbidden.html", token_verifier=token_verifier)
@@ -135,9 +136,7 @@ def logout():
     Redirect to new feature in NLX that destroys autologin preferences.
     Aka Logout is REALLY logout.
     """
-    logout_url = "https://{}/login?client={}&action=logout".format(
-        oidc_config.OIDC_DOMAIN, oidc_config.OIDC_CLIENT_ID
-    )
+    logout_url = "https://{}/login?client={}&action=logout".format(oidc_config.OIDC_DOMAIN, oidc_config.OIDC_CLIENT_ID)
     return redirect(logout_url, code=302)
 
 
@@ -159,14 +158,10 @@ def signout():
 
 
 @app.route("/dashboard")
-@oidc.oidc_auth('default')
+@oidc.oidc_auth("default")
 def dashboard():
     """Primary dashboard the users will interact with."""
-    logger.info(
-        "User: {} authenticated proceeding to dashboard.".format(
-            session.get("id_token")["sub"]
-        )
-    )
+    logger.info("User: {} authenticated proceeding to dashboard.".format(session.get("id_token")["sub"]))
 
     # Hotfix to set user id for firefox alert
     # XXXTBD Refactor rules later to support full id_conformant session
@@ -181,9 +176,7 @@ def dashboard():
     user = User(session, config.Config(app).settings)
     apps = user.apps(Application(app_list.apps_yml).apps)
 
-    return render_template(
-        "dashboard.html", config=app.config, user=user, apps=apps, alerts=None
-    )
+    return render_template("dashboard.html", config=app.config, user=user, apps=apps, alerts=None)
 
 
 @app.route("/styleguide/dashboard")
@@ -191,26 +184,24 @@ def styleguide_dashboard():
     user = FakeUser(config.Config(app).settings)
     apps = user.apps(Application(app_list.apps_yml).apps)
 
-    return render_template(
-        "dashboard.html", config=app.config, user=user, apps=apps, alerts=None
-    )
+    return render_template("dashboard.html", config=app.config, user=user, apps=apps, alerts=None)
 
 
 @app.route("/styleguide/notifications")
-@oidc.oidc_auth('default')
+@oidc.oidc_auth("default")
 def styleguide_notifications():
     user = FakeUser(config.Config(app).settings)
     return render_template("notifications.html", config=app.config, user=user)
 
 
 @app.route("/notifications")
-@oidc.oidc_auth('default')
+@oidc.oidc_auth("default")
 def notifications():
     user = User(session, config.Config(app).settings)
     return render_template("notifications.html", config=app.config, user=user)
 
 
-@oidc.oidc_auth('default')
+@oidc.oidc_auth("default")
 @app.route("/alert/<alert_id>", methods=["POST"])
 def alert_operation(alert_id):
     if request.method == "POST":
@@ -228,7 +219,7 @@ def alert_operation(alert_id):
             return "500"
 
 
-@oidc.oidc_auth('default')
+@oidc.oidc_auth("default")
 @app.route("/alert/fake", methods=["GET"])
 def alert_faking():
     if request.method == "GET":
@@ -256,7 +247,7 @@ def alert_api():
 
 
 @app.route("/info")
-@oidc.oidc_auth('default')
+@oidc.oidc_auth("default")
 def info():
     """Return the JSONified user session for debugging."""
     return jsonify(

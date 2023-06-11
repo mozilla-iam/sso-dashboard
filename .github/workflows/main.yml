@@ -154,6 +154,9 @@ jobs:
       - name: 'Docker auth'
         run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
 
+      - name: Pull Docker image
+        run: docker pull "${{ env.DOCKER_TAG }}"
+
       - name: Run tests
         uses: addnab/docker-run-action@v3
         with:

@@ -144,7 +144,7 @@ jobs:
           payload-file-path: ".github/workflows/payload-slack-content.json"
         env:
           STATUS_COLOR: dbab09
-          STATUS_TITLE: Testing
+          STATUS_TITLE: Validating Image
           STATUS_VALUE: ':link-run: *Running*'
 
       - name: 'Google auth'

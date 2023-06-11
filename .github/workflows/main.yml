@@ -161,7 +161,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: "${{ env.DOCKER_TAG }}"
-          run: echo "TODO: Add docker validation checks"
+          run: echo "TODO Add docker validation checks"
 
   deploy:
     name: Sending to Cloud Deploy

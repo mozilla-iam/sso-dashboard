@@ -20,7 +20,12 @@ spec:
   template:
     metadata:
       annotations:
-        autoscaling.knative.dev/maxScale: '1'
+        autoscaling.knative.dev/minScale: '1'
+        autoscaling.knative.dev/maxScale: '3'
+        run.googleapis.com/cpu-throttling: 'false'
+        run.googleapis.com/startup-cpu-boost: 'true'
+        run.googleapis.com/ingress: internal-and-cloud-load-balancing
+        run.googleapis.com/ingress-status: internal-and-cloud-load-balancing
     spec:
       containers:
       - name: 'sso-dashboard'

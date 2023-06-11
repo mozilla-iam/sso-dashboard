@@ -125,7 +125,7 @@ jobs:
       - name: Upload docker image as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: "${{ env.DOCKER_TAG }}"
+          name: "${{ env.RELEASE_NAME }}"
           path: /tmp/image.tar
 
   testing:
@@ -156,7 +156,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
-          name: "${{ env.DOCKER_TAG }}"
+          name: "${{ env.RELEASE_NAME }}"
           path: /tmp
 
       - name: Load image

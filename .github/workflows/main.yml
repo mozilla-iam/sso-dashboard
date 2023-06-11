@@ -27,6 +27,9 @@ jobs:
       docker_tag: ${{ steps.docker_tag.outputs.docker_tag  }}
       slack_ts: ${{ steps.slack_ts.outputs.slack_ts }}
     steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v3'
+
       - name: 'Create release name'
         id: release_name
         run: echo "RELEASE_NAME=${{ env.APP }}-${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_OUTPUT"
@@ -57,6 +60,9 @@ jobs:
     env:
       RELEASE_NAME: ${{needs.init.outputs.release_name}}
     steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v3'
+
       - name: Update slack notification
         uses: slackapi/slack-github-action@v1.24.0
         with:
@@ -67,9 +73,6 @@ jobs:
           STATUS_COLOR: dbab09
           STATUS_TITLE: Linting
           STATUS_VALUE: ':link-run: *Running*'
-
-      - name: 'Checkout'
-        uses: 'actions/checkout@v3'
 
       - name:
         run: echo Linting
@@ -82,6 +85,9 @@ jobs:
       RELEASE_NAME: ${{needs.init.outputs.release_name}}
       DOCKER_TAG: ${{needs.init.outputs.docker_tag}}
     steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v3'
+      
       - name: Update slack notification
         uses: slackapi/slack-github-action@v1.24.0
         with:
@@ -92,9 +98,6 @@ jobs:
           STATUS_COLOR: dbab09
           STATUS_TITLE: Building Docker Image
           STATUS_VALUE: ':link-run: *Running*'
-
-      - name: 'Checkout'
-        uses: 'actions/checkout@v3'
 
       - name: 'Google auth'
         id: 'auth'
@@ -118,6 +121,9 @@ jobs:
     env:
       RELEASE_NAME: ${{needs.init.outputs.release_name}}
     steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v3'
+
       - name: Update slack notification
         uses: slackapi/slack-github-action@v1.24.0
         with:
@@ -139,6 +145,9 @@ jobs:
     env:
       RELEASE_NAME: ${{needs.init.outputs.release_name}}
     steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v3'
+
       - name: Update slack notification
         uses: slackapi/slack-github-action@v1.24.0
         with:
@@ -178,6 +187,9 @@ jobs:
     env:
       RELEASE_NAME: ${{needs.init.outputs.release_name}}
     steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v3'
+
       - name: Update slack deployment complete
         if: needs.deploy.result == 'success'
         uses: slackapi/slack-github-action@v1.24.0

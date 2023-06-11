@@ -26,3 +26,4 @@ tests/test_activate_actual.output
 bower_components
 node_modules
 .vscode/*
+build/*

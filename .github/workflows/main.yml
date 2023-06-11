@@ -151,8 +151,8 @@ jobs:
       - name: Pull docker image
         run: docker pull "${{ env.DOCKER_TAG }}"
 
-      - name:
-      - uses: addnab/docker-run-action@v3
+      - name: Run tests
+        uses: addnab/docker-run-action@v3
         with:
           image: "${{ env.DOCKER_TAG }}"
           run: echo "hello world"

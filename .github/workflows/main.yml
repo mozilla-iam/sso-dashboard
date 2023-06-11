@@ -109,10 +109,21 @@ jobs:
       - name: 'Docker auth'
         run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
 
-      - name: 'Build and push container'
-        run: |-
-          docker build --build-arg RELEASE_NAME=${{ env.RELEASE_NAME }} -t "${{ env.DOCKER_TAG }}" .
-          docker push "${{ env.DOCKER_TAG }}"
+#      - name: 'Build and push container'
+#        run: |-
+#          docker build --build-arg RELEASE_NAME=${{ env.RELEASE_NAME }} -t "${{ env.DOCKER_TAG }}" .
+#         docker push "${{ env.DOCKER_TAG }}"
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          build-args: RELEASE_NAME=${{ env.RELEASE_NAME }}
+          push: true
+          tags: "${{ env.DOCKER_TAG }}"
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
 
   testing:
     name: Testing

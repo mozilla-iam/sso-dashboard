@@ -1,7 +1,6 @@
 FROM python:3.7-bullseye
 ARG RELEASE_NAME
 
-RUN echo $RELEASE_NAME > /version.json
 RUN apt update && apt install -y nodejs npm \
     && rm -rf /var/lib/apt/lists/*
 RUN npm install -g sass
@@ -16,5 +15,6 @@ RUN rm /dashboard/static/css/gen/all.css \
     /dashboard/static/js/gen/packed.js \
     /dashboard/data/apps.yml-etag 2& > /dev/null
 RUN mkdir -p /dashboard/static/img/logos
+RUN echo $RELEASE_NAME > /version.json
 
 ENTRYPOINT ["/start.sh"]

@@ -121,7 +121,6 @@ jobs:
           tags: "${{ env.DOCKER_TAG }}"
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          outputs: type=docker,dest=/tmp/image.tar
 
   testing:
     name: Testing
@@ -159,7 +158,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: "${{ env.DOCKER_TAG }}"
-          run: echo "hello world"
+          run: "cd /dashboard && pip install -r requirements-dev.txt && python3 setup.py test && python3 setup.py pytest"
 
   deploy:
     name: Sending to Cloud Deploy

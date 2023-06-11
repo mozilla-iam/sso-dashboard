@@ -74,6 +74,9 @@ jobs:
           STATUS_TITLE: Linting/Unittesting
           STATUS_VALUE: ':link-run: *Running*'
 
+      - name: Install tox
+        run: pip install tox
+
       - name: Running Tox
         run: tox
 
@@ -157,10 +160,7 @@ jobs:
       - name: Pull Docker image
         run: docker pull "${{ env.DOCKER_TAG }}"
 
-      - name: Install tox
-        run: pip install tox
-
-      - name: Run tests
+      - name: Run validate docker image
         uses: addnab/docker-run-action@v3
         with:
           image: "${{ env.DOCKER_TAG }}"

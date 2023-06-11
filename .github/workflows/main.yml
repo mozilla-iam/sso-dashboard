@@ -75,7 +75,7 @@ jobs:
           STATUS_VALUE: ':link-run: *Running*'
 
       - name:
-        run: echo Linting
+        run: exit 1
 
   build:
     name: Building

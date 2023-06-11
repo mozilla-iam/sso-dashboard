@@ -8,9 +8,9 @@ with open("README.md", "r") as fh:
 
 requirements = []
 
-setup_requirements = ['pytest-runner', 'credstash', 'everett', 'josepy', 'flask_pyoidc']
+setup_requirements = ["pytest-runner", "credstash", "everett", "josepy", "flask_pyoidc"]
 
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'moto', 'pytest-moto', 'faker']
+test_requirements = ["pytest", "pytest-watch", "pytest-cov", "moto", "pytest-moto", "faker"]
 
 setup(
     name="dashboard",
@@ -28,9 +28,9 @@ setup(
     install_requires=requirements,
     license="Mozilla Public License 2.0",
     include_package_data=True,
-    packages=find_packages(include=['sso_dashboard']),
+    packages=find_packages(),
     setup_requires=setup_requirements,
-    test_suite='tests',
+    test_suite="tests",
     tests_require=test_requirements,
-    zip_safe=False
+    zip_safe=False,
 )

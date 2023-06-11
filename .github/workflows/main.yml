@@ -6,22 +6,89 @@ on:
     branches:
       - 'revamp'
 
+defaults:
+  runs-on: ubuntu-latest
+
+permissions:
+  contents: 'read'
+  id-token: 'write'
+    
 env:
   APP: sso-dashboard
   GAR_LOCATION: us-east1
   PROJECT_ID: iam-auth0
   REGION: us-east1
   CHANNEL_IDS: C05AMLCL4JX
+  SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
 
 jobs:
-  deploy:
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-    env:
-      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
-    runs-on: ubuntu-latest
+  init:
+    name: Init
+    outputs:
+      release_name: ${{ steps.release_name.outputs.release_name }}
+      slack_ts: ${{ steps.slack_ts.outputs.ts }}
     steps:
+      - name: 'Create release name'
+        id: release_name
+        run: |-
+          echo "RELEASE_NAME=${{ env.APP }}-${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_OUTPUT"
+
+      - name: Send initial slack notification
+        uses: slackapi/slack-github-action@v1.24.0
+        id: slack
+        with:
+          channel-id: ${{ env.CHANNEL_IDS }}
+          payload-file-path: ".github/workflows/payload-slack-content.json"
+        env:
+          STATUS_COLOR: dbab09
+          STATUS_TITLE: Starting Deployment Pipeline
+          STATUS_VALUE: ':link-run: *Running*'
+
+      - name: Output slack ts
+        id: slack_ts
+        run: echo ${{ steps.slack.outputs.ts }} >> "$GITHUB_OUTPUT"
+
+  lint:
+    name: Linting
+    needs: init
+    env:
+      RELEASE_NAME: ${{needs.init.outputs.release_name}}
+    steps:
+      - name: Update slack notification
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          update-ts: ${{ needs.init.outputs.slack_ts }}
+          channel-id: ${{ env.CHANNEL_IDS }}
+          payload-file-path: ".github/workflows/payload-slack-content.json"
+        env:
+          STATUS_COLOR: dbab09
+          STATUS_TITLE: Linting
+          STATUS_VALUE: ':link-run: *Running*'
+
+      - name: 'Checkout'
+        uses: 'actions/checkout@v3'
+
+      - name:
+        run: echo Linting
+
+  build:
+    name: Building
+    needs: [ init, lint ]
+    env:
+      RELEASE_NAME: ${{needs.init.outputs.release_name}}
+      DOCKER_TAG: "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}"
+    steps:
+      - name: Update slack notification
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          update-ts: ${{ needs.init.outputs.slack_ts }}
+          channel-id: ${{ env.CHANNEL_IDS }}
+          payload-file-path: ".github/workflows/payload-slack-content.json"
+        env:
+          STATUS_COLOR: dbab09
+          STATUS_TITLE: Building Docker Image
+          STATUS_VALUE: ':link-run: *Running*'
+
       - name: 'Checkout'
         uses: 'actions/checkout@v3'
 
@@ -35,38 +102,54 @@ jobs:
       - name: 'Docker auth'
         run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
 
-      - name: 'Create release name'
+      - name: 'Build and push container'
         run: |-
-          echo "RELEASE_NAME=${{ env.APP }}-${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}" >> ${GITHUB_ENV}
+          docker build --build-arg RELEASE_NAME=${{ env.RELEASE_NAME }} -t "${{ env.DOCKER_TAG }}" .
+          docker push "${{ env.DOCKER_TAG }}"
 
-      - name: Send initial slack notification
+  testing:
+    name: Testing
+    needs: [ init, lint, build ]
+    env:
+      RELEASE_NAME: ${{needs.init.outputs.release_name}}
+    steps:
+      - name: Update slack notification
         uses: slackapi/slack-github-action@v1.24.0
-        id: slack
         with:
+          update-ts: ${{ needs.init.outputs.slack_ts }}
           channel-id: ${{ env.CHANNEL_IDS }}
           payload-file-path: ".github/workflows/payload-slack-content.json"
         env:
           STATUS_COLOR: dbab09
-          STATUS_TITLE: Building Docker Image
+          STATUS_TITLE: Testing
           STATUS_VALUE: ':link-run: *Running*'
 
-      - name: 'Build and push container'
-        run: |-
-          docker build --build-arg RELEASE_NAME=${{ env.RELEASE_NAME }} \
-            -t "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}" .
-          docker push "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}"
+      - name: Testing
+        run: echo Testing
 
-      - name: Update slack build in progress
-        if: success()
+  deploy:
+    name: Sending to Cloud Deploy
+    needs: [ init, lint, build, testing ]
+    env:
+      RELEASE_NAME: ${{needs.init.outputs.release_name}}
+    steps:
+      - name: Update slack notification
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          update-ts: ${{ steps.slack.outputs.ts }}
+          update-ts: ${{ needs.init.outputs.slack_ts }}
           channel-id: ${{ env.CHANNEL_IDS }}
           payload-file-path: ".github/workflows/payload-slack-content.json"
         env:
           STATUS_COLOR: dbab09
           STATUS_TITLE: Sending to Cloud Deploy
           STATUS_VALUE: ':link-run: *Running*'
+
+      - name: 'Google auth'
+        id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: '${{ secrets.WIF_PROVIDER }}'
+          service_account: '${{ secrets.WIF_SERVICE_ACCOUNT }}' 
 
       - name: 'Render cloud deploy config manifests from templates'
         run: for template in $(ls clouddeploy/*.template.yaml); do envsubst < ${template} > ${template%%.*}.yaml ; done
@@ -81,11 +164,18 @@ jobs:
           skaffold_file: 'clouddeploy/skaffold.yaml'
           images: 'app=${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}'
 
+  final:
+    name: Send final Slack notification
+    needs: [ init, lint, build, testing, deploy ]
+    if: always()
+    env:
+      RELEASE_NAME: ${{needs.init.outputs.release_name}}
+    steps:
       - name: Update slack deployment complete
-        if: success()
+        if: needs.deploy.result == success
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          update-ts: ${{ steps.slack.outputs.ts }}
+          update-ts: ${{ needs.init.outputs.slack_ts }}
           channel-id: ${{ env.CHANNEL_IDS }}
           payload-file-path: ".github/workflows/payload-slack-content.json"
         env:
@@ -94,21 +184,20 @@ jobs:
           STATUS_VALUE: ':link-zelda: *Completed*'
 
       - name: Update slack deployment ready for promotion
-        if: success()
+        if: needs.deploy.result == success
         uses: slackapi/slack-github-action@v1.24.0
         with:
           channel-id: ${{ env.CHANNEL_IDS }}
           payload-file-path: ".github/workflows/payload-slack-deploy.json"
 
       - name: Update slack deployment failed
-        if: failure()
+        if: needs.lint.result == failure || needs.build.result == failure || needs.testing.result == failure || needs.deploy.result == failure
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          update-ts: ${{ steps.slack.outputs.ts }}
+          update-ts: ${{ needs.init.outputs.slack_ts }}
           channel-id: ${{ env.CHANNEL_IDS }}
           payload-file-path: ".github/workflows/payload-slack-content.json"
         env:
           STATUS_COLOR: d81313
           STATUS_TITLE: Building and Deploy
           STATUS_VALUE: ':skull_and_crossbones: *Failed*'
-

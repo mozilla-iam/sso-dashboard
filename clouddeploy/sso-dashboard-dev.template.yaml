@@ -16,6 +16,9 @@ apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   name: 'sso-dashboard-dev'
+  annotations:
+    run.googleapis.com/ingress: internal-and-cloud-load-balancing
+    run.googleapis.com/description: 'https://sso.allizom.org'
 spec:
   template:
     metadata:
@@ -24,8 +27,6 @@ spec:
         autoscaling.knative.dev/maxScale: '3'
         run.googleapis.com/cpu-throttling: 'false'
         run.googleapis.com/startup-cpu-boost: 'true'
-        run.googleapis.com/ingress: internal-and-cloud-load-balancing
-        run.googleapis.com/ingress-status: internal-and-cloud-load-balancing
     spec:
       containers:
       - name: 'sso-dashboard'

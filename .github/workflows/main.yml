@@ -75,7 +75,7 @@ jobs:
           STATUS_VALUE: ':link-run: *Running*'
 
       - name:
-        run: exit 1
+        run: echo Linting
 
   build:
     name: Building
@@ -118,8 +118,11 @@ jobs:
     name: Testing
     needs: [ init, lint, build ]
     runs-on: ubuntu-latest
+    container:
+      image: 
     env:
       RELEASE_NAME: ${{needs.init.outputs.release_name}}
+      DOCKER_TAG: ${{needs.init.outputs.docker_tag}}
     steps:
       - name: 'Checkout'
         uses: 'actions/checkout@v3'
@@ -135,8 +138,24 @@ jobs:
           STATUS_TITLE: Testing
           STATUS_VALUE: ':link-run: *Running*'
 
-      - name: Testing
-        run: echo Testing
+      - name: 'Google auth'
+        id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: '${{ secrets.WIF_PROVIDER }}'
+          service_account: '${{ secrets.WIF_SERVICE_ACCOUNT }}' 
+
+      - name: 'Docker auth'
+        run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
+
+      - name: Pull docker image
+        run: docker pull "${{ env.DOCKER_TAG }}"
+
+      - name:
+      - uses: addnab/docker-run-action@v3
+        with:
+          image: "${{ env.DOCKER_TAG }}"
+          run: echo "hello world"
 
   deploy:
     name: Sending to Cloud Deploy
@@ -144,6 +163,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RELEASE_NAME: ${{needs.init.outputs.release_name}}
+      DOCKER_TAG: ${{needs.init.outputs.docker_tag}}
     steps:
       - name: 'Checkout'
         uses: 'actions/checkout@v3'
@@ -177,10 +197,10 @@ jobs:
           region: '${{ env.REGION }}'
           description: '${{ env.GITHUB_COMMIT_MSG }}'
           skaffold_file: 'clouddeploy/skaffold.yaml'
-          images: 'app=${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}'
+          images: 'app=${{ env.DOCKER_TAG }}'
 
   final:
-    name: Send final Slack notification
+    name: Finalize Notifications
     needs: [ init, lint, build, testing, deploy ]
     runs-on: ubuntu-latest
     if: always()

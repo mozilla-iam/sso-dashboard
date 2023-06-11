@@ -27,3 +27,4 @@ bower_components
 node_modules
 .vscode/*
 build/*
+envfile

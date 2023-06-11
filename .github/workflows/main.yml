@@ -54,7 +54,7 @@ jobs:
         run: echo "SLACK_TS=${{ steps.slack.outputs.ts }}" >> "$GITHUB_OUTPUT"
 
   lint:
-    name: Linting
+    name: Linting/Unittesting
     needs: init
     runs-on: ubuntu-latest
     env:
@@ -71,11 +71,11 @@ jobs:
           payload-file-path: ".github/workflows/payload-slack-content.json"
         env:
           STATUS_COLOR: dbab09
-          STATUS_TITLE: Linting
+          STATUS_TITLE: Linting/Unittesting
           STATUS_VALUE: ':link-run: *Running*'
 
-      - name:
-        run: echo Linting
+      - name: Running Tox
+        run: tox
 
   build:
     name: Building
@@ -112,7 +112,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build docker image with buildx
+      - name: Build and push Docker image with buildx
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -122,8 +122,8 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  testing:
-    name: Testing
+  validate:
+    name: Validating
     needs: [ init, lint, build ]
     runs-on: ubuntu-latest
     env:
@@ -161,11 +161,11 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: "${{ env.DOCKER_TAG }}"
-          run: "cd /dashboard && pip install -r requirements-dev.txt && python3 setup.py test && python3 setup.py pytest"
+          run: echo TODO: Add docker validation checks
 
   deploy:
     name: Sending to Cloud Deploy
-    needs: [ init, lint, build, testing ]
+    needs: [ init, lint, build, validate ]
     runs-on: ubuntu-latest
     env:
       RELEASE_NAME: ${{needs.init.outputs.release_name}}
@@ -207,7 +207,7 @@ jobs:
 
   final:
     name: Finalize Notifications
-    needs: [ init, lint, build, testing, deploy ]
+    needs: [ init, lint, build, validate, deploy ]
     runs-on: ubuntu-latest
     if: always()
     env:
@@ -236,7 +236,7 @@ jobs:
           payload-file-path: ".github/workflows/payload-slack-deploy.json"
 
       - name: Update slack deployment failed
-        if: needs.lint.result == 'failure' || needs.build.result == 'failure' || needs.testing.result == 'failure' || needs.deploy.result == 'failure'
+        if: needs.lint.result == 'failure' || needs.build.result == 'failure' || needs.validate.result == 'failure' || needs.deploy.result == 'failure'
         uses: slackapi/slack-github-action@v1.24.0
         with:
           update-ts: ${{ needs.init.outputs.slack_ts }}

@@ -118,8 +118,6 @@ jobs:
     name: Testing
     needs: [ init, lint, build ]
     runs-on: ubuntu-latest
-    container:
-      image: 
     env:
       RELEASE_NAME: ${{needs.init.outputs.release_name}}
       DOCKER_TAG: ${{needs.init.outputs.docker_tag}}

@@ -11,6 +11,7 @@ A python flask implementation of an SSO dashboard.  OIDC for authentication and 
 
 # Contributors
 
+* Jake Watkins [:dividehex] jwatkins@mozilla.com
 * Andrew Krug [:andrew] akrug@mozilla.com
 
 # Projects this Project Uses

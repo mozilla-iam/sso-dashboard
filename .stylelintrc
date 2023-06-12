@@ -1,6 +1,7 @@
 {
   "extends": "stylelint-config-standard-scss",
   "rules": {
+    "no-descending-specificity": null,
     "color-no-invalid-hex": true,
 
     "font-family-no-duplicate-names": true,

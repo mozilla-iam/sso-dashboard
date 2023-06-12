@@ -4,35 +4,35 @@
     --logo-border: 1px;
 }
 @font-face {
-    font-family: 'Open Sans';
+    font-family: "Open Sans";
     font-weight: normal;
     font-style: normal;
-    src: url('../../fonts/opensans-regular.woff2') format('woff2'),
-        url('../../fonts/opensans-regular.woff') format('woff');
+    src: url("../../fonts/opensans-regular.woff2") format("woff2"),
+        url("../../fonts/opensans-regular.woff") format("woff");
 }
 
 @font-face {
-    font-family: 'Open Sans';
+    font-family: "Open Sans";
     font-weight: bold;
     font-style: normal;
-    src: url('../../fonts/opensans-bold.woff2') format('woff2'),
-        url('../../fonts/opensans-bold.woff') format('woff');
+    src: url("../../fonts/opensans-bold.woff2") format("woff2"),
+        url("../../fonts/opensans-bold.woff") format("woff");
 }
 
 @font-face {
-    font-family: 'Open Sans';
+    font-family: "Open Sans";
     font-weight: normal;
     font-style: italic;
-    src: url('../../fonts/opensans-italic.woff2') format('woff2'),
-        url('../../fonts/opensans-italic.woff') format('woff');
+    src: url("../../fonts/opensans-italic.woff2") format("woff2"),
+        url("../../fonts/opensans-italic.woff") format("woff");
 }
 
 @font-face {
-    font-family: 'Open Sans';
+    font-family: "Open Sans";
     font-weight: bold;
     font-style: italic;
-    src: url('../../fonts/opensans-bolditalic.woff2') format('woff2'),
-        url('../../fonts/opensans-bolditalic.woff') format('woff');
+    src: url("../../fonts/opensans-bolditalic.woff2") format("woff2"),
+        url("../../fonts/opensans-bolditalic.woff") format("woff");
 }
 
 $gray: #808080;
@@ -63,7 +63,7 @@ body {
     margin: 0;
     font-size: 16px;
     line-height: 1.4;
-    font-family: 'Open Sans', sans-serif;
+    font-family: "Open Sans", sans-serif;
     letter-spacing: 0.03em;
 }
 
@@ -124,7 +124,6 @@ body {
 
                 &:active,
                 &:focus {
-
                     &::placeholder {
                         color: white;
                     }
@@ -142,7 +141,6 @@ body {
                 cursor: pointer;
 
                 &.yellow-border {
-
                     g {
                         fill: $yellow;
                     }
@@ -196,9 +194,9 @@ body {
 
         .alerts-count {
             background-color: $red;
-            width: .8em;
-            height: .8em;
-            border-radius: .8em;
+            width: 0.8em;
+            height: 0.8em;
+            border-radius: 0.8em;
             position: absolute;
             top: 10px;
             right: 50px;
@@ -353,7 +351,7 @@ body {
             }
 
             span {
-                font-size: .8em;
+                font-size: 0.8em;
             }
         }
 
@@ -369,7 +367,6 @@ body {
         }
 
         .alert-message {
-
             @media all and (max-width: 767px) {
                 margin-bottom: 10px;
             }
@@ -385,7 +382,7 @@ body {
 
     .closebtn {
         color: white;
-        opacity: .8;
+        opacity: 0.8;
         font-size: 2em;
         line-height: 20px;
         cursor: pointer;
@@ -430,7 +427,6 @@ body {
 }
 
 .alert[data-loading] {
-
     .loading-indicator {
         display: block;
     }
@@ -445,7 +441,7 @@ body {
     }
 
     .btn-alert {
-        padding: .5em 1em;
+        padding: 0.5em 1em;
         background: white;
         border: 1px solid black;
         font-family: inherit;
@@ -453,7 +449,7 @@ body {
         color: black;
         text-decoration: none;
         border-radius: 1.5em;
-        margin: .5em;
+        margin: 0.5em;
         transition: background-color 0.2s ease-in-out;
 
         &:first-of-type {
@@ -478,7 +474,7 @@ body {
         svg {
             display: inline-block;
             vertical-align: middle;
-            margin-right: .5em;
+            margin-right: 0.5em;
 
             path {
                 fill: #000;
@@ -556,14 +552,16 @@ body {
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;
-                width: calc(var(--logo-width) + (var(--logo-padding) * 2) + (var(--logo-border) * 2));
+                width: calc(
+                    var(--logo-width) + (var(--logo-padding) * 2) +
+                        (var(--logo-border) * 2)
+                );
             }
         }
     }
 }
 
 .notifications {
-
     h1 {
         color: black;
         display: inline-block;
@@ -586,9 +584,9 @@ body {
             color: white;
             display: inline-block;
             font-weight: bold;
-            margin-left: .5em;
+            margin-left: 0.5em;
             text-align: center;
-            font-size: .875em;
+            font-size: 0.875em;
             line-height: 1.4;
         }
     }
@@ -634,7 +632,7 @@ body {
                 color: var(--alert-color);
                 background-color: var(--alert-bg-color);
                 padding: 5px 35px;
-                font-size: .875em;
+                font-size: 0.875em;
             }
 
             border-bottom: 4px solid var(--alert-bg-color);
@@ -644,7 +642,7 @@ body {
             padding: 32px;
 
             .alert-datetime {
-                font-size: .9em;
+                font-size: 0.9em;
             }
 
             .alert-summary {
@@ -688,7 +686,7 @@ body {
 .alert-survey {
     border-top: 2px solid $darkgray;
     text-align: left;
-    font-size: .875em;
+    font-size: 0.875em;
 
     .notifications & {
         border-top-color: $bggray;
@@ -762,10 +760,10 @@ body {
 }
 
 .alert-timing {
-    margin: .5em 0 1.5em;
+    margin: 0.5em 0 1.5em;
 
     time {
-        font-size: .75em;
+        font-size: 0.75em;
     }
 }
 
@@ -800,7 +798,7 @@ body {
 
             &.notice {
                 font-style: italic;
-                font-size: .8em;
+                font-size: 0.8em;
             }
         }
 
@@ -868,7 +866,7 @@ footer {
                 width: 20px;
                 margin-right: 10px;
                 display: inline-block;
-                opacity: .8;
+                opacity: 0.8;
             }
 
             a {
@@ -911,7 +909,6 @@ footer {
         }
 
         &:last-child {
-
             span {
                 margin-bottom: 15px;
             }
@@ -931,7 +928,7 @@ footer {
             color: $gray;
 
             img {
-                opacity: .3;
+                opacity: 0.3;
             }
         }
 
@@ -988,7 +985,7 @@ footer {
         max-width: 90%;
 
         &:before {
-            content: ' ';
+            content: " ";
             position: absolute;
             width: 0;
             height: 0;
@@ -1041,13 +1038,11 @@ footer {
 }
 
 .forbidden {
-
     .panel {
         max-width: calc(100% - 60px);
     }
 
     .section {
-
         .mui-btn {
             max-width: calc(100% - 100px);
             float: none;
@@ -1062,11 +1057,8 @@ footer {
 }
 
 @media all and (max-width: 991px) {
-
     .error-page {
-
         .section {
-
             .youtube {
                 width: 340px;
                 height: 191px;
@@ -1076,19 +1068,16 @@ footer {
 }
 
 @media all and (max-width: 767px) {
-
     .mui-appbar .filter .mui-textfield input {
         width: 240px;
     }
 
     .error-page {
-
         .panel {
             max-width: calc(100% - 60px);
         }
 
         .section {
-
             .mui-btn {
                 max-width: calc(100% - 100px);
                 float: none;
@@ -1124,16 +1113,13 @@ footer {
 }
 
 @media all and (max-width: 543px) {
-
     $appbar-height: 80px;
 
     .mui-appbar {
         height: $appbar-height;
 
         &.menu-enabled {
-
             > div {
-
                 &:first-child {
                     width: 70px;
                 }
@@ -1193,7 +1179,7 @@ footer {
             display: inline-block;
             height: $appbar-height;
             width: $appbar-height;
-            background-image: url('../../img/search.svg');
+            background-image: url("../../img/search.svg");
             background-repeat: no-repeat;
             background-position: center center;
             background-size: 18px;
@@ -1204,7 +1190,7 @@ footer {
                 background-color: black;
                 color: $lightgray;
                 border-bottom: 1px solid black;
-                background-image: url('../../img/search-w.svg');
+                background-image: url("../../img/search-w.svg");
             }
 
             &.menu-enabled {
@@ -1267,7 +1253,6 @@ footer {
 
                 &:active,
                 &:focus {
-
                     &::placeholder {
                         color: black;
                     }
@@ -1284,7 +1269,6 @@ footer {
         padding: 10px;
 
         .app-grid {
-
             .app-tile {
                 margin: 10px;
                 max-width: 122px;
@@ -1304,7 +1288,6 @@ footer {
     }
 
     .logout {
-
         .panel {
             margin-top: 20px;
             padding: 30px;
@@ -1312,9 +1295,8 @@ footer {
     }
 
     footer {
-
         .icon-container {
-            margin: .2em 1em;
+            margin: 0.2em 1em;
 
             .icon {
                 display: flex;
@@ -1341,11 +1323,8 @@ footer {
 }
 
 @media all and (max-width: 359px) {
-
     .mui-appbar {
-
         .menu {
-
             &.enabled {
                 width: 160px;
 

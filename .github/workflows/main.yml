@@ -15,7 +15,7 @@ env:
   GAR_LOCATION: us-east1
   PROJECT_ID: iam-auth0
   REGION: us-east1
-  CHANNEL_IDS: C05AMLCL4JX
+  CHANNEL_IDS: G01AC4VU4UV
   SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
 
 jobs:
@@ -54,7 +54,7 @@ jobs:
         run: echo "SLACK_TS=${{ steps.slack.outputs.ts }}" >> "$GITHUB_OUTPUT"
 
   lint:
-    name: Linting/Unittesting
+    name: Linting / Unit Testing
     needs: init
     runs-on: ubuntu-latest
     env:

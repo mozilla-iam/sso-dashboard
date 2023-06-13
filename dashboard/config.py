@@ -32,7 +32,7 @@ class DefaultConfig(object):
     SECRET_KEY = CONFIG("secret_key", namespace="sso-dashboard")
     SERVER_NAME = CONFIG("server_name", namespace="sso-dashboard", default="localhost:8000")
     SESSION_COOKIE_NAME = SERVER_NAME + "_session"
-    
+
     S3_BUCKET = CONFIG("s3_bucket", namespace="sso-dashboard")
 
     CDN = CONFIG(

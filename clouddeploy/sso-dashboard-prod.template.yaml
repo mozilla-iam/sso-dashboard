@@ -43,7 +43,7 @@ spec:
           - '--log-level=debug'
         ports:
           - name: http1
-            containerPort: 8000 
+            containerPort: 8000
         env:
           - name: TARGET
             value: Prod

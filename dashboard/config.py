@@ -25,13 +25,14 @@ class DefaultConfig(object):
     PERMANENT_SESSION = bool(CONFIG("permanent_session", namespace="sso-dashboard", default="True"))
     PERMANENT_SESSION_LIFETIME = int(CONFIG("permanent_session_lifetime", namespace="sso-dashboard", default="86400"))
 
-    SESSION_COOKIE_SAMESITE = "Strict"
+    SESSION_COOKIE_SAMESITE = CONFIG("session_cookie_samesite", namespace="sso-dashboard", default="strict")
     SESSION_COOKIE_HTTPONLY = bool(CONFIG("session_cookie_httponly", namespace="sso-dashboard", default="True"))
     LOGGER_NAME = CONFIG("logger_name", namespace="sso-dashboard", default="sso-dashboard")
 
     SECRET_KEY = CONFIG("secret_key", namespace="sso-dashboard")
     SERVER_NAME = CONFIG("server_name", namespace="sso-dashboard", default="localhost:8000")
-
+    SESSION_COOKIE_NAME = SERVER_NAME + "_session"
+    
     S3_BUCKET = CONFIG("s3_bucket", namespace="sso-dashboard")
 
     CDN = CONFIG(

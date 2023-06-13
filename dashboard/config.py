@@ -25,7 +25,7 @@ class DefaultConfig(object):
     PERMANENT_SESSION = bool(CONFIG("permanent_session", namespace="sso-dashboard", default="True"))
     PERMANENT_SESSION_LIFETIME = int(CONFIG("permanent_session_lifetime", namespace="sso-dashboard", default="86400"))
 
-    SESSION_COOKIE_SAMESITE = CONFIG("session_cookie_samesite", namespace="sso-dashboard", default="strict")
+    SESSION_COOKIE_SAMESITE = CONFIG("session_cookie_samesite", namespace="sso-dashboard", default="lax")
     SESSION_COOKIE_HTTPONLY = bool(CONFIG("session_cookie_httponly", namespace="sso-dashboard", default="True"))
     LOGGER_NAME = CONFIG("logger_name", namespace="sso-dashboard", default="sso-dashboard")
 

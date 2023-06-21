@@ -1,38 +1,33 @@
-:root {
-    --logo-width: 130px;
-    --logo-padding: 10px;
-    --logo-border: 1px;
-}
 @font-face {
-    font-family: "Open Sans";
+    font-family: 'Open Sans';
     font-weight: normal;
     font-style: normal;
-    src: url("../../fonts/opensans-regular.woff2") format("woff2"),
-        url("../../fonts/opensans-regular.woff") format("woff");
+    src: url('../../fonts/opensans-regular.woff2') format('woff2'),
+        url('../../fonts/opensans-regular.woff') format('woff');
 }
 
 @font-face {
-    font-family: "Open Sans";
+    font-family: 'Open Sans';
     font-weight: bold;
     font-style: normal;
-    src: url("../../fonts/opensans-bold.woff2") format("woff2"),
-        url("../../fonts/opensans-bold.woff") format("woff");
+    src: url('../../fonts/opensans-bold.woff2') format('woff2'),
+        url('../../fonts/opensans-bold.woff') format('woff');
 }
 
 @font-face {
-    font-family: "Open Sans";
+    font-family: 'Open Sans';
     font-weight: normal;
     font-style: italic;
-    src: url("../../fonts/opensans-italic.woff2") format("woff2"),
-        url("../../fonts/opensans-italic.woff") format("woff");
+    src: url('../../fonts/opensans-italic.woff2') format('woff2'),
+        url('../../fonts/opensans-italic.woff') format('woff');
 }
 
 @font-face {
-    font-family: "Open Sans";
+    font-family: 'Open Sans';
     font-weight: bold;
     font-style: italic;
-    src: url("../../fonts/opensans-bolditalic.woff2") format("woff2"),
-        url("../../fonts/opensans-bolditalic.woff") format("woff");
+    src: url('../../fonts/opensans-bolditalic.woff2') format('woff2'),
+        url('../../fonts/opensans-bolditalic.woff') format('woff');
 }
 
 $gray: #808080;
@@ -43,10 +38,8 @@ $bggray: #f8f8f8;
 $yellow: #faba00;
 $blue: #229dc4;
 $red: #d04437;
-
 $appbar-height: 70px;
-
-$alert-low: #cccccc;
+$alert-low: #ccc;
 $alert-medium: #4a6785;
 $alert-high: #ffd351;
 $alert-maximum: #d04437;
@@ -63,7 +56,7 @@ body {
     margin: 0;
     font-size: 16px;
     line-height: 1.4;
-    font-family: "Open Sans", sans-serif;
+    font-family: 'Open Sans', sans-serif;
     letter-spacing: 0.03em;
 }
 
@@ -124,6 +117,7 @@ body {
 
                 &:active,
                 &:focus {
+
                     &::placeholder {
                         color: white;
                     }
@@ -141,6 +135,7 @@ body {
                 cursor: pointer;
 
                 &.yellow-border {
+
                     g {
                         fill: $yellow;
                     }
@@ -194,9 +189,9 @@ body {
 
         .alerts-count {
             background-color: $red;
-            width: 0.8em;
-            height: 0.8em;
-            border-radius: 0.8em;
+            width: .8em;
+            height: .8em;
+            border-radius: .8em;
             position: absolute;
             top: 10px;
             right: 50px;
@@ -286,7 +281,7 @@ body {
     #alert-nightly {
         display: none;
 
-        @media all and (max-width: 767px) {
+        @media all and (width <= 767px) {
             visibility: hidden;
             padding: 0;
             height: 0;
@@ -303,7 +298,7 @@ body {
         overflow: hidden; // establish a new block formatting context
 
         // this is the width which comfortably fits a risk indicator and text content
-        @media (min-width: 40em) {
+        @media (width >= 40em) {
             padding: 0.5em 1em;
         }
 
@@ -343,7 +338,7 @@ body {
             text-align: center;
             margin: 1em 0;
 
-            @media (min-width: 40em) {
+            @media (width >= 40em) {
                 position: absolute;
                 left: 1em;
                 top: 1em;
@@ -351,7 +346,7 @@ body {
             }
 
             span {
-                font-size: 0.8em;
+                font-size: .8em;
             }
         }
 
@@ -359,15 +354,15 @@ body {
             margin: 1em 0;
             max-width: 60em;
 
-            @media (min-width: 40em) {
+            @media (width >= 40em) {
                 margin: 1em auto;
                 padding-left: 11em; /* always have space for abs pos risk indicator */
-                padding-right: 11em; /* balance space on left*/
+                padding-right: 11em; /* balance space on left */
             }
         }
 
         .alert-message {
-            @media all and (max-width: 767px) {
+            @media all and (width <= 767px) {
                 margin-bottom: 10px;
             }
 
@@ -382,7 +377,7 @@ body {
 
     .closebtn {
         color: white;
-        opacity: 0.8;
+        opacity: .8;
         font-size: 2em;
         line-height: 20px;
         cursor: pointer;
@@ -427,6 +422,7 @@ body {
 }
 
 .alert[data-loading] {
+
     .loading-indicator {
         display: block;
     }
@@ -441,7 +437,7 @@ body {
     }
 
     .btn-alert {
-        padding: 0.5em 1em;
+        padding: .5em 1em;
         background: white;
         border: 1px solid black;
         font-family: inherit;
@@ -449,7 +445,7 @@ body {
         color: black;
         text-decoration: none;
         border-radius: 1.5em;
-        margin: 0.5em;
+        margin: .5em;
         transition: background-color 0.2s ease-in-out;
 
         &:first-of-type {
@@ -474,7 +470,7 @@ body {
         svg {
             display: inline-block;
             vertical-align: middle;
-            margin-right: 0.5em;
+            margin-right: .5em;
 
             path {
                 fill: #000;
@@ -492,11 +488,10 @@ body {
         padding-left: 0;
         list-style: none;
         display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
+        flex-flow: row wrap;
         justify-content: center;
 
-        @media all and (max-width: 767px) {
+        @media all and (width <= 767px) {
             width: 100%;
             margin: auto;
         }
@@ -527,18 +522,18 @@ body {
 
             .app-logo {
                 background-color: white;
-                border: var(--logo-border) solid $lightgray;
-                padding: var(--logo-padding);
-                width: var(--logo-width);
-                height: var(--logo-width);
+                border: 1px solid $lightgray;
+                padding: 10px;
+                width: 130px;
+                height: 130px;
                 display: table-cell;
                 vertical-align: middle;
 
                 img {
                     display: block;
                     margin: 0 auto;
-                    max-width: calc(var(--logo-width) - 10px);
-                    max-height: calc(var(--logo-width) - 10px);
+                    max-width: 120px;
+                    max-height: 120px;
                 }
 
                 &.yellow-border {
@@ -549,19 +544,13 @@ body {
             .app-name {
                 color: black;
                 margin: 10px 0;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                overflow: hidden;
-                width: calc(
-                    var(--logo-width) + (var(--logo-padding) * 2) +
-                        (var(--logo-border) * 2)
-                );
             }
         }
     }
 }
 
 .notifications {
+
     h1 {
         color: black;
         display: inline-block;
@@ -584,9 +573,9 @@ body {
             color: white;
             display: inline-block;
             font-weight: bold;
-            margin-left: 0.5em;
+            margin-left: .5em;
             text-align: center;
-            font-size: 0.875em;
+            font-size: .875em;
             line-height: 1.4;
         }
     }
@@ -594,7 +583,7 @@ body {
     .alert-panel {
         background-color: white;
         box-shadow: 7px 7px 0 0 #d3d3d3;
-        margin: 0 auto 40px auto;
+        margin: 0 auto 40px;
         max-width: 100%;
         width: 775px;
 
@@ -632,7 +621,7 @@ body {
                 color: var(--alert-color);
                 background-color: var(--alert-bg-color);
                 padding: 5px 35px;
-                font-size: 0.875em;
+                font-size: .875em;
             }
 
             border-bottom: 4px solid var(--alert-bg-color);
@@ -642,7 +631,7 @@ body {
             padding: 32px;
 
             .alert-datetime {
-                font-size: 0.9em;
+                font-size: .9em;
             }
 
             .alert-summary {
@@ -671,8 +660,8 @@ body {
                 margin: 30px 0 0 10px;
                 text-transform: none;
 
-                @media all and (max-width: 543px) {
-                    margin: 20px 0 0 0;
+                @media all and (width <= 543px) {
+                    margin: 20px 0 0;
                 }
 
                 img {
@@ -686,7 +675,7 @@ body {
 .alert-survey {
     border-top: 2px solid $darkgray;
     text-align: left;
-    font-size: 0.875em;
+    font-size: .875em;
 
     .notifications & {
         border-top-color: $bggray;
@@ -700,7 +689,7 @@ body {
         margin: 0 auto;
         max-width: 30em;
 
-        @media (min-width: 50em) {
+        @media (width >= 50em) {
             padding-left: 14em;
         }
 
@@ -712,7 +701,7 @@ body {
     legend {
         margin: 1em 0 0;
 
-        @media (min-width: 50em) {
+        @media (width >= 50em) {
             margin: 1.5em 0;
             position: absolute;
             left: 0;
@@ -746,13 +735,13 @@ body {
         }
 
         &:first-of-type {
-            @media (min-width: 50em) {
+            @media (width >= 50em) {
                 border-radius: 2em 0 0 2em;
             }
         }
 
         &:last-of-type {
-            @media (min-width: 50em) {
+            @media (width >= 50em) {
                 border-radius: 0 2em 2em 0;
             }
         }
@@ -760,10 +749,10 @@ body {
 }
 
 .alert-timing {
-    margin: 0.5em 0 1.5em;
+    margin: .5em 0 1.5em;
 
     time {
-        font-size: 0.75em;
+        font-size: .75em;
     }
 }
 
@@ -778,7 +767,7 @@ body {
 
     .panel {
         background-color: white;
-        box-shadow: 5px 5px 0 0 rgba(217, 217, 217, 1);
+        box-shadow: 5px 5px 0 0 rgb(217 217 217 / 100%);
         margin-top: 100px;
         padding: 40px 60px;
         text-align: center;
@@ -798,7 +787,7 @@ body {
 
             &.notice {
                 font-style: italic;
-                font-size: 0.8em;
+                font-size: .8em;
             }
         }
 
@@ -866,7 +855,7 @@ footer {
                 width: 20px;
                 margin-right: 10px;
                 display: inline-block;
-                opacity: 0.8;
+                opacity: .8;
             }
 
             a {
@@ -909,6 +898,7 @@ footer {
         }
 
         &:last-child {
+
             span {
                 margin-bottom: 15px;
             }
@@ -928,7 +918,7 @@ footer {
             color: $gray;
 
             img {
-                opacity: 0.3;
+                opacity: .3;
             }
         }
 
@@ -976,7 +966,7 @@ footer {
 
     .panel {
         background-color: #f4f4f4;
-        box-shadow: 5px 5px 0 0 rgba(217, 217, 217, 1);
+        box-shadow: 5px 5px 0 0 rgb(217 217 217 / 100%);
         color: black;
         padding: 30px;
         position: relative;
@@ -984,15 +974,15 @@ footer {
         width: 570px;
         max-width: 90%;
 
-        &:before {
-            content: " ";
+        &::before {
+            content: ' ';
             position: absolute;
             width: 0;
             height: 0;
             left: 30px;
             top: -40px;
             border: 25px solid;
-            border-color: transparent transparent #f4f4f4 transparent;
+            border-color: transparent transparent #f4f4f4;
         }
 
         h2 {
@@ -1038,11 +1028,13 @@ footer {
 }
 
 .forbidden {
+
     .panel {
         max-width: calc(100% - 60px);
     }
 
     .section {
+
         .mui-btn {
             max-width: calc(100% - 100px);
             float: none;
@@ -1056,9 +1048,12 @@ footer {
     }
 }
 
-@media all and (max-width: 991px) {
+@media all and (width <= 991px) {
+
     .error-page {
+
         .section {
+
             .youtube {
                 width: 340px;
                 height: 191px;
@@ -1067,17 +1062,20 @@ footer {
     }
 }
 
-@media all and (max-width: 767px) {
+@media all and (width <= 767px) {
+
     .mui-appbar .filter .mui-textfield input {
         width: 240px;
     }
 
     .error-page {
+
         .panel {
             max-width: calc(100% - 60px);
         }
 
         .section {
+
             .mui-btn {
                 max-width: calc(100% - 100px);
                 float: none;
@@ -1112,14 +1110,16 @@ footer {
     }
 }
 
-@media all and (max-width: 543px) {
+@media all and (width <= 543px) {
     $appbar-height: 80px;
 
     .mui-appbar {
         height: $appbar-height;
 
         &.menu-enabled {
+
             > div {
+
                 &:first-child {
                     width: 70px;
                 }
@@ -1179,7 +1179,7 @@ footer {
             display: inline-block;
             height: $appbar-height;
             width: $appbar-height;
-            background-image: url("../../img/search.svg");
+            background-image: url('../../img/search.svg');
             background-repeat: no-repeat;
             background-position: center center;
             background-size: 18px;
@@ -1190,7 +1190,7 @@ footer {
                 background-color: black;
                 color: $lightgray;
                 border-bottom: 1px solid black;
-                background-image: url("../../img/search-w.svg");
+                background-image: url('../../img/search-w.svg');
             }
 
             &.menu-enabled {
@@ -1253,6 +1253,7 @@ footer {
 
                 &:active,
                 &:focus {
+
                     &::placeholder {
                         color: black;
                     }
@@ -1269,6 +1270,7 @@ footer {
         padding: 10px;
 
         .app-grid {
+
             .app-tile {
                 margin: 10px;
                 max-width: 122px;
@@ -1288,6 +1290,7 @@ footer {
     }
 
     .logout {
+
         .panel {
             margin-top: 20px;
             padding: 30px;
@@ -1295,8 +1298,9 @@ footer {
     }
 
     footer {
+
         .icon-container {
-            margin: 0.2em 1em;
+            margin: .2em 1em;
 
             .icon {
                 display: flex;
@@ -1322,9 +1326,12 @@ footer {
     }
 }
 
-@media all and (max-width: 359px) {
+@media all and (width <= 359px) {
+
     .mui-appbar {
+
         .menu {
+
             &.enabled {
                 width: 160px;
 

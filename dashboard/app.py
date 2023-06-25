@@ -58,7 +58,8 @@ app_list = S3Transfer(config.Config(app).settings)
 app_list.sync_config()
 
 # Activate server-side redis sesssion KV
-store = RedisStore(redis.StrictRedis(host=app.config["REDIS_CONNECTOR"]))
+redis_host, redis_port = app.config["REDIS_CONNECTOR"].split(":")
+store = RedisStore(redis.StrictRedis(host=redis_host, port=redis_port))
 prefixed_store = PrefixDecorator(app.config["SERVER_NAME"] + "_", store)
 KVSessionExtension(store, app)
 

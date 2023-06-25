@@ -1,5 +1,6 @@
 """Configuration loader for different environments."""
 import base64
+import datetime
 from dashboard import get_config
 
 CONFIG = get_config()
@@ -23,7 +24,8 @@ class DefaultConfig(object):
     TESTING = bool(CONFIG("testing", namespace="sso-dashboard", default="False"))
     CSRF_ENABLED = bool(CONFIG("csrf_enabled", default="True"))
     PERMANENT_SESSION = bool(CONFIG("permanent_session", namespace="sso-dashboard", default="True"))
-    PERMANENT_SESSION_LIFETIME = int(CONFIG("permanent_session_lifetime", namespace="sso-dashboard", default="86400"))
+    seconds = int(CONFIG("permanent_session_lifetime", namespace="sso-dashboard", default="86400"))
+    PERMANENT_SESSION_LIFETIME = datetime.timedelta(seconds=seconds)
 
     SESSION_COOKIE_SAMESITE = CONFIG("session_cookie_samesite", namespace="sso-dashboard", default="lax")
     SESSION_COOKIE_HTTPONLY = bool(CONFIG("session_cookie_httponly", namespace="sso-dashboard", default="True"))
@@ -44,6 +46,8 @@ class DefaultConfig(object):
     FORBIDDEN_PAGE_PUBLIC_KEY = base64.b64decode(CONFIG("forbidden_page_public_key", namespace="sso-dashboard"))
 
     PREFERRED_URL_SCHEME = CONFIG("preferred_url_scheme", namespace="sso-dashboard", default="https")
+
+    REDIS_CONNECTOR = CONFIG("redis_connector", namespace="sso-dashboard")
 
 
 class OIDCConfig(object):

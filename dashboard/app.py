@@ -3,6 +3,7 @@ import json
 import logging.config
 import mimetypes
 import os
+import redis
 import yaml
 
 from flask import Flask
@@ -15,7 +16,11 @@ from flask import session
 
 from flask_assets import Bundle
 from flask_assets import Environment
+from flask_kvsession import KVSessionExtension
 from flask_talisman import Talisman
+
+from simplekv.memory.redisstore import RedisStore
+from simplekv.decorator import PrefixDecorator
 
 from dashboard import oidc_auth
 from dashboard import config
@@ -51,6 +56,11 @@ talisman = Talisman(app, content_security_policy=DASHBOARD_CSP, force_https=Fals
 app.config.from_object(config.Config(app).settings)
 app_list = S3Transfer(config.Config(app).settings)
 app_list.sync_config()
+
+# Activate server-side redis sesssion KV
+store = RedisStore(redis.StrictRedis(host=app.config["REDIS_CONNECTOR"]))
+prefixed_store = PrefixDecorator(app.config["SERVER_NAME"] + "_", store)
+KVSessionExtension(store, app)
 
 assets = Environment(app)
 js = Bundle("js/base.js", filters="jsmin", output="js/gen/packed.js")

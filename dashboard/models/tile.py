@@ -27,9 +27,7 @@ class S3Transfer(object):
         """Compare etag of what is in bucket to what is on disk."""
         self.connect_s3()
         try:
-            self.client.head_object(
-                Bucket=self.s3_bucket, Key="apps.yml", IfMatch=self._etag()
-            )
+            self.client.head_object(Bucket=self.s3_bucket, Key="apps.yml", IfMatch=self._etag())
             return False
         except Exception as e:
             logger.error("Etags do not match as a result of {error}".format(error=e))

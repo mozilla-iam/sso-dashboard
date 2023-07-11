@@ -21,14 +21,11 @@ class AuthorizeAPI(object):
         if app_config["SERVER_NAME"] == "localhost:5000":
             return "https://sso.allizom.org"
         else:
-            return "https://" + self.app.config.get(
-                "SERVER_NAME", "sso.mozilla.com"
-            )  # sso.mozilla.com
+            return "https://" + self.app.config.get("SERVER_NAME", "sso.mozilla.com")  # sso.mozilla.com
 
     # Format error response and append status code
     def get_token_auth_header(self):
-        """Obtains the Access Token from the Authorization Header
-        """
+        """Obtains the Access Token from the Authorization Header"""
         auth = request.headers.get("Authorization", None)
         if not auth:
             raise AuthError(
@@ -50,9 +47,7 @@ class AuthorizeAPI(object):
                 401,
             )
         elif len(parts) == 1:
-            raise AuthError(
-                {"code": "invalid_header", "description": "Token not found"}, 401
-            )
+            raise AuthError({"code": "invalid_header", "description": "Token not found"}, 401)
         elif len(parts) > 2:
             raise AuthError(
                 {
@@ -71,8 +66,7 @@ class AuthorizeAPI(object):
         return jwks
 
     def requires_api_auth(self, f):
-        """Determines if the Access Token is valid
-        """
+        """Determines if the Access Token is valid"""
 
         @wraps(f)
         def decorated(*args, **kwargs):
@@ -110,8 +104,7 @@ class AuthorizeAPI(object):
                     raise AuthError(
                         {
                             "code": "invalid_claims",
-                            "description": "incorrect claims,"
-                            "please check the audience and issuer",
+                            "description": "incorrect claims," "please check the audience and issuer",
                         },
                         401,
                     )

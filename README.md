@@ -11,6 +11,7 @@ A python flask implementation of an SSO dashboard.  OIDC for authentication and 
 
 # Contributors
 
+* Jake Watkins [:dividehex] jwatkins@mozilla.com
 * Andrew Krug [:andrew] akrug@mozilla.com
 
 # Projects this Project Uses
@@ -69,7 +70,7 @@ app staging and then taking apps live.__
 # Adding apps to the Dashboard
 
 In order to add applications to the dashboard there is an apps.yml file and
-a logos directory that exists in the Mozilla-IAM github org.  
+a logos directory that exists in the Mozilla-IAM github org.
 
 https://github.com/mozilla-iam/sso-dashboard-configuration
 
@@ -86,11 +87,11 @@ to the fact they are in a responsive grid.
 For more information on developing features for the sso-dashboard see the [development guide](docs/development.md).
 
 # Deployment
-This section gives an overview of the SSO Dashboard deployment, for a more detailed explanation check [this document](https://github.com/mozilla-iam/iam-infra/blob/74a68749db6f9043bdd36970d0e94de322cd9804/docs/runbooks/sso-dashboard.md). 
+This section gives an overview of the SSO Dashboard deployment, for a more detailed explanation check [this document](https://github.com/mozilla-iam/iam-infra/blob/74a68749db6f9043bdd36970d0e94de322cd9804/docs/runbooks/sso-dashboard.md).
 
-Single Sign On Dashboard (SSO Dashboard) runs in the AWS IAM account (320464205386) inside the production EKS cluster, however it uses resources in the `infosec-prod` and `infosec-dev` AWS accounts. 
+Single Sign On Dashboard (SSO Dashboard) runs in the AWS IAM account (320464205386) inside the production EKS cluster, however it uses resources in the `infosec-prod` and `infosec-dev` AWS accounts.
 
-Currently the application is deployed into 2 different environments: dev and prod, each one running in the correspondent Kubernetes namespaces. 
+Currently the application is deployed into 2 different environments: dev and prod, each one running in the correspondent Kubernetes namespaces.
  - Production environment can be reach at https://sso.mozilla.com
  - Development environment can be reach at https://sso.allizom.org
 

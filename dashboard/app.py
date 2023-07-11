@@ -3,6 +3,7 @@ import json
 import logging.config
 import mimetypes
 import os
+import redis
 import yaml
 
 from flask import Flask
@@ -12,17 +13,18 @@ from flask import render_template
 from flask import request
 from flask import send_from_directory
 from flask import session
+
 from flask_assets import Bundle
 from flask_assets import Environment
+from flask_kvsession import KVSessionExtension
 from flask_talisman import Talisman
-from prometheus_client import multiprocess
-from prometheus_client.core import CollectorRegistry
-from prometheus_flask_exporter import PrometheusMetrics
+
+from simplekv.memory.redisstore import RedisStore
+from simplekv.decorator import PrefixDecorator
 
 from dashboard import oidc_auth
 from dashboard import config
 from dashboard import get_config
-from dashboard import person
 from dashboard import vanity
 
 from dashboard.api import idp
@@ -48,29 +50,18 @@ logger = logging.getLogger("sso-dashboard")
 
 app = Flask(__name__)
 everett_config = get_config()
-# Enable monitoring endpoint
-if (
-    everett_config(
-        "enable_prometheus_monitoring", namespace="sso-dashboard", default="False"
-    ) == "True"
-):
-    os.environ["prometheus_multiproc_dir"] = "/tmp"
-    registry = CollectorRegistry()
-    multiprocess.MultiProcessCollector(registry, path="/tmp")
-    metrics = PrometheusMetrics(app)
-    metrics.start_http_server(
-        int(
-            everett_config(
-                "prometheus_monitoring_port", namespace="sso-dashboard", default="9000"
-            )
-        )
-    )
 
 talisman = Talisman(app, content_security_policy=DASHBOARD_CSP, force_https=False)
 
 app.config.from_object(config.Config(app).settings)
 app_list = S3Transfer(config.Config(app).settings)
 app_list.sync_config()
+
+# Activate server-side redis sesssion KV
+redis_host, redis_port = app.config["REDIS_CONNECTOR"].split(":")
+store = RedisStore(redis.StrictRedis(host=redis_host, port=redis_port))
+prefixed_store = PrefixDecorator(app.config["SERVER_NAME"] + "_", store)
+KVSessionExtension(store, app)
 
 assets = Environment(app)
 js = Bundle("js/base.js", filters="jsmin", output="js/gen/packed.js")
@@ -86,15 +77,16 @@ mimetypes.add_type("image/svg+xml", ".svg")
 oidc_config = config.OIDCConfig()
 authentication = oidc_auth.OpenIDConnect(oidc_config)
 oidc = authentication.get_oidc(app)
-person_api = person.API()
 
 vanity_router = vanity.Router(app, app_list).setup()
 
 api = idp.AuthorizeAPI(app, oidc_config)
 
+
 @app.route("/favicon.ico")
 def favicon():
     return send_from_directory(os.path.join(app.root_path, "static/img"), "favicon.ico")
+
 
 @app.route("/")
 def home():
@@ -104,9 +96,17 @@ def home():
     url = request.url.replace("http://", "https://", 1)
     return redirect(url + "dashboard", code=302)
 
+
 @app.route("/csp_report", methods=["POST"])
 def csp_report():
     return "200"
+
+
+@app.route("/version", methods=["GET"])
+def get_version():
+    with open("/version.json", "r") as version:
+        v = version.read().replace("\n", "")
+    return jsonify(build_version=v)
 
 
 # XXX This needs to load the schema from a better location
@@ -115,9 +115,7 @@ def csp_report():
 def claim():
     """Show the user schema - this path is refered to by
     our OIDC Claim namespace, i.e.: https://sso.mozilla.com/claim/*"""
-    return redirect(
-        "https://github.com/mozilla-iam/cis/blob/master/cis/schema.json", code=302
-    )
+    return redirect("https://github.com/mozilla-iam/cis/blob/master/cis/schema.json", code=302)
 
 
 @app.errorhandler(404)
@@ -136,9 +134,7 @@ def forbidden():
     else:
         jws = request.args.get("error").encode()
 
-    token_verifier = oidc_auth.tokenVerification(
-        jws=jws, public_key=app.config["FORBIDDEN_PAGE_PUBLIC_KEY"]
-    )
+    token_verifier = oidc_auth.tokenVerification(jws=jws, public_key=app.config["FORBIDDEN_PAGE_PUBLIC_KEY"])
     token_verifier.verify
 
     return render_template("forbidden.html", token_verifier=token_verifier)
@@ -151,9 +147,7 @@ def logout():
     Redirect to new feature in NLX that destroys autologin preferences.
     Aka Logout is REALLY logout.
     """
-    logout_url = "https://{}/login?client={}&action=logout".format(
-        oidc_config.OIDC_DOMAIN, oidc_config.OIDC_CLIENT_ID
-    )
+    logout_url = "https://{}/login?client={}&action=logout".format(oidc_config.OIDC_DOMAIN, oidc_config.OIDC_CLIENT_ID)
     return redirect(logout_url, code=302)
 
 
@@ -175,27 +169,10 @@ def signout():
 
 
 @app.route("/dashboard")
-@oidc.oidc_auth
+@oidc.oidc_auth("default")
 def dashboard():
     """Primary dashboard the users will interact with."""
-    logger.info(
-        "User: {} authenticated proceeding to dashboard.".format(
-            session.get("id_token")["sub"]
-        )
-    )
-
-    if "Mozilla-LDAP" in session.get("userinfo")["sub"]:
-        logger.info("Mozilla IAM user detected. Attempt enriching with ID-Vault data.")
-        try:
-            session["idvault_userinfo"] = person_api.get_userinfo(
-                session.get("id_token")["sub"]
-            )
-        except Exception as e:
-            logger.error(
-                "Could not enrich profile due to: {}.  Perhaps it doesn't exist?".format(
-                    e
-                )
-            )
+    logger.info("User: {} authenticated proceeding to dashboard.".format(session.get("id_token")["sub"]))
 
     # Hotfix to set user id for firefox alert
     # XXXTBD Refactor rules later to support full id_conformant session
@@ -210,9 +187,7 @@ def dashboard():
     user = User(session, config.Config(app).settings)
     apps = user.apps(Application(app_list.apps_yml).apps)
 
-    return render_template(
-        "dashboard.html", config=app.config, user=user, apps=apps, alerts=None
-    )
+    return render_template("dashboard.html", config=app.config, user=user, apps=apps, alerts=None)
 
 
 @app.route("/styleguide/dashboard")
@@ -220,26 +195,24 @@ def styleguide_dashboard():
     user = FakeUser(config.Config(app).settings)
     apps = user.apps(Application(app_list.apps_yml).apps)
 
-    return render_template(
-        "dashboard.html", config=app.config, user=user, apps=apps, alerts=None
-    )
+    return render_template("dashboard.html", config=app.config, user=user, apps=apps, alerts=None)
 
 
 @app.route("/styleguide/notifications")
-@oidc.oidc_auth
+@oidc.oidc_auth("default")
 def styleguide_notifications():
     user = FakeUser(config.Config(app).settings)
     return render_template("notifications.html", config=app.config, user=user)
 
 
 @app.route("/notifications")
-@oidc.oidc_auth
+@oidc.oidc_auth("default")
 def notifications():
     user = User(session, config.Config(app).settings)
     return render_template("notifications.html", config=app.config, user=user)
 
 
-@oidc.oidc_auth
+@oidc.oidc_auth("default")
 @app.route("/alert/<alert_id>", methods=["POST"])
 def alert_operation(alert_id):
     if request.method == "POST":
@@ -257,7 +230,7 @@ def alert_operation(alert_id):
             return "500"
 
 
-@oidc.oidc_auth
+@oidc.oidc_auth("default")
 @app.route("/alert/fake", methods=["GET"])
 def alert_faking():
     if request.method == "GET":
@@ -285,13 +258,12 @@ def alert_api():
 
 
 @app.route("/info")
-@oidc.oidc_auth
+@oidc.oidc_auth("default")
 def info():
     """Return the JSONified user session for debugging."""
     return jsonify(
         id_token=session.get("id_token"),
         userinfo=session.get("userinfo"),
-        person_api_v1=session.get("idvault_userinfo"),
     )
 
 

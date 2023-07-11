@@ -6,22 +6,13 @@ import dashboard.models.user as user
 
 class TestUser(object):
     def setup(self):
-        self.fixture_file = os.path.join(
-            os.path.abspath(
-                os.path.dirname(__file__)
-            ),
-            'data/userinfo.json'
-        )
+        self.fixture_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), "data/userinfo.json")
 
         self.session_fixture = json.loads(open(self.fixture_file).read())
-        self.good_apps_list = {
-            'apps': [
-            ]
-
-        }
+        self.good_apps_list = {"apps": []}
 
         self.u = user.User(session=self.session_fixture, app_config=None)
-        self.u.api_token = 'foo'
+        self.u.api_token = "foo"
 
     def test_object_init(self):
         assert self.u is not None
@@ -38,8 +29,8 @@ class TestUser(object):
         f_name = self.u.first_name
         l_name = self.u.last_name
 
-        assert f_name == ''
-        assert l_name == ''
+        assert f_name == ""
+        assert l_name == ""
 
     def test_user_identifiers(self):
         assert len(self.u.user_identifiers()) == 2

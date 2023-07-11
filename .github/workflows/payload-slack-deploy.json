@@ -1,0 +1,32 @@
+{
+  "text": "",
+  "attachments": [
+    {
+      "color": "28a745",
+      "blocks": [
+        {
+          "type": "header",
+          "text": {
+            "type": "plain_text",
+            "text": ":rocket: SSO Dashboard is ready for Promotion",
+            "emoji": true
+          }
+        },
+        {
+          "type": "section",
+          "text": {
+            "type": "mrkdwn",
+            "text": "Build: *{{ env.RELEASE_NAME }}*"
+          }
+        },
+        {
+          "type": "section",
+          "text": {
+            "type": "mrkdwn",
+            "text": ":link: <https://console.cloud.google.com/deploy/delivery-pipelines/us-east1/sso-dashboard?project=iam-auth0|Click here to view deploy pipeline>"
+          }
+        }
+      ]
+    }
+  ]
+}

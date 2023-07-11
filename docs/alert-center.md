@@ -18,7 +18,7 @@ It is also important to understand the alert may not always been seen by the use
 
 ### Alert risk level
 
-The alert risk levels are standardized and defined by the [Standard Levels](https://wiki.mozilla.org/Security/Standard_Levels) 
+The alert risk levels are standardized and defined by the [Standard Levels](https://wiki.mozilla.org/Security/Standard_Levels)
 
 This is a summary for convenience (refer to the above link for up-to-date 'official' information and complete definitions).
 
@@ -72,7 +72,7 @@ We want to account for a user having a lot of alerts all at once.
 Let's say that as a user I am part of a major data breach, my house gets robbed, and attackers are logging in with one of my 2FA device(s) and password all over the globe.
 Instead of spamming the user, there should be a single dialog aggregating all alerts, such as:
 
-> Important: You have 52 high and maximum risk alerts. View notification center.  _or something like that_ 
+> Important: You have 52 high and maximum risk alerts. View notification center.  _or something like that_
 
 ### Remembering false-positives
 

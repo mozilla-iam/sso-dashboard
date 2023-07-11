@@ -1,4 +1,0 @@
-pytest-moto
-pytest
-pytest-cov
-pytest-watch

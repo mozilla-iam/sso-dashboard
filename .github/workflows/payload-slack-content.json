@@ -1,0 +1,63 @@
+{
+  "text": "",
+  "attachments": [
+    {
+      "color": "{{ env.STATUS_COLOR }}",
+      "blocks": [
+        {
+          "type": "header",
+          "text": {
+            "type": "plain_text",
+            "text": ":link-wut: Github Action Notification :link-wut:\n{{ github.workflow }}",
+            "emoji": true
+          }
+        },
+        {
+          "type": "section",
+          "fields": [
+            {
+              "type": "plain_text",
+              "text": "{{ env.RELEASE_NAME }}",
+              "emoji": true
+            },
+            {
+              "type": "plain_text",
+              "text": "{{ env.GITHUB_ACTOR }}",
+              "emoji": true
+            },
+            {
+              "type": "plain_text",
+              "text": "{{ env.GITHUB_REPOSITORY }}",
+              "emoji": true
+            },
+            {
+              "type": "plain_text",
+              "text": "{{ env.GITHUB_REF_NAME }}",
+              "emoji": true
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "text": {
+            "type": "mrkdwn",
+            "text": "<https://github.com/{{ env.GITHUB_REPOSITORY }}/actions/runs/{{ env.GITHUB_RUN_ID }}|https://github.com/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}>"
+          }
+        },
+        {
+          "type": "context",
+          "elements": [
+            {
+              "type": "mrkdwn",
+              "text": "Action: *{{ env.STATUS_TITLE }}*"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "Status: {{ env.STATUS_VALUE }}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

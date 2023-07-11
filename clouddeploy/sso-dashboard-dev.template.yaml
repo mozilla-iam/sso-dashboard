@@ -1,0 +1,118 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: 'sso-dashboard-dev'
+  annotations:
+    run.googleapis.com/ingress: internal-and-cloud-load-balancing
+    run.googleapis.com/description: 'https://sso.allizom.org'
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: '1'
+        autoscaling.knative.dev/maxScale: '3'
+        run.googleapis.com/cpu-throttling: 'false'
+        run.googleapis.com/startup-cpu-boost: 'true'
+        run.googleapis.com/vpc-access-connector: 'redis-connector'
+    spec:
+      containers:
+      - name: 'sso-dashboard'
+        image: 'app'
+        command:
+          - gunicorn
+          - 'dashboard.app:app'
+        args:
+          - '--worker-class'
+          - gevent
+          - '--bind'
+          - '0.0.0.0:8000'
+          - '--workers=2'
+          - '--log-level=debug'
+        ports:
+          - name: http1
+            containerPort: 8000
+        env:
+          - name: 'TARGET'
+            value: 'Staging'
+          - name: SSO-DASHBOARD_DEBUG
+            value: False
+          - name: SSO-DASHBOARD_TESTING
+            value: False
+          - name: SSO-DASHBOARD_CSRF_ENABLED
+            value: True
+          - name: SSO-DASHBOARD_PERMANENT_SESSION
+            value: True
+          - name: SSO-DASHBOARD_PERMANENT_SESSION_LIFETIME
+            value: 86400
+          - name: SSO-DASHBOARD_SESSION_COOKIE_HTTPONLY
+            value: True
+          - name: SSO-DASHBOARD_LOGGER_NAME
+            value: sso-dashboard
+          - name: SSO-DASHBOARD_PREFERRED_URL_SCHEME
+            value: https
+          - name: SSO-DASHBOARD_OIDC_CLIENT_ID
+            value: 2KNOUCxN8AFnGGjDCGtqiDIzq8MKXi2h
+          - name: SSO-DASHBOARD_OIDC_DOMAIN
+            value: dev.mozilla-dev.auth0.com
+          - name: SSO-DASHBOARD_SERVER_NAME
+            value: sso.allizom.org
+          - name: SSO-DASHBOARD_CDN
+            value: https://cdn.sso.mozilla.com
+          - name: SSO-DASHBOARD_S3_BUCKET
+            value: sso-dashboard.configuration
+          - name: SSO-DASHBOARD_FORBIDDEN_PAGE_PUBLIC_KEY
+            value: "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0NCk1JSUNJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBZzhBTUlJQ0NnS0NBZ0VBcStWVXhsWWlENUF1aGh3a0hEb3kNCmFXV0YzcFlzQmxGaDlUendZeGNNR282TFdUODljb0xuUDdWVHlLbGdsTklmTG5KZDdqY2E5VUJ1QjhIVFBQYWoNCk5Ibk5UaUZ5UEZTbjFoaVhqSDJieUNDNnA1ZnByRWFEazV3YVpVNTgwaTRDaVlYcWtrWWdVbXVINW91Mnl4NW4NClZCVGJmcityZFQ0a0tRdi9Dek9ZR1o3K05NVUdXYTMvNXRMZklyRXZnV2tTTEluemtVZVhUS3huRSs5a1AvU2ENCkM4SDZsNnBKbm9oOVpiY3J4RGhkbVl6TEx2c0tIQ2tidmdCczNiaUFkSENzeHFEeFcxSGlOMzJYeEc4Y1pyc00NCjV1ZDdnbHNNY2VZWk82aENTZW4vckFUWmJkc3RETWNLa2YzMTBpUFgxRWF5ZzNPcDNZUlVTdkxzVmp5bmxQZmYNClRSVjFmQ2hJaXFwQWdnS2x4MXdqRUk2UVBuQWdpU1E0WEJweTFCK3FUSTltd1BhcE5yY2IzbkpFNDFNT0dEZGwNCmFLcHlMeGdaeEI4NmNKYTlVQXZGSEFOR08zRXA1Vmd0UjNoUStqWkY2RGFHUThjMHNyaHg4MTc4dWJybFY2NGsNCnVxK1ozVUZBZHhDbHZTRnc0eDVyTm1tV2dTN280OG9yMnhWdXVXMTQxNEZYTVBvaytDNUdabGd6ZG5zZ3cxWlQNCmhzTWNldG1temthUTlyeWxmYXVRR1gzMk5lZ3FlOWFyR0VGbXBqYjJUb2w0Tk1RLy83MzRuVFN2Q1lmL0o0Qi8NCnR0NjJzOXRBTU1ZdkpvN0ZRV2o0Qks3dUYvYmxTbTczYUVvVlFiNHdzWjJRWWpMeVlWcGh2UFprYVdaZHA0Wi8NCng0STlPT3lOYThtaGZkK3h0OU9uWXVzQ0F3RUFBUT09DQotLS0tLUVORCBQVUJMSUMgS0VZLS0tLS0NCg==\n"
+          - name: SSO-DASHBOARD_REDIS_CONNECTOR
+            value: 10.182.16.6:6379
+          - name: AWS_DEFAULT_REGION
+            value: us-west-2
+          - name: ENVIRONMENT
+            value: Staging
+          - name: MOZILLIANS_API_URL
+            value: https://mozillians.org/api/v2/users/
+          - name: DASHBOARD_GUNICORN_WORKERS
+            value: 2
+          - name: FLASK_DEBUG
+            value: False
+          - name: DEBUG
+            value: False
+          - name: LANG
+            value: en_US.utf8
+          - name: FLASK_APP
+            value: dashboard/app.py
+          - name: OIDC_REDIRECT_URI
+            value: https://sso.allizom.org/redirect_uri
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                key: latest
+                name: sso-dashboard-aws-secret-access-key
+          - name: SSO-DASHBOARD_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                key: latest
+                name: sso-dashboard-dev-secret-key
+          - name: SSO-DASHBOARD_OIDC_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: latest
+                name: sso-dashboard-dev-oidc-client-secret
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                key: latest
+                name: sso-dashboard-aws-access-key-id

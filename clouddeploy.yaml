@@ -1,0 +1,52 @@
+apiVersion: deploy.cloud.google.com/v1
+kind: DeliveryPipeline
+metadata:
+  name: 'sso-dashboard'
+description: 'Deployment pipeline for sso-dashboard'
+serialPipeline:
+  stages:
+    - targetId: 'dev'
+      profiles: ['dev']
+    - targetId: 'staging'
+      profiles: ['staging']
+    - targetId: 'prod'
+      profiles: ['prod']
+---
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: 'dev'
+description: 'Development target'
+run:
+  location: 'projects/iam-auth0/locations/us-east1'
+executionConfigs:
+- usages:
+  - RENDER
+  - DEPLOY
+  serviceAccount: sso-dashboard-prod@iam-auth0.iam.gserviceaccount.com
+---
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: 'staging'
+description: 'Staging target'
+run:
+  location: 'projects/iam-auth0/locations/us-east1'
+executionConfigs:
+- usages:
+  - RENDER
+  - DEPLOY
+  serviceAccount: sso-dashboard-staging@iam-auth0.iam.gserviceaccount.com
+---
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: 'prod'
+description: 'Production target'
+run:
+  location: 'projects/iam-auth0/locations/us-east1'
+executionConfigs:
+- usages:
+  - RENDER
+  - DEPLOY
+  serviceAccount: sso-dashboard-prod@iam-auth0.iam.gserviceaccount.com

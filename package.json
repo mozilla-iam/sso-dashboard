@@ -16,5 +16,10 @@
         "gulp-eslint": "^3.0.1",
         "gulp-main-bower-files": "^1.6.1",
         "gulp-stylelint": "^3.9.0"
+    },
+    "dependencies": {
+        "eslint": "^8.43.0",
+        "stylelint": "^15.8.0",
+        "stylelint-config-standard-scss": "^9.0.0"
     }
 }

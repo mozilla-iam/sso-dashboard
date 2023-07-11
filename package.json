@@ -12,7 +12,7 @@
         "url": "https://github.com/mozilla-iam/sso-dashboard/issues"
     },
     "devDependencies": {
-        "gulp": "^3.9.1",
+        "gulp": "^4.0.2",
         "gulp-eslint": "^3.0.1",
         "gulp-main-bower-files": "^1.6.1",
         "gulp-stylelint": "^3.9.0"

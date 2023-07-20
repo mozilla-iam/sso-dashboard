@@ -114,7 +114,8 @@ class tokenVerification(object):
                  log back in.'
         elif error_code == "notingroup":
             error_text = "Sorry, you do not have permission to access {client}.  \
-            Please contact eus@mozilla.com if you should have access.".format(
+            Please contact the application owner for access.  If unsure who that \
+            may be, please contact ServiceDesk@mozilla.com for support.".format(
                 client=self.data.get("client")
             )
         elif error_code == "accesshasexpired":

@@ -1,4 +1,5 @@
 """SSO Dashboard App File."""
+import google.cloud.logging
 import json
 import logging.config
 import mimetypes
@@ -38,6 +39,7 @@ from dashboard.models.alert import FakeAlert
 from dashboard.models.alert import Rules
 from dashboard.models.tile import S3Transfer
 
+from google.cloud.logging_v2.handlers import CloudLoggingHandler
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -46,7 +48,11 @@ with open("dashboard/logging.yml", "r") as log_config:
     config_dict = yaml.safe_load(config_yml)
     logging.config.dictConfig(config_dict)
 
+gcp_logger_client = google.cloud.logging.Client()
+gcp_handler = CloudLoggingHandler(gcp_logger_client)
+
 logger = logging.getLogger("sso-dashboard")
+logger.addHandler(gcp_handler)
 
 app = Flask(__name__)
 everett_config = get_config()

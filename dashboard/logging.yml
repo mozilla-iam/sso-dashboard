@@ -1,5 +1,6 @@
 # Default AWS Config
 version: 1
+disable_existing_loggers: False
 formatters:
     json:
         format: "[%(asctime)s] %(process)d %(levelname)s %(name)s:%(funcName)s:%(lineno)s - %(message)s"

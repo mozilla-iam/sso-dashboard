@@ -39,7 +39,7 @@ from dashboard.models.alert import Rules
 from dashboard.models.tile import S3Transfer
 
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 with open("dashboard/logging.yml", "r") as log_config:
     config_yml = log_config.read()

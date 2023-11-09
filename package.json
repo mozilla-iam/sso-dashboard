@@ -19,7 +19,7 @@
     },
     "dependencies": {
         "eslint": "^8.43.0",
-        "stylelint": "^15.8.0",
+        "stylelint": "^15.10.1",
         "stylelint-config-standard-scss": "^9.0.0"
     }
 }

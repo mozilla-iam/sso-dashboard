@@ -107,10 +107,10 @@ class tokenVerification(object):
                 </a> to setup your device, then try logging in again.'
         elif error_code == "fxarequiremfa":
             error_text = 'Please <a href="https://support.mozilla.org/kb/secure-firefox-account-two-step-authentication">\
-                secure your Firefox Account with two-step authentication</a>, \
+                secure your Mozilla Account with two-step authentication</a>, \
                 then try logging in again.\n<br/><br/>\n\
                 If you have just setup your security device and you see this message, please log out of \
-                 <a href="https://accounts.firefox.com">Firefox Accounts</a> (click the "Sign out" button), then \
+                 <a href="https://accounts.firefox.com">Mozilla Accounts</a> (click the "Sign out" button), then \
                  log back in.'
         elif error_code == "notingroup":
             error_text = "Sorry, you do not have permission to access {client}.  \
@@ -138,7 +138,7 @@ class tokenVerification(object):
         elif error_code == "aai_failed":
             error_text = "{client} requires you to setup additional security measures for your account, \
             such as enabling multi-factor authentication (MFA) or using a safer authentication method (such as a \
-            Firefox Account login). You will not be able to login until this is \
+            Mozilla Account login). You will not be able to login until this is \
             done.".format(
                 client=self.data.get("client")
             )

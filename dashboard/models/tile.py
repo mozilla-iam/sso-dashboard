@@ -6,9 +6,7 @@ import urllib3
 
 from boto3.dynamodb.conditions import Attr
 
-
 logger = logging.getLogger(__name__)
-
 
 class CDNTransfer(object):
     """Download app.yaml from CDN"""
@@ -29,8 +27,6 @@ class CDNTransfer(object):
             return True
         else:
             return False
-
-
 
     def last_update(self):
         this_dir = os.path.dirname(__file__)
@@ -87,9 +83,6 @@ class CDNTransfer(object):
         except Exception as e:
             print(e)
             logger.error("Problem fetching config file {error}".format(error=e))
-
-
-
 
 
 class DynamoTransfer(object):

@@ -2,7 +2,7 @@
 import boto3
 import logging
 import os
-
+import urllib3
 
 from boto3.dynamodb.conditions import Attr
 
@@ -11,17 +11,6 @@ logger = logging.getLogger(__name__)
 
 
 class S3Transfer(object):
-    """News up and does the job if configuration specifies S3 for data transfer."""
-
-    def __init__(self, app_config):
-        self.app_config = app_config
-        self.client = None
-        self.s3_bucket = self.app_config.S3_BUCKET
-        self.apps_yml = None
-
-    def connect_s3(self):
-        if not self.client:
-            self.client = boto3.client("s3")
 
     def is_updated(self):
         """Compare etag of what is in bucket to what is on disk."""
@@ -32,6 +21,29 @@ class S3Transfer(object):
         except Exception as e:
             logger.error("Etags do not match as a result of {error}".format(error=e))
             return True
+
+
+class CDNTransfer(object):
+    """Download app.yaml from CDN"""
+    def __init__(self, app_config):
+        self.app_config = app_config
+        self.apps_yml = None
+        self.url = self.app_config.CDN + "/apps.yml"
+
+    def is_updated(self):
+        """Compare etag of what is in CDN to what is on disk."""
+
+        http = urllib3.PoolManager()
+        response = http.request('HEAD', self.url)
+        lastestEtag = response.headers["ETag"]
+
+        if (lastestEtag != self._etag()):
+            logger.error("Etags do not match")
+            return True
+        else:
+            return False
+
+
 
     def last_update(self):
         this_dir = os.path.dirname(__file__)
@@ -55,19 +67,15 @@ class S3Transfer(object):
             return "12345678"
 
     def _get_config(self):
-        self.connect_s3()
-        apps_yml = self.client.get_object(Bucket=self.s3_bucket, Key="apps.yml")
-
-        response = self.client.head_object(Bucket=self.s3_bucket, Key="apps.yml")
-
-        self.apps_yml = apps_yml.get("Body").read().decode("utf-8")
-
+        http = urllib3.PoolManager()
+        # print("self.url = "+ self.url)
+        response = http.request('GET', self.url)
+        #print("response: "+ response.data)
         this_dir = os.path.dirname(__file__)
         filename = os.path.join(this_dir, "../data/{name}").format(name="apps.yml")
-        c = open(filename, "w+")
-        c.write(self.apps_yml)
-        c.close()
-        self._update_etag(response.get("ETag"))
+        with open(filename, 'wb') as file:
+            file.write(response.data)
+        self._update_etag(response.headers["ETag"])
 
     def _touch(self):
         fname = "dashboard/app.py"
@@ -78,7 +86,6 @@ class S3Transfer(object):
             fhandle.close()
 
     def sync_config(self):
-        self.connect_s3()
         try:
             if self.is_updated():
                 logger.info("Config file is updated fetching new config.")
@@ -93,6 +100,9 @@ class S3Transfer(object):
         except Exception as e:
             print(e)
             logger.error("Problem fetching config file {error}".format(error=e))
+
+
+
 
 
 class DynamoTransfer(object):

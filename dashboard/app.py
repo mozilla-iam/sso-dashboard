@@ -36,7 +36,7 @@ from dashboard.op.yaml_loader import Application
 from dashboard.models.alert import Alert
 from dashboard.models.alert import FakeAlert
 from dashboard.models.alert import Rules
-from dashboard.models.tile import S3Transfer
+from dashboard.models.tile import CDNTransfer
 
 
 logging.basicConfig(level=logging.INFO)
@@ -54,8 +54,9 @@ everett_config = get_config()
 talisman = Talisman(app, content_security_policy=DASHBOARD_CSP, force_https=False)
 
 app.config.from_object(config.Config(app).settings)
-app_list = S3Transfer(config.Config(app).settings)
+app_list = CDNTransfer(config.Config(app).settings)
 app_list.sync_config()
+print("app.py made it past loading app list")
 
 # Activate server-side redis sesssion KV
 redis_host, redis_port = app.config["REDIS_CONNECTOR"].split(":")
@@ -78,6 +79,7 @@ oidc_config = config.OIDCConfig()
 authentication = oidc_auth.OpenIDConnect(oidc_config)
 oidc = authentication.get_oidc(app)
 
+print("getting ready to load vanity router: app list = ")
 vanity_router = vanity.Router(app, app_list).setup()
 
 api = idp.AuthorizeAPI(app, oidc_config)
@@ -135,6 +137,7 @@ def forbidden():
         jws = request.args.get("error").encode()
 
     token_verifier = oidc_auth.tokenVerification(jws=jws, public_key=app.config["FORBIDDEN_PAGE_PUBLIC_KEY"])
+    """TODO: add code here to catch when the token is invalid"""
     token_verifier.verify
 
     return render_template("forbidden.html", token_verifier=token_verifier)
@@ -179,7 +182,7 @@ def dashboard():
     session["userinfo"]["user_id"] = session.get("id_token")["sub"]
 
     # Transfer any updates in to the app_tiles.
-    S3Transfer(config.Config(app).settings).sync_config()
+    CDNTransfer(config.Config(app).settings).sync_config()
 
     # Send the user session and browser headers to the alert rules engine.
     Rules(userinfo=session["userinfo"], request=request).run()
@@ -205,6 +208,7 @@ def styleguide_notifications():
     return render_template("notifications.html", config=app.config, user=user)
 
 
+"""probably needs to be removed - remove all alerts"""
 @app.route("/notifications")
 @oidc.oidc_auth("default")
 def notifications():
@@ -212,6 +216,7 @@ def notifications():
     return render_template("notifications.html", config=app.config, user=user)
 
 
+"""remove all alert endpoints"""
 @oidc.oidc_auth("default")
 @app.route("/alert/<alert_id>", methods=["POST"])
 def alert_operation(alert_id):
@@ -256,7 +261,7 @@ def alert_api():
         403,
     )
 
-
+"""useful endpoint for debugging"""
 @app.route("/info")
 @oidc.oidc_auth("default")
 def info():

@@ -8,9 +8,7 @@ from dashboard.op import yaml_loader
 class Router(object):
     def __init__(self, app, app_list):
         self.app = app
-        print("vanity>router>vanity urls: ")
         self.url_list = yaml_loader.Application(app_list.apps_yml).vanity_urls()
-        print("vanity>router>url_list: ")
 
     def setup(self):
         for url in self.url_list:

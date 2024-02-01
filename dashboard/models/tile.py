@@ -41,23 +41,24 @@ class CDNTransfer(object):
         c.close()
 
     def _etag(self):
+        """get the etag from the file"""
         this_dir = os.path.dirname(__file__)
         filename = os.path.join(this_dir, "../data/{name}").format(name="apps.yml-etag")
         try:
             return open(filename, "r").read()
         except Exception as e:
-            logger.error("Error fetching etag: {e}".format(e=e))
+            """If the etag file is not found return a default etag."""
+            logger.info("Error fetching etag: {e}".format(e=e))
             return "12345678"
 
     def _get_config(self):
         http = urllib3.PoolManager()
-        # print("self.url = "+ self.url)
         response = http.request('GET', self.url)
-        #print("response: "+ response.data)
         this_dir = os.path.dirname(__file__)
         filename = os.path.join(this_dir, "../data/{name}").format(name="apps.yml")
         with open(filename, 'wb') as file:
             file.write(response.data)
+        self.apps_yml = response.data.decode("utf-8")
         self._update_etag(response.headers["ETag"])
 
     def _touch(self):

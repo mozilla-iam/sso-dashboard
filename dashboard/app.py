@@ -56,7 +56,6 @@ talisman = Talisman(app, content_security_policy=DASHBOARD_CSP, force_https=Fals
 app.config.from_object(config.Config(app).settings)
 app_list = CDNTransfer(config.Config(app).settings)
 app_list.sync_config()
-print("app.py made it past loading app list")
 
 # Activate server-side redis sesssion KV
 redis_host, redis_port = app.config["REDIS_CONNECTOR"].split(":")
@@ -79,7 +78,6 @@ oidc_config = config.OIDCConfig()
 authentication = oidc_auth.OpenIDConnect(oidc_config)
 oidc = authentication.get_oidc(app)
 
-print("getting ready to load vanity router: app list = ")
 vanity_router = vanity.Router(app, app_list).setup()
 
 api = idp.AuthorizeAPI(app, oidc_config)

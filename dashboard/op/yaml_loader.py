@@ -11,7 +11,6 @@ logger = logging.getLogger(__name__)
 class Application(object):
     def __init__(self, app_dict):
         self.app_dict = app_dict
-        print("yaml loader app_dict = ")
         self.apps = self._load_data()
         self._render_data()
         self._alphabetize()

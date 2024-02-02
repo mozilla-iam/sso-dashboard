@@ -1,21 +1,21 @@
 annotated-types==0.5.0
-async-timeout==4.0.2
-Beaker==1.12.1
+async-timeout==4.0.2 #not supported - https://pypi.org/project/async-timeout/
+Beaker==1.12.1 #not found in list
 boto3==1.26.142
 botocore==1.29.142
 cachetools==5.3.1
-certifi==2023.5.7
+certifi==2023.5.7 #not supported - https://pypi.org/project/certifi/
 cffi==1.15.1
-cfgv==3.3.1
-chardet==5.1.0
+cfgv==3.3.1 #not supported - https://pypi.org/project/cfgv/
+chardet==5.1.0 #not supported - https://pypi.org/project/chardet/
 charset-normalizer==3.1.0
-click==8.1.3
-colorama==0.4.6
-configobj==5.0.8
+click==8.1.3 #not supported - https://pypi.org/project/click/
+colorama==0.4.6 #not supported - https://pypi.org/project/colorama/
+configobj==5.0.8 #not found in list
 cryptography==40.0.2
-cssmin==0.2.0
-defusedxml==0.7.1
-distlib==0.3.6
+cssmin==0.2.0 #not found in list
+defusedxml==0.7.1 #not supported - https://pypi.org/project/defusedxml/
+distlib==0.3.6 #not supported - https://pypi.org/project/distlib/
 ecdsa==0.18.0
 everett==3.2.0
 Faker==18.9.0

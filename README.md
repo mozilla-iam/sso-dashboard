@@ -93,7 +93,7 @@ Single Sign On Dashboard (SSO Dashboard) runs in the AWS IAM account (3204642053
 
 Currently the application is deployed into 3 different environments: dev, staging prod, each one running in the correspondent Kubernetes namespaces.
  - Production environment can be reach at https://sso.mozilla.com
- - Staging environment can be reached at https://staging.mozilla.com
+ - Staging environment can be reached at https://staging.sso.mozilla.com
  - Development environment can be reach at https://sso.allizom.org
 
 The application deployment process is performed by AWS Codebuild following the instructions in the [buildspec file](https://github.com/mozilla-iam/sso-dashboard/blob/master/buildspec-k8s.yml), which is heavily dependent in this [Makefile](https://github.com/mozilla-iam/sso-dashboard/blob/master/Makefile).

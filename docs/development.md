@@ -6,7 +6,7 @@ In order to develop for the sso-dashboard and run the working dashboard you must
 
 Make sure that everything is working prior to feature development by running:
 
- `mdocker compose up`
+ `docker compose up`
 
 
  On successful boot of the docker container your shell should say:

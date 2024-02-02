@@ -33,9 +33,6 @@ from dashboard.csp import DASHBOARD_CSP
 from dashboard.models.user import User
 from dashboard.models.user import FakeUser
 from dashboard.op.yaml_loader import Application
-from dashboard.models.alert import Alert
-from dashboard.models.alert import FakeAlert
-from dashboard.models.alert import Rules
 from dashboard.models.tile import CDNTransfer
 
 
@@ -182,14 +179,10 @@ def dashboard():
     # Transfer any updates in to the app_tiles.
     CDNTransfer(config.Config(app).settings).sync_config()
 
-    # The rule engine has been disabled.  See IAM-1256
-    # Send the user session and browser headers to the alert rules engine.
-    # Rules(userinfo=session["userinfo"], request=request).run()
-
     user = User(session, config.Config(app).settings)
     apps = user.apps(Application(app_list.apps_yml).apps)
 
-    return render_template("dashboard.html", config=app.config, user=user, apps=apps, alerts=None)
+    return render_template("dashboard.html", config=app.config, user=user, apps=apps)
 
 
 @app.route("/styleguide/dashboard")
@@ -197,7 +190,7 @@ def styleguide_dashboard():
     user = FakeUser(config.Config(app).settings)
     apps = user.apps(Application(app_list.apps_yml).apps)
 
-    return render_template("dashboard.html", config=app.config, user=user, apps=apps, alerts=None)
+    return render_template("dashboard.html", config=app.config, user=user, apps=apps)
 
 
 @app.route("/styleguide/notifications")
@@ -206,59 +199,6 @@ def styleguide_notifications():
     user = FakeUser(config.Config(app).settings)
     return render_template("notifications.html", config=app.config, user=user)
 
-
-"""probably needs to be removed - remove all alerts"""
-@app.route("/notifications")
-@oidc.oidc_auth("default")
-def notifications():
-    user = User(session, config.Config(app).settings)
-    return render_template("notifications.html", config=app.config, user=user)
-
-
-"""remove all alert endpoints"""
-@oidc.oidc_auth("default")
-@app.route("/alert/<alert_id>", methods=["POST"])
-def alert_operation(alert_id):
-    if request.method == "POST":
-        user = User(session, config.Config(app).settings)
-        if request.data is not None:
-            data = json.loads(request.data.decode())
-            helpfulness = data.get("helpfulness")
-            alert_action = data.get("alert_action")
-
-        result = user.take_alert_action(alert_id, alert_action, helpfulness)
-
-        if result["ResponseMetadata"]["HTTPStatusCode"] == 200:
-            return "200"
-        else:
-            return "500"
-
-
-@oidc.oidc_auth("default")
-@app.route("/alert/fake", methods=["GET"])
-def alert_faking():
-    if request.method == "GET":
-        if app.config.get("SERVER_NAME") != "sso.mozilla.com":
-            """Only allow alert faking in non production environment."""
-            user = User(session, config.Config(app).settings)
-            fake_alerts = FakeAlert(user_id=user.userinfo.get("sub"))
-            fake_alerts.create_fake_alerts()
-
-    return redirect("/dashboard", code=302)
-
-
-@app.route("/api/v1/alert", methods=["GET"])
-@api.requires_api_auth
-def alert_api():
-    if request.method == "GET" and api.requires_scope("read:alert"):
-        user_id = request.args.get("user_id")
-        alerts = Alert().find(user_id)
-        result = Alert().to_summary(alerts)
-        return jsonify(result)
-    raise exceptions.AuthError(
-        {"code": "Unauthorized", "description": "Scope not matched.  Access Denied."},
-        403,
-    )
 
 """useful endpoint for debugging"""
 @app.route("/info")

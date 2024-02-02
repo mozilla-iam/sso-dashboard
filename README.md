@@ -31,7 +31,6 @@ A python flask implementation of an SSO dashboard.  OIDC for authentication and 
 * User profile editor
 * Global Security Alerts
 * IHaveBeenPwned Integration
-* User alert acknowledgement/escalation
 
 # Authentication Flow
 

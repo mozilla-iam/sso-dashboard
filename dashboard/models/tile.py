@@ -73,16 +73,14 @@ class CDNTransfer(object):
     def sync_config(self):
         """Determines if the config file is updated and if so fetches the new config."""
         try:
-            logger.info("Config file is updated fetching new config.")
-            self._get_config()
-
             if self.is_updated():
+                logger.info("Config file is updated fetching new config.")
+                self._get_config()
                 # Touch app.py to force a gunicorn reload
                 self._touch()
                 return True
-            else:
-                return False
-                # Do nothing
+
+            return False # Do nothing
         except Exception as e:
             print(e)
             logger.error("Problem fetching config file {error}".format(error=e))

@@ -23,6 +23,7 @@ A python flask implementation of an SSO dashboard.  OIDC for authentication and 
 * Gunicorn
 * MUI-CSS Framework
 * Docker
+* UUID
 
 # Features
 
@@ -90,7 +91,7 @@ This section gives an overview of the SSO Dashboard deployment, for a more detai
 
 Single Sign On Dashboard (SSO Dashboard) runs in the AWS IAM account (320464205386) inside the production EKS cluster, however it uses resources in the `infosec-prod` and `infosec-dev` AWS accounts.
 
-Currently the application is deployed into 2 different environments: dev and prod, each one running in the correspondent Kubernetes namespaces.
+Currently the application is deployed into 3 different environments: dev, staging prod, each one running in the correspondent Kubernetes namespaces.
  - Production environment can be reach at https://sso.mozilla.com
  - Staging environment can be reached at https://staging.mozilla.com
  - Development environment can be reach at https://sso.allizom.org

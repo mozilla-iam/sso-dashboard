@@ -16,49 +16,49 @@ cryptography==40.0.2
 cssmin==0.2.0 #not found in list
 defusedxml==0.7.1 #not supported - https://pypi.org/project/defusedxml/
 distlib==0.3.6 #not supported - https://pypi.org/project/distlib/
-ecdsa==0.18.0
-everett==3.2.0
-Faker==18.9.0
+ecdsa==0.18.0 #not found in list
+everett==3.2.0 #not found in list
+Faker==18.9.0 #not found in list
 filelock==3.12.1
-Flask==2.2.5
-Flask-Assets==2.0
-Flask-KVSession==0.6.2
-Flask-pyoidc==3.14.3
-flask-talisman==1.0.0
-future==0.18.3
-gevent==22.10.2
+Flask==2.2.5 #not supported - https://pypi.org/project/Flask/
+Flask-Assets==2.0 #not found in list
+Flask-KVSession==0.6.2 #not found in list
+Flask-pyoidc==3.14.3 #not found in list
+flask-talisman==1.0.0 #not found in list
+future==0.18.3 #not supported - https://pypi.org/project/future/
+gevent==22.10.2 #not found in list
 greenlet==2.0.2
-gunicorn==20.1.0
-identify==2.5.24
+gunicorn==20.1.0 #not supported - https://pypi.org/project/gunicorn/
+identify==2.5.24 #not supported - https://pypi.org/project/identify/
 idna==3.4
-importlib-metadata==6.6.0
-importlib-resources==5.12.0
-itsdangerous==2.1.2
-Jinja2==3.1.2
-jmespath==1.0.1
-josepy==1.13.0
-jsmin==3.0.1
+importlib-metadata==6.6.0 #not supported - https://pypi.org/project/importlib-metadata/
+importlib-resources==5.12.0 #not supported - https://pypi.org/project/importlib-resources/
+itsdangerous==2.1.2 #not supported - https://pypi.org/project/itsdangerous/
+Jinja2==3.1.2 #not supported - https://pypi.org/project/Jinja2/
+jmespath==1.0.1 #not supported - https://pypi.org/project/jmespath/
+josepy==1.13.0 #not found in list
+jsmin==3.0.1 #not found in list
 Mako==1.2.4
-MarkupSafe==2.1.2
-moto==4.1.10
-nodeenv==1.8.0
-oic==1.6.1
+MarkupSafe==2.1.2 #not supported - https://pypi.org/project/MarkupSafe/
+moto==4.1.10 #not found in list
+nodeenv==1.8.0 #not supported - https://pypi.org/project/nodeenv/
+oic==1.6.1 #not in list
 packaging==23.1
 platformdirs==3.5.3
-pluggy==1.0.0
-pre-commit==2.21.0
+pluggy==1.0.0 #not supported - https://pypi.org/project/pluggy/
+pre-commit==2.21.0 #not supported - https://pypi.org/project/pre-commit/
 pyasn1==0.5.0
-pycparser==2.21
+pycparser==2.21 #not supported - https://pypi.org/project/pycparser/
 pycryptodomex==3.18.0
 pydantic==2.5.2
-pydantic-settings==2.0.3
-pydantic_core==2.14.5
-pyjwkest==1.4.2
+pydantic-settings==2.0.3 #not found in list
+pydantic_core==2.14.5 #not found in list
+pyjwkest==1.4.2 #not found in list
 pyOpenSSL==23.1.1
-pyproject_api==1.5.1
-python-dateutil==2.8.2
+pyproject_api==1.5.1 #not found in list
+python-dateutil==2.8.2 #not supported - https://pypi.org/project/python-dateutil/
 python-dotenv==0.21.1
-python-jose==3.3.0
+python-jose==3.3.0 #not found in list
 PyYAML==6.0
 redis==4.5.5
 requests==2.31.0

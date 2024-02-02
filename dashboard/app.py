@@ -182,8 +182,9 @@ def dashboard():
     # Transfer any updates in to the app_tiles.
     CDNTransfer(config.Config(app).settings).sync_config()
 
+    # The rule engine has been disabled.  See IAM-1256
     # Send the user session and browser headers to the alert rules engine.
-    Rules(userinfo=session["userinfo"], request=request).run()
+    # Rules(userinfo=session["userinfo"], request=request).run()
 
     user = User(session, config.Config(app).settings)
     apps = user.apps(Application(app_list.apps_yml).apps)

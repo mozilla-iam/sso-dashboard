@@ -1,5 +1,5 @@
 venv
-dashboard/data/apps.yml-etag
+dashboard/data/
 dump.rdb
 .env
 env3

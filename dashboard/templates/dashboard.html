@@ -37,9 +37,6 @@
   <div class="menu">
     <button type="button" class="menu-toggle"><span class="visually-hidden">Toggle user options</span></button>
     {% with avatar = user.avatar, name = user.first_name %}
-      {% if user.alerts.get('visible_alerts', [])|length > 0 %}
-        <span class="alerts-count"><span class="visually-hidden">You have {{ user.alerts['visible_alerts']|count }} unread alerts</span></span>
-      {% endif %}
       <span class="name">{% if name %}{{ name }}{% endif %}</span>
       {% if avatar %}
         <img class="profile-icon" src="{{ avatar }}">
@@ -61,60 +58,10 @@
 {% block user_menu %}
   <div class="user-menu">
     <a href="https://people.mozilla.org/e" target="_blank"><span>Settings</span> <img class="menu-icon" src="/static/img/settings.svg" alt=""></a>
-    <a {% if user.alerts %}href="/notifications"{% else %}href="#" class="inactive"{% endif %}><span>Notifications</span> <img class="menu-icon" src="/static/img/alerts/notification-white.svg" alt=""></a>
     <a href="/logout"><span>Logout</span> <img class="menu-icon"src="/static/img/logout.svg" alt=""></a>
     <a href="/autologin-settings"><span>Enable / Disable Auto-login</span></a>
     <div class="coming-soon"><span>coming soon</span></div>
     <a href="#" class="inactive"><span>Access Request</span> <img class="menu-icon"src="/static/img/request.svg" alt=""></a>
-  </div>
-{% endblock %}
-
-{% block messages %}
-  <div class="messages">
-    <div class="alert alert-low" id="alert-nightly">
-      <div class="alert-risk"><span>low risk</span></div>
-      <p>Want to help test Firefox? Give Firefox Beta a try!</p>
-      <div class="alert-actions">
-        <a href="https://beta.mozilla.org/" class="btn-alert" target="_blank">
-          {% include 'icons/alert.svg' %}
-          <span class="info-text">Download</span>
-        </a>
-        <button type="button" data-process-action="acknowledge" class="closebtn"><span aria-hidden="true">&times;</span><span class="visually-hidden">Dismiss</button>
-      </div>
-    </div>
-
-
-    {% for alert in user.alerts.get('visible_alerts') %}
-      <div class="alert alert-{{ alert.risk }}" id="{{ alert.get('alert_id') }}">
-        <div class="alert-risk"><span>{{ alert.risk }} risk</span></div>
-        <p>{{ alert.summary }}</p>
-        <p class="alert-timing"><time>{{ alert.date }}</time></p>
-        <div class="alert-actions">
-          <a href="{{ alert.url }}" class="btn-alert" target="_blank">
-            {% include 'icons/alert.svg' %}
-            {{ alert.url_title }}
-          </a>
-          {% if alert.get('state') != 'escalate' and alert.get('alert_code') == '416c65727447656f6d6f64656c' %}
-            <button type="button" data-process-action="escalate" data-process-action-success="This alert has been escalated to the Mozilla Operations Center." data-process-action-error="An error has occurred, please try again later." class="btn-alert">
-              {% include 'icons/arrow-right.svg' %}
-              <span class="info-text">Escalate to Security</span>
-            </button>
-          {% endif %}
-          <a href="/notifications" class="btn-alert">
-            {% include 'icons/info.svg' %}
-            <span class="info-text">More Info</span>
-          </a>
-        </div>
-        <div class="alert-feedback"  role="alert">
-          <div class="loading-indicator">{% include 'icons/loading-white.svg' %}</div>
-          {% if alert.get('state') == 'escalate' %}
-          <p>This alert has been escalated to the Mozilla Operations Center.</p>
-          {% endif %}
-        </div>
-        {% include 'partials/alert-feedback.html' %}
-        <button type="button" data-process-action="acknowledge" class="closebtn"><span aria-hidden="true">&times;</span><span class="visually-hidden">Dismiss</button>
-      </div>
-    {% endfor %}
   </div>
 {% endblock %}
 

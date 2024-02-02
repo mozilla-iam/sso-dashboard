@@ -27,6 +27,7 @@ A python flask implementation of an SSO dashboard.  OIDC for authentication and 
 
 # Features
 
+
 * Server Side Events Security Alerts
 * Control over what apps a user sees
 * User profile editor

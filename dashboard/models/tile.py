@@ -3,6 +3,7 @@ import boto3
 import logging
 import os
 import urllib3
+import uuid
 
 from boto3.dynamodb.conditions import Attr
 
@@ -54,7 +55,9 @@ class CDNTransfer(object):
     def _get_config(self):
         """Download the apps.yml from the CDN."""
         http = urllib3.PoolManager()
-        response = http.request('GET', self.url)
+        # using a random url to force a new download, to avoid caching
+        rand_url = self.url + "?v=" + str(uuid.uuid4())
+        response = http.request('GET', rand_url)
         this_dir = os.path.dirname(__file__)
         filename = os.path.join(this_dir, "../data/{name}").format(name="apps.yml")
         with open(filename, 'wb') as file:

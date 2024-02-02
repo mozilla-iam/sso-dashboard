@@ -79,11 +79,11 @@ class CDNTransfer(object):
                 # Touch app.py to force a gunicorn reload
                 self._touch()
                 return True
-
-            return False # Do nothing
         except Exception as e:
             print(e)
             logger.error("Problem fetching config file {error}".format(error=e))
+
+        return False # Do nothing
 
 
 class Tile(object):

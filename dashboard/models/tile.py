@@ -79,11 +79,15 @@ class CDNTransfer(object):
                 # Touch app.py to force a gunicorn reload
                 self._touch()
                 return True
+            else :
+                # this is needed on initial startup,
+                # otherwise the app will not have a config
+                self._get_config()
+                return False
         except Exception as e:
             print(e)
             logger.error("Problem fetching config file {error}".format(error=e))
 
-        return False # Do nothing
 
 
 class Tile(object):

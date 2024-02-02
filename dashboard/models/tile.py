@@ -1,10 +1,7 @@
 """Governs loading all tile displayed to the user in the Dashboard."""
-import boto3
 import logging
 import os
 import urllib3
-
-from boto3.dynamodb.conditions import Attr
 
 logger = logging.getLogger(__name__)
 

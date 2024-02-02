@@ -73,6 +73,7 @@ class CDNTransfer(object):
     def sync_config(self):
         """Determines if the config file is updated and if so fetches the new config."""
         try:
+            # this is for checking updates after the app has started
             if self.is_updated():
                 logger.info("Config file is updated fetching new config.")
                 self._get_config()
@@ -80,7 +81,7 @@ class CDNTransfer(object):
                 self._touch()
                 return True
             else :
-                # this is needed on initial startup,
+                # this is needed on initial app startup,
                 # otherwise the app will not have a config
                 self._get_config()
                 return False

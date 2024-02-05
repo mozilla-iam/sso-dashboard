@@ -297,6 +297,7 @@ body {
     background-color: $bggray;
     min-height: 100%;
     padding: 20px;
+    padding-top: $appbar-height + 5px;
 
     .app-grid ul {
         padding-left: 0;

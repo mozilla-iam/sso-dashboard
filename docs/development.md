@@ -2,16 +2,12 @@
 
 ## Getting Started
 
-In order to develop for the sso-dashboard and run the working dashboard you must use the Mozilla Federated Access Cli https://github.com/mozilla-iam/mozilla-aws-cli to assume a role in the Mozilla-IAM account that can call `sts:assumerole` and retrieve the following parameters from `us-west-2 ssm parameter store`:
-
-* `/iam/sso-dashboard/dev/assume_role_arn`
-* `/iam/sso-dashboard/prod/assume_role_arn`
+In order to develop for the sso-dashboard and run the working dashboard you must install Docker desktop and have a copy of a working envfile.
 
 Make sure that everything is working prior to feature development by running:
 
- `make run STAGE=(dev|prod)`
+ `docker compose up`
 
- where you've selected the appropriate stage.  **Note: Running against production is discouraged and should only be used for debugging.**
 
  On successful boot of the docker container your shell should say:
 

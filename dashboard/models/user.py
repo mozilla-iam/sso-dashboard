@@ -1,4 +1,5 @@
 """User class that governs maniuplation of session['userdata']"""
+
 import logging
 import time
 from faker import Faker

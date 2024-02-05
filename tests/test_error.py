@@ -1,4 +1,5 @@
 """Test to cover signed error message system."""
+
 from dashboard import oidc_auth
 
 import os

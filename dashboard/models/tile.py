@@ -1,12 +1,15 @@
 """Governs loading all tile displayed to the user in the Dashboard."""
+
 import logging
 import os
 import urllib3
 
 logger = logging.getLogger(__name__)
 
+
 class CDNTransfer(object):
     """Download apps.yaml from CDN"""
+
     def __init__(self, app_config):
         self.app_config = app_config
         """Used in app.py load apps.yml"""
@@ -16,9 +19,9 @@ class CDNTransfer(object):
     def is_updated(self):
         """Compare etag of what is in CDN to what is on disk."""
         http = urllib3.PoolManager()
-        response = http.request('HEAD', self.url)
+        response = http.request("HEAD", self.url)
 
-        if (response.headers["ETag"] != self._etag()):
+        if response.headers["ETag"] != self._etag():
             logger.error("Etags do not match")
             return True
         else:
@@ -51,10 +54,10 @@ class CDNTransfer(object):
     def _get_config(self):
         """Download the apps.yml from the CDN."""
         http = urllib3.PoolManager()
-        response = http.request('GET', self.url)
+        response = http.request("GET", self.url)
         this_dir = os.path.dirname(__file__)
         filename = os.path.join(this_dir, "../data/{name}").format(name="apps.yml")
-        with open(filename, 'wb') as file:
+        with open(filename, "wb") as file:
             file.write(response.data)
         self.apps_yml = response.data.decode("utf-8")
         self._update_etag(response.headers["ETag"])
@@ -77,7 +80,7 @@ class CDNTransfer(object):
                 # Touch app.py to force a gunicorn reload
                 self._touch()
                 return True
-            else :
+            else:
                 # this is needed on initial app startup,
                 # otherwise the app will not have a config
                 self._get_config()
@@ -85,7 +88,6 @@ class CDNTransfer(object):
         except Exception as e:
             print(e)
             logger.error("Problem fetching config file {error}".format(error=e))
-
 
 
 class Tile(object):

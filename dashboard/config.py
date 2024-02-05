@@ -1,4 +1,5 @@
 """Configuration loader for different environments."""
+
 import base64
 import datetime
 from dashboard import get_config

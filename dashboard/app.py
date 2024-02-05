@@ -1,4 +1,5 @@
 """SSO Dashboard App File."""
+
 import json
 import logging.config
 import mimetypes
@@ -201,6 +202,8 @@ def styleguide_notifications():
 
 
 """useful endpoint for debugging"""
+
+
 @app.route("/info")
 @oidc.oidc_auth("default")
 def info():

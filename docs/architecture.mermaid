@@ -8,8 +8,6 @@ container[sso-dashboard-container] -- fetch assets and access file --> cdn[cdn.s
 
 container[sso-dashboard-container] -- fetch secrets --> credstash --> client_id,client_secret,etc
 
-container --> dynamodb_table[alert_data via dynamo]
-
 cdn[cdn.sso.mozilla.com] -->
 access_file(apps.yml)
 cdn[cdn.sso.mozilla.com] --> images(img, css, js)

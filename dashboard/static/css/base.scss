@@ -39,11 +39,7 @@ $yellow: #faba00;
 $blue: #229dc4;
 $red: #d04437;
 $appbar-height: 70px;
-$alert-low: #ccc;
-$alert-medium: #4a6785;
-$alert-high: #ffd351;
-$alert-maximum: #d04437;
-$alert-success: #14c887;
+
 
 html,
 body {
@@ -187,16 +183,6 @@ body {
             }
         }
 
-        .alerts-count {
-            background-color: $red;
-            width: .8em;
-            height: .8em;
-            border-radius: .8em;
-            position: absolute;
-            top: 10px;
-            right: 50px;
-        }
-
         .profile-icon {
             margin: 15px;
             width: 40px;
@@ -224,10 +210,6 @@ body {
             height: calc(#{$appbar-height} - 1px);
             position: relative;
             z-index: 2;
-
-            .alerts-count {
-                display: none;
-            }
 
             .name {
                 display: inline-block;
@@ -278,103 +260,6 @@ body {
     background-color: black;
     color: $lightgray;
 
-    #alert-nightly {
-        display: none;
-
-        @media all and (width <= 767px) {
-            visibility: hidden;
-            padding: 0;
-            height: 0;
-        }
-    }
-
-    .alert {
-        padding: 0.5em;
-        text-align: center;
-        border-top: 1px solid white;
-        color: white;
-        margin: 0;
-        position: relative;
-        overflow: hidden; // establish a new block formatting context
-
-        // this is the width which comfortably fits a risk indicator and text content
-        @media (width >= 40em) {
-            padding: 0.5em 1em;
-        }
-
-        &.alert-success {
-            --alert-bg-color: white;
-            --alert-color: $alert-success;
-        }
-
-        &.alert-medium {
-            --alert-bg-color: $alert-medium;
-            --alert-color: white;
-        }
-
-        &.alert-high {
-            --alert-bg-color: $alert-high;
-            --alert-color: black;
-        }
-
-        &.alert-maximum {
-            --alert-bg-color: $alert-maximum;
-            --alert-color: white;
-        }
-
-        &.alert-low {
-            --alert-bg-color: $alert-low;
-            --alert-color: black;
-        }
-
-        .alert-risk {
-            color: var(--alert-color);
-            background-color: var(--alert-bg-color);
-            padding: 0.125em;
-            width: 9em;
-            text-transform: uppercase;
-            display: inline-block;
-            font-weight: bold;
-            text-align: center;
-            margin: 1em 0;
-
-            @media (width >= 40em) {
-                position: absolute;
-                left: 1em;
-                top: 1em;
-                margin: 0;
-            }
-
-            span {
-                font-size: .8em;
-            }
-        }
-
-        > p {
-            margin: 1em 0;
-            max-width: 60em;
-
-            @media (width >= 40em) {
-                margin: 1em auto;
-                padding-left: 11em; /* always have space for abs pos risk indicator */
-                padding-right: 11em; /* balance space on left */
-            }
-        }
-
-        .alert-message {
-            @media all and (width <= 767px) {
-                margin-bottom: 10px;
-            }
-
-            p {
-                display: inline;
-                margin-bottom: 0;
-                font-weight: bold;
-                vertical-align: middle;
-            }
-        }
-    }
-
     .closebtn {
         color: white;
         opacity: .8;
@@ -408,81 +293,11 @@ body {
     }
 }
 
-.alert-feedback {
-    margin: 2em 0;
-
-    p {
-        font-style: italic;
-    }
-}
-
-.alert .loading-indicator {
-    display: none;
-    text-align: center;
-}
-
-.alert[data-loading] {
-
-    .loading-indicator {
-        display: block;
-    }
-}
-
-.alert-actions {
-    text-align: center;
-    margin: 1.5em 0;
-
-    .notifications & {
-        text-align: left;
-    }
-
-    .btn-alert {
-        padding: .5em 1em;
-        background: white;
-        border: 1px solid black;
-        font-family: inherit;
-        display: inline-block;
-        color: black;
-        text-decoration: none;
-        border-radius: 1.5em;
-        margin: .5em;
-        transition: background-color 0.2s ease-in-out;
-
-        &:first-of-type {
-            margin-left: 0;
-        }
-
-        &:focus {
-            background-color: $lightergray;
-            color: $blue;
-            outline: none;
-        }
-
-        &:hover {
-            background: black;
-            color: white;
-
-            svg path {
-                fill: #fff;
-            }
-        }
-
-        svg {
-            display: inline-block;
-            vertical-align: middle;
-            margin-right: .5em;
-
-            path {
-                fill: #000;
-            }
-        }
-    }
-}
-
 .content {
     background-color: $bggray;
     min-height: 100%;
     padding: 20px;
+    padding-top: $appbar-height + 5px;
 
     .app-grid ul {
         padding-left: 0;
@@ -564,195 +379,6 @@ body {
             vertical-align: text-top;
             margin-right: 5px;
         }
-
-        .alerts-count {
-            background-color: $red;
-            border-radius: 100%;
-            min-width: 1.5em;
-            min-height: 1.5em;
-            color: white;
-            display: inline-block;
-            font-weight: bold;
-            margin-left: .5em;
-            text-align: center;
-            font-size: .875em;
-            line-height: 1.4;
-        }
-    }
-
-    .alert-panel {
-        background-color: white;
-        box-shadow: 7px 7px 0 0 #d3d3d3;
-        margin: 0 auto 40px;
-        max-width: 100%;
-        width: 775px;
-
-        .alert-header {
-            font-weight: bold;
-            padding: 26px 32px;
-            text-transform: uppercase;
-
-            &.alert-success {
-                --alert-bg-color: white;
-                --alert-color: $alert-success;
-            }
-
-            &.alert-medium {
-                --alert-bg-color: $alert-medium;
-                --alert-color: white;
-            }
-
-            &.alert-high {
-                --alert-bg-color: $alert-high;
-                --alert-color: black;
-            }
-
-            &.alert-maximum {
-                --alert-bg-color: $alert-maximum;
-                --alert-color: white;
-            }
-
-            &.alert-low {
-                --alert-bg-color: $alert-low;
-                --alert-color: black;
-            }
-
-            .alert-risk {
-                color: var(--alert-color);
-                background-color: var(--alert-bg-color);
-                padding: 5px 35px;
-                font-size: .875em;
-            }
-
-            border-bottom: 4px solid var(--alert-bg-color);
-        }
-
-        .alert-body {
-            padding: 32px;
-
-            .alert-datetime {
-                font-size: .9em;
-            }
-
-            .alert-summary {
-                color: black;
-                font-size: 1.2em;
-                padding-bottom: 10px;
-                padding-top: 10px;
-            }
-
-            .alert-create-header {
-                color: black;
-                font-size: 1em;
-                padding-bottom: 3px;
-            }
-
-            .alert-details-header {
-                color: black;
-                font-size: 1em;
-                padding-bottom: 3px;
-                padding-top: 10px;
-            }
-
-            .mui-btn {
-                border: 1px solid black;
-                font-weight: bold;
-                margin: 30px 0 0 10px;
-                text-transform: none;
-
-                @media all and (width <= 543px) {
-                    margin: 20px 0 0;
-                }
-
-                img {
-                    margin-right: 10px;
-                }
-            }
-        }
-    }
-}
-
-.alert-survey {
-    border-top: 2px solid $darkgray;
-    text-align: left;
-    font-size: .875em;
-
-    .notifications & {
-        border-top-color: $bggray;
-    }
-
-    fieldset {
-        border: 0;
-        padding-top: 1em;
-        padding-right: 1em;
-        position: relative;
-        margin: 0 auto;
-        max-width: 30em;
-
-        @media (width >= 50em) {
-            padding-left: 14em;
-        }
-
-        .notifications & {
-            margin: 0;
-        }
-    }
-
-    legend {
-        margin: 1em 0 0;
-
-        @media (width >= 50em) {
-            margin: 1.5em 0;
-            position: absolute;
-            left: 0;
-            top: 0;
-        }
-    }
-
-    input {
-        background-color: $darkgray;
-        color: #fff;
-        border: 0;
-        padding: 0.5em 1.5em;
-        margin: 2px 1px 2px 0;
-        transition: background-color 0.2s ease-in-out;
-        font-family: inherit;
-        display: inline-block;
-        vertical-align: middle;
-
-        .notifications & {
-            background-color: $bggray;
-            color: $darkgray;
-        }
-
-        &:hover {
-            color: #fff;
-            background-color: $gray;
-        }
-
-        &:focus {
-            outline: 1px solid $yellow;
-        }
-
-        &:first-of-type {
-            @media (width >= 50em) {
-                border-radius: 2em 0 0 2em;
-            }
-        }
-
-        &:last-of-type {
-            @media (width >= 50em) {
-                border-radius: 0 2em 2em 0;
-            }
-        }
-    }
-}
-
-.alert-timing {
-    margin: .5em 0 1.5em;
-
-    time {
-        font-size: .75em;
     }
 }
 
@@ -1141,11 +767,6 @@ footer {
 
         .menu {
             height: $appbar-height;
-
-            .alerts-count {
-                top: 15px;
-                right: 56px;
-            }
 
             .profile-icon {
                 display: block;

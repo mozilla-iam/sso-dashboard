@@ -24,14 +24,15 @@ A python flask implementation of an SSO dashboard.  OIDC for authentication and 
 * MUI-CSS Framework
 * Docker
 
+
 # Features
+
 
 * Server Side Events Security Alerts
 * Control over what apps a user sees
 * User profile editor
 * Global Security Alerts
 * IHaveBeenPwned Integration
-* User alert acknowledgement/escalation
 
 # Authentication Flow
 
@@ -91,8 +92,9 @@ This section gives an overview of the SSO Dashboard deployment, for a more detai
 
 Single Sign On Dashboard (SSO Dashboard) runs in the AWS IAM account (320464205386) inside the production EKS cluster, however it uses resources in the `infosec-prod` and `infosec-dev` AWS accounts.
 
-Currently the application is deployed into 2 different environments: dev and prod, each one running in the correspondent Kubernetes namespaces.
+Currently the application is deployed into 3 different environments: dev, staging prod, each one running in the correspondent Kubernetes namespaces.
  - Production environment can be reach at https://sso.mozilla.com
+ - Staging environment can be reached at https://staging.sso.mozilla.com
  - Development environment can be reach at https://sso.allizom.org
 
 The application deployment process is performed by AWS Codebuild following the instructions in the [buildspec file](https://github.com/mozilla-iam/sso-dashboard/blob/master/buildspec-k8s.yml), which is heavily dependent in this [Makefile](https://github.com/mozilla-iam/sso-dashboard/blob/master/Makefile).

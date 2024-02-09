@@ -1,81 +1,32 @@
-annotated-types==0.5.0
-async-timeout==4.0.2 #not supported - https://pypi.org/project/async-timeout/
-Beaker==1.12.1 #not found in list
-boto3==1.26.142
-botocore==1.29.142
-cachetools==5.3.1
-certifi==2023.5.7 #not supported - https://pypi.org/project/certifi/
-cffi==1.15.1
-cfgv==3.3.1 #not supported - https://pypi.org/project/cfgv/
-chardet==5.1.0 #not supported - https://pypi.org/project/chardet/
-charset-normalizer==3.1.0
-click==8.1.3 #not supported - https://pypi.org/project/click/
-colorama==0.4.6 #not supported - https://pypi.org/project/colorama/
-configobj==5.0.8 #not found in list
-cryptography==40.0.2
-cssmin==0.2.0 #not found in list
-defusedxml==0.7.1 #not supported - https://pypi.org/project/defusedxml/
-distlib==0.3.6 #not supported - https://pypi.org/project/distlib/
-ecdsa==0.18.0 #not found in list
-everett==3.2.0 #not found in list
-Faker==18.9.0 #not found in list
-filelock==3.12.1
-Flask==2.2.5 #not supported - https://pypi.org/project/Flask/
-Flask-Assets==2.0 #not found in list
-Flask-KVSession==0.6.2 #not found in list
-Flask-pyoidc==3.14.3 #not found in list
-flask-talisman==1.0.0 #not found in list
-future==0.18.3 #not supported - https://pypi.org/project/future/
-gevent==22.10.2 #not found in list
-greenlet==2.0.2
-gunicorn==20.1.0 #not supported - https://pypi.org/project/gunicorn/
-identify==2.5.24 #not supported - https://pypi.org/project/identify/
-idna==3.4
-importlib-metadata==6.6.0 #not supported - https://pypi.org/project/importlib-metadata/
-importlib-resources==5.12.0 #not supported - https://pypi.org/project/importlib-resources/
-itsdangerous==2.1.2 #not supported - https://pypi.org/project/itsdangerous/
-Jinja2==3.1.2 #not supported - https://pypi.org/project/Jinja2/
-jmespath==1.0.1 #not supported - https://pypi.org/project/jmespath/
-josepy==1.13.0 #not found in list
-jsmin==3.0.1 #not found in list
-Mako==1.2.4
-MarkupSafe==2.1.2 #not supported - https://pypi.org/project/MarkupSafe/
-moto==4.1.10 #not found in list
-nodeenv==1.8.0 #not supported - https://pypi.org/project/nodeenv/
-oic==1.6.1 #not in list
-packaging==23.1
-platformdirs==3.5.3
-pluggy==1.0.0 #not supported - https://pypi.org/project/pluggy/
-pre-commit==2.21.0 #not supported - https://pypi.org/project/pre-commit/
-pyasn1==0.5.0
-pycparser==2.21 #not supported - https://pypi.org/project/pycparser/
-pycryptodomex==3.18.0
-pydantic==2.5.2
-pydantic-settings==2.0.3 #not found in list
-pydantic_core==2.14.5 #not found in list
-pyjwkest==1.4.2 #not found in list
-pyOpenSSL==23.1.1
-pyproject_api==1.5.1 #not found in list
-python-dateutil==2.8.2 #not supported - https://pypi.org/project/python-dateutil/
-python-dotenv==0.21.1
-python-jose==3.3.0 #not found in list
-PyYAML==6.0
-redis==4.5.5
-requests==2.31.0
-responses==0.23.1
-rsa==4.9
-s3transfer==0.6.1
+Beaker==1.12.1
+configobj==5.0.8 #required to start app
+cssmin==0.2.0
+everett==3.2.0
+Faker==18.9.0
+Flask==2.2.5
+Flask-Assets==2.0
+Flask-KVSession==0.6.2
+Flask-pyoidc==3.14.3
+flask-talisman==1.0.0
+gevent==23.9.1 #updated, required by app to work
+greenlet==3.0.3 #updated, required by geventapp to work
+gunicorn==20.1.0 #used during app startup
+itsdangerous==2.1.2 #required by flask 2.2.5
+Jinja2==3.1.2 #needed for flask/templating files
+josepy==1.13.0
+jsmin==3.0.1 #used in app.py
+nodeenv==1.8.0 #used by tox
+packaging==23.2 #updated
+pluggy==1.0.0 # need for pytest
+pre-commit==2.21.0 #needed for pre-commit hookss
+pyjwkest==1.4.2
+python-jose==3.3.0 #required by jwt library
+redis==5.0.1 #updated
 simplekv==0.14.1
 six==1.16.0
-tomli==2.0.1
 tox==4.6.0
 types-PyYAML==6.0.12.10
 typing_extensions==4.6.3
-urllib3==1.26.16
-virtualenv==20.23.0
+urllib3==2.2.0 #updated
 webassets==2.0
 Werkzeug==2.2.3
-xmltodict==0.13.0
-zipp==3.15.0
-zope.event==4.6
-zope.interface==6.0

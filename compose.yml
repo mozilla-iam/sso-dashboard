@@ -6,7 +6,6 @@ services:
     build: .
     env_file: envfile
     environment:
-      - AWS_DEFAULT_REGION=us-west-2
       - FLASK_DEBUG=True
       - FLASK_APP=dashboard/app.py
     ports:

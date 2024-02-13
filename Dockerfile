@@ -1,4 +1,4 @@
-FROM python:3.7-bullseye
+FROM python:3.12-bullseye
 ARG RELEASE_NAME
 
 RUN apt update && apt install -y nodejs npm \

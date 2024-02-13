@@ -10,7 +10,7 @@ requirements = []
 
 setup_requirements = ["pytest-runner", "credstash", "everett", "josepy", "flask_pyoidc"]
 
-test_requirements = ["pytest", "pytest-watch", "pytest-cov", "moto", "pytest-moto", "faker"]
+test_requirements = ["pytest", "pytest-watch", "pytest-cov", "faker"]
 
 setup(
     name="dashboard",

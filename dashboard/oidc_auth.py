@@ -2,6 +2,7 @@ import json
 import logging
 from josepy.jwk import JWK
 from josepy.jws import JWS
+from josepy.error import JWSErrors
 
 """Class that governs all authentication with open id connect."""
 from flask_pyoidc import OIDCAuthentication
@@ -95,6 +96,10 @@ class tokenVerification(object):
                 self.jws_data["connection_name"] = self._get_connection_name(self.jws_data["connection"])
                 return True
         except UnicodeDecodeError:
+            logger.warning("UnicodeDecodeError: The jws {jws}".format(jws=self.jws))
+            return False
+        except JWSErrors.DeserializationError:
+            logger.warning("DeserializationError jws {jws}".format(jws=self.jws))
             return False
 
     def error_message(self):

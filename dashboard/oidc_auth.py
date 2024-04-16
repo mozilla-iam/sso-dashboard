@@ -1,7 +1,9 @@
 import json
 import logging
+import traceback
 from josepy.jwk import JWK
 from josepy.jws import JWS
+from josepy.error import JWSErrors
 
 """Class that governs all authentication with open id connect."""
 from flask_pyoidc import OIDCAuthentication
@@ -95,6 +97,17 @@ class tokenVerification(object):
                 self.jws_data["connection_name"] = self._get_connection_name(self.jws_data["connection"])
                 return True
         except UnicodeDecodeError:
+            logger.warning("UnicodeDecodeError: The jws {jws}".format(jws=self.jws))
+            return False
+        except JWSErrors.DeserializationError:
+            logger.warning("DeserializationError jws {jws}".format(jws=self.jws))
+            return False
+        except Exception: # pylint: disable=broad-exception-caught
+            # This is a broad except to catch every error.  It's not great but since we're
+            # in _validate, our job is to pass/fail everything, and letting code raise out
+            # of here blows up the website in front of customers.  Let's do something better
+            # as a last-choice, maybe we need more exceptions caught above
+            logger.warning("Unknown error occurred "+traceback.format_exc())
             return False
 
     def error_message(self):

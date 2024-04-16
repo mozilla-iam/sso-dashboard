@@ -28,7 +28,7 @@ jobs:
       slack_ts: ${{ steps.slack_ts.outputs.slack_ts }}
     steps:
       - name: 'Checkout'
-        uses: 'actions/checkout@v3'
+        uses: 'actions/checkout@v4'
 
       - name: 'Create release name'
         id: release_name
@@ -39,7 +39,7 @@ jobs:
         run: echo "DOCKER_TAG=${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}" >> "$GITHUB_OUTPUT"
 
       - name: Send initial slack notification
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: slackapi/slack-github-action@v1.25.0
         id: slack
         with:
           channel-id: ${{ env.CHANNEL_IDS }}
@@ -61,10 +61,10 @@ jobs:
       RELEASE_NAME: ${{needs.init.outputs.release_name}}
     steps:
       - name: 'Checkout'
-        uses: 'actions/checkout@v3'
+        uses: 'actions/checkout@v4'
 
       - name: Update slack notification
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: slackapi/slack-github-action@v1.25.0
         with:
           update-ts: ${{ needs.init.outputs.slack_ts }}
           channel-id: ${{ env.CHANNEL_IDS }}
@@ -89,10 +89,10 @@ jobs:
       DOCKER_TAG: ${{needs.init.outputs.docker_tag}}
     steps:
       - name: 'Checkout'
-        uses: 'actions/checkout@v3'
+        uses: 'actions/checkout@v4'
 
       - name: Update slack notification
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: slackapi/slack-github-action@v1.25.0
         with:
           update-ts: ${{ needs.init.outputs.slack_ts }}
           channel-id: ${{ env.CHANNEL_IDS }}
@@ -134,10 +134,10 @@ jobs:
       DOCKER_TAG: ${{needs.init.outputs.docker_tag}}
     steps:
       - name: 'Checkout'
-        uses: 'actions/checkout@v3'
+        uses: 'actions/checkout@v4'
 
       - name: Update slack notification
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: slackapi/slack-github-action@v1.25.0
         with:
           update-ts: ${{ needs.init.outputs.slack_ts }}
           channel-id: ${{ env.CHANNEL_IDS }}
@@ -175,10 +175,10 @@ jobs:
       DOCKER_TAG: ${{needs.init.outputs.docker_tag}}
     steps:
       - name: 'Checkout'
-        uses: 'actions/checkout@v3'
+        uses: 'actions/checkout@v4.1.1'
 
       - name: Update slack notification
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: slackapi/slack-github-action@v1.25.0
         with:
           update-ts: ${{ needs.init.outputs.slack_ts }}
           channel-id: ${{ env.CHANNEL_IDS }}
@@ -217,11 +217,11 @@ jobs:
       RELEASE_NAME: ${{needs.init.outputs.release_name}}
     steps:
       - name: 'Checkout'
-        uses: 'actions/checkout@v3'
+        uses: 'actions/checkout@v4'
 
       - name: Update slack deployment complete
         if: needs.deploy.result == 'success'
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: slackapi/slack-github-action@v1.25.0
         with:
           update-ts: ${{ needs.init.outputs.slack_ts }}
           channel-id: ${{ env.CHANNEL_IDS }}
@@ -233,14 +233,14 @@ jobs:
 
       - name: Update slack deployment ready for promotion
         if: needs.deploy.result == 'success'
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: slackapi/slack-github-action@v1.25.0
         with:
           channel-id: ${{ env.CHANNEL_IDS }}
           payload-file-path: ".github/workflows/payload-slack-deploy.json"
 
       - name: Update slack deployment failed
         if: needs.lint.result == 'failure' || needs.build.result == 'failure' || needs.validate.result == 'failure' || needs.deploy.result == 'failure'
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: slackapi/slack-github-action@v1.25.0
         with:
           update-ts: ${{ needs.init.outputs.slack_ts }}
           channel-id: ${{ env.CHANNEL_IDS }}

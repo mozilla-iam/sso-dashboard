@@ -3,7 +3,7 @@ import logging
 import traceback
 from josepy.jwk import JWK
 from josepy.jws import JWS
-from josepy.error import JWSErrors
+import josepy.errors as JWSErrors
 
 """Class that governs all authentication with open id connect."""
 from flask_pyoidc import OIDCAuthentication

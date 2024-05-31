@@ -156,11 +156,10 @@ class tokenVerification(object):
                 client=self.data.get("client")
             )
         elif error_code == "staffmustuseldap":
-            error_text = "Staff LDAP account holders are required to use their LDAP account to login. Please go back \
-            and type your LDAP email address to login with your Staff account, instead of using \
-            {connection_name}.".format(
-                connection_name=self._get_connection_name(self.jws_data.get("connection", ""))
-            )
+            error_text = "It appears that you are attempting to log in with a Mozilla email address, which \
+                requires LDAP authentication. Please log out and sign back in using your LDAP credentials. \
+                To do this, click the Logout button below and then log in again by entering your email \
+                address and clicking Enter. Avoid using the buttons Sign in with Mozilla, with GitHub, or with Google."
         else:
             error_text = "Oye, something went wrong."
         return error_text

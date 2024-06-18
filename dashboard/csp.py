@@ -1,5 +1,9 @@
 DASHBOARD_CSP = {
     "default-src": ["'self'"],
+    "frame-src": [
+        "'self'",
+        "https://www.youtube.com",
+    ],
     "script-src": [
         "'self'",
         "https://ajax.googleapis.com",

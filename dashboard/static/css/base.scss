@@ -617,6 +617,22 @@ footer {
         }
     }
 
+    .image {
+        padding: 10px;
+        position: relative;
+        margin-top: 10px;
+        max-width: 100%;
+        width: 570px;
+        text-align: center;
+        font-size: 10px;
+
+        img {
+            display: block;
+            max-width: 85%;
+            margin: auto;
+        }
+    }
+
     .section {
         margin-top: 25px;
 

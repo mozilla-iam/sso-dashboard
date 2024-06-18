@@ -2,7 +2,8 @@ DASHBOARD_CSP = {
     "default-src": ["'self'"],
     "frame-src": [
         "'self'",
-        "https://www.youtube.com",
+        "https://cdn.sso.mozilla.com",
+        "https://cdn.sso.allizom.org",
     ],
     "script-src": [
         "'self'",

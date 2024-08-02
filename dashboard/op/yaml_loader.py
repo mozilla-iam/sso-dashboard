@@ -33,13 +33,6 @@ class Application:
     def _alphabetize(self):
         self.apps["apps"].sort(key=lambda a: a["application"]["name"].lower())
 
-    def _has_vanity(self, app):
-        try:
-            app["application"]["vanity_url"]
-            return True
-        except Exception:
-            return False
-
     def _truncate(self, app_name):
         """If name is longer than allowed 18 chars truncate the name."""
         app_name = (app_name[:16] + "..") if len(app_name) > 18 else app_name
@@ -52,8 +45,15 @@ class Application:
             {'/some-redirect': 'https://some/destination'}
         '''
         redirects = []
-        for app in self.apps["apps"]:
-            if self._has_vanity(app):
-                for redirect in app["application"]["vanity_url"]:
-                    redirects.append({redirect: app["application"]["url"]})
+        try:
+            all_apps = self.apps['apps']
+        except (TypeError, KeyError):
+            return redirects
+        for app_entry in all_apps:
+            app = app_entry['application']
+            yaml_vanity_url_list = app.get('vanity_url')
+            if not isinstance(yaml_vanity_url_list, list):
+                continue
+            for redirect in yaml_vanity_url_list:
+                redirects.append({redirect: app['url']})
         return redirects

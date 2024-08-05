@@ -10,6 +10,8 @@ RUN pip3 install --upgrade pip
 COPY ./requirements.txt /dashboard/
 RUN pip3 install -r /dashboard/requirements.txt
 COPY ./dashboard/ /dashboard/
+RUN mkdir -p /dashboard/data
+RUN touch /dashboard/data/apps.yml
 RUN chmod 750 -R /dashboard
 RUN rm /dashboard/static/css/gen/all.css \
     /dashboard/static/js/gen/packed.js \

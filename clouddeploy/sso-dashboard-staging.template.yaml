@@ -23,8 +23,8 @@ spec:
   template:
     metadata:
       annotations:
-        autoscaling.knative.dev/minScale: '1'
-        autoscaling.knative.dev/maxScale: '3'
+        autoscaling.knative.dev/minScale: '0'
+        autoscaling.knative.dev/maxScale: '1'
         run.googleapis.com/cpu-throttling: 'false'
         run.googleapis.com/startup-cpu-boost: 'true'
         run.googleapis.com/vpc-access-connector: 'redis-connector'
@@ -41,7 +41,12 @@ spec:
           - '--bind'
           - '0.0.0.0:8000'
           - '--workers=2'
+          - '--max-requests=1000'
+          - '--max-requests-jitter=50'
+          - '--graceful-timeout=30'
+          - '--timeout=60'
           - '--log-level=debug'
+          - '--error-logfile=-'
         ports:
           - name: http1
             containerPort: 8000

@@ -84,6 +84,7 @@ jobs:
     name: Building
     needs: [ init, lint ]
     runs-on: ubuntu-latest
+    environment: production
     env:
       RELEASE_NAME: ${{needs.init.outputs.release_name}}
       DOCKER_TAG: ${{needs.init.outputs.docker_tag}}
@@ -129,6 +130,7 @@ jobs:
     name: Validating
     needs: [ init, lint, build ]
     runs-on: ubuntu-latest
+    environment: production
     env:
       RELEASE_NAME: ${{needs.init.outputs.release_name}}
       DOCKER_TAG: ${{needs.init.outputs.docker_tag}}
@@ -170,6 +172,7 @@ jobs:
     name: Sending to Cloud Deploy
     needs: [ init, lint, build, validate ]
     runs-on: ubuntu-latest
+    environment: production
     env:
       RELEASE_NAME: ${{needs.init.outputs.release_name}}
       DOCKER_TAG: ${{needs.init.outputs.docker_tag}}

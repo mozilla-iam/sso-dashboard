@@ -23,6 +23,8 @@ class DefaultConfig(object):
 
     DEBUG = bool(CONFIG("debug", namespace="sso-dashboard", default="True"))
     TESTING = bool(CONFIG("testing", namespace="sso-dashboard", default="False"))
+    PROPAGATE_EXCEPTIONS = bool(CONFIG("propagate_exceptions", namespace="sso-dashboard", default="True"))
+
     CSRF_ENABLED = bool(CONFIG("csrf_enabled", default="True"))
     PERMANENT_SESSION = bool(CONFIG("permanent_session", namespace="sso-dashboard", default="True"))
     seconds = int(CONFIG("permanent_session_lifetime", namespace="sso-dashboard", default="86400"))

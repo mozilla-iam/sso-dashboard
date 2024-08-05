@@ -47,6 +47,8 @@ spec:
           - '--timeout=60'
           - '--log-level=debug'
           - '--error-logfile=-'
+          - '--reload'
+          - '--reload-extra-file=/dashboard/data/apps.yml'
         ports:
           - name: http1
             containerPort: 8000

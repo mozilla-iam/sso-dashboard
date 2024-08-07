@@ -2,8 +2,8 @@ import json
 import logging
 from functools import wraps
 from flask import request
-from flask import _request_ctx_stack
-from six.moves.urllib.request import urlopen
+from flask.globals import request_ctx
+from six.moves.urllib_request import urlopen
 from jose import jwt
 from dashboard.api.exceptions import AuthError
 
@@ -118,7 +118,7 @@ class AuthorizeAPI(object):
                         401,
                     )
 
-                _request_ctx_stack.top.current_user = payload
+                request_ctx.top.current_user = payload
                 return f(*args, **kwargs)
             raise AuthError(
                 {

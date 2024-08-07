@@ -1,14 +1,13 @@
 """File based loader. Will fetch connected apps from yml file instead."""
 
 import logging
-import os
 import yaml
 
 
 logger = logging.getLogger(__name__)
 
 
-class Application(object):
+class Application:
     def __init__(self, app_dict):
         self.app_dict = app_dict
         self.apps = self._load_data()
@@ -24,7 +23,6 @@ class Application(object):
         except yaml.YAMLError as e:
             stream = None
             logger.info(e)
-            pass
         return stream
 
     def _render_data(self):
@@ -35,18 +33,6 @@ class Application(object):
     def _alphabetize(self):
         self.apps["apps"].sort(key=lambda a: a["application"]["name"].lower())
 
-    def _find(self, name, path):
-        for root, dirs, files in os.walk(path):
-            if name in files:
-                return os.path.join(root, name)
-
-    def _has_vanity(self, app):
-        try:
-            app["application"]["vanity_url"]
-            return True
-        except Exception:
-            return False
-
     def _truncate(self, app_name):
         """If name is longer than allowed 18 chars truncate the name."""
         app_name = (app_name[:16] + "..") if len(app_name) > 18 else app_name
@@ -54,9 +40,20 @@ class Application(object):
         return app_name
 
     def vanity_urls(self):
+        '''
+            Parse apps.yml, return list of dicts, each dict is
+            {'/some-redirect': 'https://some/destination'}
+        '''
         redirects = []
-        for app in self.apps["apps"]:
-            if self._has_vanity(app):
-                for redirect in app["application"]["vanity_url"]:
-                    redirects.append({redirect: app["application"]["url"]})
+        try:
+            all_apps = self.apps['apps']
+        except (TypeError, KeyError):
+            return redirects
+        for app_entry in all_apps:
+            app = app_entry['application']
+            yaml_vanity_url_list = app.get('vanity_url')
+            if not isinstance(yaml_vanity_url_list, list):
+                continue
+            for redirect in yaml_vanity_url_list:
+                redirects.append({redirect: app['url']})
         return redirects

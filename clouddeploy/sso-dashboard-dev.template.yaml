@@ -88,7 +88,7 @@ spec:
           - name: AWS_DEFAULT_REGION
             value: us-west-2
           - name: ENVIRONMENT
-            value: Staging
+            value: development
           - name: MOZILLIANS_API_URL
             value: https://mozillians.org/api/v2/users/
           - name: DASHBOARD_GUNICORN_WORKERS

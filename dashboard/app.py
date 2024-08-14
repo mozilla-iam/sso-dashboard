@@ -88,7 +88,7 @@ def favicon():
 
 @app.route("/")
 def home():
-    if app.env == "development":
+    if config.Config(app).environment == "local":
         return redirect("dashboard", code=302)
 
     url = request.url.replace("http://", "https://", 1)

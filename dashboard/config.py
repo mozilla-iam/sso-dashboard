@@ -11,7 +11,7 @@ class Config(object):
     def __init__(self, app):
         self.app = app
 
-        self.environment = CONFIG("environment", default="development")
+        self.environment = CONFIG("environment", default="local")
         self.settings = self._init_env()
 
     def _init_env(self):

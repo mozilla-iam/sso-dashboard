@@ -2,7 +2,8 @@ $(document).ready(function(){
     'use strict';
 
     // This is the js that powers the search box
-    $(':input[name=filter]').on('input', function() {
+    $(':input[name=filter]')
+    .on('input', function() {
         // Get value just typed into textbox -- see .toLowerCase()
         var val = this.value.toLowerCase();
 
@@ -22,6 +23,15 @@ $(document).ready(function(){
             })
             // Fade those out
             .fadeOut();
+    })
+    .on('keypress', function (ev) {
+        if (ev.key === 'Enter') {
+            const tiles = $('#app-grid .app-tile:visible');
+            if (tiles.length === 1) {
+                // If only one tile is visible, open its link on Enter
+                window.open(tiles[0].href, '_blank');
+            }
+        }
     });
 
     // Search input: Highlight, Align, Focus

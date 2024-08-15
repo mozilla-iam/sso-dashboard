@@ -3,36 +3,36 @@ $(document).ready(function(){
 
     // This is the js that powers the search box
     $(':input[name=filter]')
-    .on('input', function() {
+        .on('input', function() {
         // Get value just typed into textbox -- see .toLowerCase()
-        var val = this.value.toLowerCase();
+            var val = this.value.toLowerCase();
 
-        // Find all .user-profile divs
-        $('#app-grid').find('.app-tile')
+            // Find all .user-profile divs
+            $('#app-grid').find('.app-tile')
             // Find those that should be visible
-            .filter(function() {
-                return $(this).data('id').toLowerCase().indexOf( val ) > -1;
-            })
+                .filter(function() {
+                    return $(this).data('id').toLowerCase().indexOf( val ) > -1;
+                })
             // Make them visible
-            .show()
+                .show()
             // Now go back and get only the visible ones
-            .end().filter(':visible')
+                .end().filter(':visible')
             // Filter only those for which typed value 'val' does not match the `data-id` value
-            .filter(function() {
-                return $(this).data('id').toLowerCase().indexOf( val ) === -1;
-            })
+                .filter(function() {
+                    return $(this).data('id').toLowerCase().indexOf( val ) === -1;
+                })
             // Fade those out
-            .fadeOut();
-    })
-    .on('keypress', function (ev) {
-        if (ev.key === 'Enter') {
-            const tiles = $('#app-grid .app-tile:visible');
-            if (tiles.length === 1) {
+                .fadeOut();
+        })
+        .on('keypress', function (ev) {
+            if (ev.key === 'Enter') {
+                const tiles = $('#app-grid .app-tile:visible');
+                if (tiles.length === 1) {
                 // If only one tile is visible, open its link on Enter
-                window.open(tiles[0].href, '_blank');
+                    window.open(tiles[0].href, '_blank');
+                }
             }
-        }
-    });
+        });
 
     // Search input: Highlight, Align, Focus
     var filter = $(':input[name=filter]');

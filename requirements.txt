@@ -69,4 +69,3 @@ webassets==2.0
 Werkzeug==3.0.3
 zope.event==5.0
 zope.interface==6.4.post2
-

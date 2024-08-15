@@ -40,20 +40,20 @@ class Application:
         return app_name
 
     def vanity_urls(self):
-        '''
-            Parse apps.yml, return list of dicts, each dict is
-            {'/some-redirect': 'https://some/destination'}
-        '''
+        """
+        Parse apps.yml, return list of dicts, each dict is
+        {'/some-redirect': 'https://some/destination'}
+        """
         redirects = []
         try:
-            all_apps = self.apps['apps']
+            all_apps = self.apps["apps"]
         except (TypeError, KeyError):
             return redirects
         for app_entry in all_apps:
-            app = app_entry['application']
-            yaml_vanity_url_list = app.get('vanity_url')
+            app = app_entry["application"]
+            yaml_vanity_url_list = app.get("vanity_url")
             if not isinstance(yaml_vanity_url_list, list):
                 continue
             for redirect in yaml_vanity_url_list:
-                redirects.append({redirect: app['url']})
+                redirects.append({redirect: app["url"]})
         return redirects

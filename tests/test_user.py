@@ -4,15 +4,20 @@ import os
 import dashboard.models.user as user
 
 
-class TestUser(object):
-    def setup(self):
-        self.fixture_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), "data/userinfo.json")
+class TestUser:
+    def setup_method(self):
+        try:
+            self.fixture_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), "data/userinfo.json")
+            with open(self.fixture_file) as f:
+                self.session_fixture = json.load(f)
 
-        self.session_fixture = json.loads(open(self.fixture_file).read())
-        self.good_apps_list = {"apps": []}
+            self.good_apps_list = {"apps": []}
 
-        self.u = user.User(session=self.session_fixture, app_config=None)
-        self.u.api_token = "foo"
+            self.u = user.User(session=self.session_fixture, app_config=None)
+            self.u.api_token = "foo"
+        except (FileNotFoundError, json.JSONDecodeError, KeyError) as e:
+            self.u = None
+            raise RuntimeError(f"Failed to set up TestUser: {str(e)}")
 
     def test_object_init(self):
         assert self.u is not None

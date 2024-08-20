@@ -3,6 +3,7 @@
 import logging
 import os
 import urllib3
+from urllib3.exceptions import HTTPError
 
 logger = logging.getLogger(__name__)
 
@@ -11,12 +12,14 @@ class CDNTransfer(object):
     """Download apps.yaml from CDN"""
 
     def __init__(self, app_config):
-        """Used in app.py load apps.yml"""
-        # When a CDNTransfer Object is instantiated, the CDN is checked for
-        # an updated version of apps.yml.  If a ETags are mismatched then
-        # a new version is available. We download it which causes the worker
-        # to reload.  If the Etags of the CDN matches that on disk, we
-        # simply read from the disk.
+        """
+        Handles fetching and loading the apps.yml file
+        When a CDNTransfer Object is instantiated, the CDN is checked for
+        an updated version of apps.yml.  If a ETags are mismatched then
+        a new version is available. We download it which causes the worker
+        to reload.  If the Etags of the CDN matches that on disk, we
+        simply read from the disk.
+        """
         self.app_config = app_config
         self.apps_yml = None
         self.url = self.app_config.CDN + "/apps.yml"
@@ -56,15 +59,33 @@ class CDNTransfer(object):
     def _download_config(self):
         """Download the apps.yml from the CDN."""
         http = urllib3.PoolManager()
-        response = http.request("GET", self.url)
+
+        try:
+            response = http.request("GET", self.url)
+            if response.status != 200:
+                raise HTTPError(f"HTTP request failed with status {response.status}")
+        except HTTPError as e:
+            print(f"Rrequest for apps.yml failed: {e}")
+            raise
+
         this_dir = os.path.dirname(__file__)
         filename = os.path.join(this_dir, "../data/{name}").format(name="apps.yml")
-        # As soon as this file is closed, gunicorn should reload the works
-        with open(filename, "wb") as file:
-            file.write(response.data)
-            # It is very important that the ETag file is written to before we close
-            # apps.yml file.  Otherwise, this may cause a reload loop
-            self._update_etag(response.headers["ETag"])
+
+        try:
+            # As soon as this file is closed, gunicorn should reload the works
+            with open(filename, "wb") as file:
+                file.write(response.data)
+                # Ensure all data is flushed to disk
+                file.flush()
+                # Ensure data is written to disk before proceeding
+                os.fsync(file.fileno())
+                # It is very important that the ETag file is written before we close
+                # apps.yml file. Otherwise, this may cause a reload loop
+                self._update_etag(response.headers["ETag"])
+        except Exception as e:
+            # Handle potential errors
+            print(f"An error occurred while attempting to write apps.yml: {e}")
+            raise
 
     def _load_apps_yml(self):
         """Load the apps.yml file on disk"""

@@ -52,8 +52,8 @@ everett_config = get_config()
 talisman = Talisman(app, content_security_policy=DASHBOARD_CSP, force_https=False)
 
 app.config.from_object(config.Config(app).settings)
+
 app_list = CDNTransfer(config.Config(app).settings)
-app_list.sync_config()
 
 # Activate server-side redis sesssion KV
 redis_host, redis_port = app.config["REDIS_CONNECTOR"].split(":")
@@ -172,12 +172,12 @@ def dashboard():
     """Primary dashboard the users will interact with."""
     logger.info("User: {} authenticated proceeding to dashboard.".format(session.get("id_token")["sub"]))
 
-    # Hotfix to set user id for firefox alert
-    # XXXTBD Refactor rules later to support full id_conformant session
+    # TODO: Refactor rules later to support full id_conformant session
     session["userinfo"]["user_id"] = session.get("id_token")["sub"]
 
-    # Transfer any updates in to the app_tiles.
-    CDNTransfer(config.Config(app).settings).sync_config()
+    # This checks the CDN for any updates to apps.yml
+    # If an update is found, all gunicorn workers will be reloaded
+    app_list.sync_config()
 
     user = User(session, config.Config(app).settings)
     apps = user.apps(Application(app_list.apps_yml).apps)

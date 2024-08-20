@@ -19,20 +19,17 @@ const targetDir = path.resolve(__dirname, '../dashboard/static/lib');
 // Copy the necessary files from node_modules to the target directory
 for (const [pkg, files] of Object.entries(dependencies)) {
 
-//  // Ensure the static lib directory exists
-//  const pkgDestPath = path.join(targetDir, pkg);
-//  if (!fs.existsSync(pkgDestPath)) {
-//    fs.mkdirSync(pkgDestPath, { recursive: true });
-//  }
-
   files.forEach((file) => {
     const srcPath = path.join(nodeModulesDir, pkg, file);
     const destPath = path.join(targetDir, pkg, file);
     const destDir = path.dirname(destPath);
+
+    // Ensure the path exists before attempting to copy it
     if (!fs.existsSync(destDir)) {
       fs.mkdirSync(destDir, { recursive: true });
     }
 
+    // Copy the file to the target
     if (fs.existsSync(srcPath)) {
       fs.copyFileSync(srcPath, destPath);
       console.log(`Copied ${srcPath} to ${destPath}`);

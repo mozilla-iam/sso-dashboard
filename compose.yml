@@ -12,5 +12,20 @@ services:
       - 8000:8000
     volumes:
       - ./dashboard:/dashboard
-    entrypoint: "/usr/local/bin/flask"
-    command: run --host=0.0.0.0 --port 8000
+
+## Uncomment this section to override the defaults as they are set in Dockerfile
+#    entrypoint: "gunicorn"
+#    command:
+#      - 'dashboard.app:app'
+#      - '--worker-class'
+#      - gevent
+#      - '--bind'
+#      - '0.0.0.0:8000'
+#      - '--workers=2'
+#      - '--log-level=debug'
+#      - '--max-requests=1000'
+#      - '--max-requests-jitter=50'
+#      - '--graceful-timeout=30'
+#      - '--timeout=60'
+#      - '--log-level=debug'
+#      - '--error-logfile=-'

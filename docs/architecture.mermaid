@@ -1,13 +1,34 @@
 graph TD
 
-dns((route53 zones)) --> ingress_controller
+%% Define entites
+user((fa:fa-user SSO Dashboard User))
+idp([Auth0])
+gcpLoadBalancer([GCP Load Balancer])
+subgraph cloudrun [GCP Cloud Run Environment]
+    gcpCloudRunContainer1[[Container 1]]
+    gcpCloudRunContainer2[[Container 2]]
+    gcpCloudRunContainer3[[Container 3]]
+end
+subgraph CloudFrontCDN [AWS]
+    awsCDN([cdn.sso.mozilla.com])
+    appImages(img, css, js)
+    appAppsYaml(apps.yml)
+end
 
-ingress_controller[kubernetes_ingress_controller_with_ssl] -->
+gcpSecretsManager[(fa:fa-database GCP Secrets Manager)]
+appSecrets(Application Secrets)
 
-container[sso-dashboard-container] -- fetch assets and access file --> cdn[cdn.sso.mozilla.com]
+%% Define Flows
+user <--> idp
 
-container[sso-dashboard-container] -- fetch secrets --> credstash --> client_id,client_secret,etc
+user -->
+gcpLoadBalancer -->
+cloudrun -->
+CloudFrontCDN
 
-cdn[cdn.sso.mozilla.com] -->
-access_file(apps.yml)
-cdn[cdn.sso.mozilla.com] --> images(img, css, js)
+awsCDN --> appImages
+awsCDN --> appAppsYaml
+
+cloudrun -->
+gcpSecretsManager -->
+appSecrets

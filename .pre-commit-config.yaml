@@ -5,7 +5,11 @@ repos:
     rev: v3.2.0
     hooks:
     -   id: trailing-whitespace
+        exclude: |
+          (?x)^(dashboard/static/lib.*)$
     -   id: end-of-file-fixer
+        exclude: |
+          (?x)^(dashboard/static/lib.*)$
     -   id: check-yaml
         args: [--allow-multiple-documents]
     -   id: check-added-large-files

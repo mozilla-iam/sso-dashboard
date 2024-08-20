@@ -11,15 +11,21 @@
     "bugs": {
         "url": "https://github.com/mozilla-iam/sso-dashboard/issues"
     },
+    "scripts": {
+        "lint:js": "eslint 'dashboard/static/js/*.js'",
+        "lint:css": "stylelint 'dashboard/static/css/*.scss'",
+        "update:static": "node 'tools/copy-static-files.js'"
+    },
+    "engines": {
+        "node": "v18.20.4"
+    },
     "devDependencies": {
-        "gulp": "^3.9.1",
-        "gulp-eslint": "^3.0.1",
-        "gulp-main-bower-files": "^1.6.1",
-        "gulp-stylelint": "^3.9.0"
+        "eslint": "^9.9.0",
+        "stylelint": "^16.8.2",
+        "stylelint-config-standard-scss": "^13.1.0"
     },
     "dependencies": {
-        "eslint": "^8.57.0",
-        "stylelint": "^15.8.0",
-        "stylelint-config-standard-scss": "^9.0.0"
+        "jquery": "^3.7.1",
+        "muicss": "^0.10.3"
     }
 }

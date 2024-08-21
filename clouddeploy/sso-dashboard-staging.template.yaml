@@ -23,8 +23,8 @@ spec:
   template:
     metadata:
       annotations:
-        autoscaling.knative.dev/minScale: '0'
-        autoscaling.knative.dev/maxScale: '1'
+        autoscaling.knative.dev/minScale: '2'
+        autoscaling.knative.dev/maxScale: '3'
         run.googleapis.com/cpu-throttling: 'false'
         run.googleapis.com/startup-cpu-boost: 'true'
         run.googleapis.com/vpc-access-connector: 'redis-connector'
@@ -40,9 +40,7 @@ spec:
           - gevent
           - '--bind'
           - '0.0.0.0:8000'
-          - '--workers=2'
-          - '--max-requests=1000'
-          - '--max-requests-jitter=50'
+          - '--workers=3'
           - '--graceful-timeout=30'
           - '--timeout=60'
           - '--log-level=debug'
@@ -89,10 +87,6 @@ spec:
             value: us-west-2
           - name: ENVIRONMENT
             value: staging
-          - name: MOZILLIANS_API_URL
-            value: https://mozillians.org/api/v2/users/
-          - name: DASHBOARD_GUNICORN_WORKERS
-            value: 2
           - name: FLASK_DEBUG
             value: False
           - name: DEBUG

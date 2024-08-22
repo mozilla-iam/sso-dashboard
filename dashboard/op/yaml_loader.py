@@ -14,9 +14,6 @@ class Application:
         self._render_data()
         self._alphabetize()
 
-    def _load_authorized(self, session):
-        pass
-
     def _load_data(self):
         try:
             stream = yaml.safe_load(self.app_dict)

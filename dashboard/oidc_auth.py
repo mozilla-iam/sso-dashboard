@@ -10,7 +10,7 @@ from flask_pyoidc import OIDCAuthentication
 from flask_pyoidc.provider_configuration import ClientMetadata
 from flask_pyoidc.provider_configuration import ProviderConfiguration
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 class OpenIDConnect(object):

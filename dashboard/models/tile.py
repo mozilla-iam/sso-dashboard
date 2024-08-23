@@ -5,7 +5,7 @@ import os
 import urllib3
 from urllib3.exceptions import HTTPError
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 class CDNTransfer(object):
@@ -32,7 +32,7 @@ class CDNTransfer(object):
         response = http.request("HEAD", self.url)
 
         if response.headers["ETag"] != self._etag():
-            logger.error("Etags do not match")
+            logger.warning("Etags do not match")
             return True
         else:
             return False
@@ -49,10 +49,12 @@ class CDNTransfer(object):
         this_dir = os.path.dirname(__file__)
         filename = os.path.join(this_dir, "../data/{name}").format(name="apps.yml-etag")
         try:
-            return open(filename, "r").read()
+            with open(filename, "r") as f:
+                etag = f.read()
+            return etag
         except Exception as e:
             """If the etag file is not found return a default etag."""
-            logger.info("Error fetching etag: {e}".format(e=e))
+            logger.warning("Error fetching etag: {e}".format(e=e))
             # Return a fake ETag if etag file doesn't exist
             return "12345678"
 
@@ -61,18 +63,19 @@ class CDNTransfer(object):
         http = urllib3.PoolManager()
 
         try:
+            logger.info("Downloading apps.yml from CDN")
             response = http.request("GET", self.url)
             if response.status != 200:
                 raise HTTPError(f"HTTP request failed with status {response.status}")
         except HTTPError as e:
-            print(f"Rrequest for apps.yml failed: {e}")
+            logger.error("Request for apps.yml failed: %s", str(e))
             raise
 
         this_dir = os.path.dirname(__file__)
         filename = os.path.join(this_dir, "../data/{name}").format(name="apps.yml")
 
         try:
-            # As soon as this file is closed, gunicorn should reload the works
+            # As soon as this file is closed, gunicorn should reload the workers
             with open(filename, "wb") as file:
                 file.write(response.data)
                 # Ensure all data is flushed to disk
@@ -84,7 +87,7 @@ class CDNTransfer(object):
                 self._update_etag(response.headers["ETag"])
         except Exception as e:
             # Handle potential errors
-            print(f"An error occurred while attempting to write apps.yml: {e}")
+            logger.error("An error occurred while attempting to write apps.yml: %s", str(e))
             raise
 
     def _load_apps_yml(self):
@@ -92,6 +95,7 @@ class CDNTransfer(object):
         this_dir = os.path.dirname(__file__)
         filename = os.path.join(this_dir, "../data/{name}").format(name="apps.yml")
         with open(filename, "r") as file:
+            logger.info("Loading apps.yml from disk")
             self.apps_yml = file.read()
 
     def sync_config(self):
@@ -102,7 +106,6 @@ class CDNTransfer(object):
                 logger.info("Config file is updated fetching new config.")
                 self._download_config()
         except Exception as e:
-            print(e)
             logger.error("Problem fetching config file {error}".format(error=e))
 
         # Load the apps.yml file into self.apps_list
@@ -111,7 +114,6 @@ class CDNTransfer(object):
             if not self.apps_yml:
                 self._load_apps_yml()
         except Exception as e:
-            print(e)
             logger.error("Problem loading the config file {error}".format(error=e))
 
 

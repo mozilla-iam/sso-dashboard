@@ -7,7 +7,7 @@ from six.moves.urllib_request import urlopen
 from jose import jwt
 from dashboard.api.exceptions import AuthError
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 class AuthorizeAPI(object):

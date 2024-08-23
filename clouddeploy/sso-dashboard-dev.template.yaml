@@ -33,18 +33,14 @@ spec:
       - name: 'sso-dashboard'
         image: 'app'
         command:
-          - gunicorn
+          - 'gunicorn'
           - 'dashboard.app:app'
         args:
-          - '--worker-class'
-          - gevent
-          - '--bind'
-          - '0.0.0.0:8000'
+          - '--worker-class=gevent'
+          - '--bind=0.0.0.0:8000'
           - '--workers=3'
           - '--graceful-timeout=30'
           - '--timeout=60'
-          - '--log-level=debug'
-          - '--error-logfile=-'
           - '--reload'
           - '--reload-extra-file=/dashboard/data/apps.yml'
         ports:
@@ -54,7 +50,7 @@ spec:
           - name: 'TARGET'
             value: 'Staging'
           - name: SSO-DASHBOARD_DEBUG
-            value: False
+            value: True
           - name: SSO-DASHBOARD_TESTING
             value: False
           - name: SSO-DASHBOARD_CSRF_ENABLED
@@ -65,8 +61,6 @@ spec:
             value: 86400
           - name: SSO-DASHBOARD_SESSION_COOKIE_HTTPONLY
             value: True
-          - name: SSO-DASHBOARD_LOGGER_NAME
-            value: sso-dashboard
           - name: SSO-DASHBOARD_PREFERRED_URL_SCHEME
             value: https
           - name: SSO-DASHBOARD_OIDC_CLIENT_ID

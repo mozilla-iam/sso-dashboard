@@ -21,18 +21,18 @@ class Config(object):
 class DefaultConfig(object):
     """Defaults for the configuration objects."""
 
-    DEBUG = bool(CONFIG("debug", namespace="sso-dashboard", default="True"))
-    TESTING = bool(CONFIG("testing", namespace="sso-dashboard", default="False"))
-    PROPAGATE_EXCEPTIONS = bool(CONFIG("propagate_exceptions", namespace="sso-dashboard", default="True"))
+    DEBUG = bool(CONFIG("debug", namespace="sso-dashboard", parser=bool, default="False"))
+    TESTING = bool(CONFIG("testing", namespace="sso-dashboard", parser=bool, default="False"))
 
-    CSRF_ENABLED = bool(CONFIG("csrf_enabled", default="True"))
-    PERMANENT_SESSION = bool(CONFIG("permanent_session", namespace="sso-dashboard", default="True"))
+    CSRF_ENABLED = bool(CONFIG("csrf_enabled", parser=bool, default="True"))
+    PERMANENT_SESSION = bool(CONFIG("permanent_session", namespace="sso-dashboard", parser=bool, default="True"))
     seconds = int(CONFIG("permanent_session_lifetime", namespace="sso-dashboard", default="86400"))
     PERMANENT_SESSION_LIFETIME = datetime.timedelta(seconds=seconds)
 
     SESSION_COOKIE_SAMESITE = CONFIG("session_cookie_samesite", namespace="sso-dashboard", default="lax")
-    SESSION_COOKIE_HTTPONLY = bool(CONFIG("session_cookie_httponly", namespace="sso-dashboard", default="True"))
-    LOGGER_NAME = CONFIG("logger_name", namespace="sso-dashboard", default="sso-dashboard")
+    SESSION_COOKIE_HTTPONLY = bool(
+        CONFIG("session_cookie_httponly", namespace="sso-dashboard", parser=bool, default="True")
+    )
 
     SECRET_KEY = CONFIG("secret_key", namespace="sso-dashboard")
     SERVER_NAME = CONFIG("server_name", namespace="sso-dashboard", default="localhost:8000")

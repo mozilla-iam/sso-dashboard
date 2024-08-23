@@ -5,9 +5,6 @@ services:
   sso-dashboard:
     build: .
     env_file: envfile
-    environment:
-      - FLASK_DEBUG=True
-      - FLASK_APP=dashboard/app.py
     ports:
       - 8000:8000
     volumes:

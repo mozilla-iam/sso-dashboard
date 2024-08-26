@@ -23,8 +23,8 @@ spec:
   template:
     metadata:
       annotations:
-        autoscaling.knative.dev/minScale: '0'
-        autoscaling.knative.dev/maxScale: '1'
+        autoscaling.knative.dev/minScale: '2'
+        autoscaling.knative.dev/maxScale: '3'
         run.googleapis.com/cpu-throttling: 'false'
         run.googleapis.com/startup-cpu-boost: 'true'
         run.googleapis.com/vpc-access-connector: 'redis-connector'
@@ -33,20 +33,14 @@ spec:
       - name: 'sso-dashboard'
         image: 'app'
         command:
-          - gunicorn
+          - 'gunicorn'
           - 'dashboard.app:app'
         args:
-          - '--worker-class'
-          - gevent
-          - '--bind'
-          - '0.0.0.0:8000'
-          - '--workers=2'
-          - '--max-requests=1000'
-          - '--max-requests-jitter=50'
+          - '--worker-class=gevent'
+          - '--bind=0.0.0.0:8000'
+          - '--workers=3'
           - '--graceful-timeout=30'
           - '--timeout=60'
-          - '--log-level=debug'
-          - '--error-logfile=-'
           - '--reload'
           - '--reload-extra-file=/dashboard/data/apps.yml'
         ports:
@@ -67,8 +61,6 @@ spec:
             value: 86400
           - name: SSO-DASHBOARD_SESSION_COOKIE_HTTPONLY
             value: True
-          - name: SSO-DASHBOARD_LOGGER_NAME
-            value: sso-dashboard
           - name: SSO-DASHBOARD_PREFERRED_URL_SCHEME
             value: https
           - name: SSO-DASHBOARD_OIDC_CLIENT_ID
@@ -89,10 +81,6 @@ spec:
             value: us-west-2
           - name: ENVIRONMENT
             value: staging
-          - name: MOZILLIANS_API_URL
-            value: https://mozillians.org/api/v2/users/
-          - name: DASHBOARD_GUNICORN_WORKERS
-            value: 2
           - name: FLASK_DEBUG
             value: False
           - name: DEBUG

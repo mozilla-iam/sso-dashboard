@@ -5,7 +5,7 @@ import time
 from faker import Faker
 
 fake = Faker()
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 class User(object):

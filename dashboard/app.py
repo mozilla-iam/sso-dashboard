@@ -1,10 +1,11 @@
 """SSO Dashboard App File."""
 
 import json
-import logging.config
+import logging
 import mimetypes
 import os
 import redis
+import traceback
 import yaml
 
 from flask import Flask
@@ -37,17 +38,14 @@ from dashboard.op.yaml_loader import Application
 from dashboard.models.tile import CDNTransfer
 
 
-logging.basicConfig(level=logging.INFO)
+logging.config.fileConfig("dashboard/logging.ini")
 
-with open("dashboard/logging.yml", "r") as log_config:
-    config_yml = log_config.read()
-    config_dict = yaml.safe_load(config_yml)
-    logging.config.dictConfig(config_dict)
-
-logger = logging.getLogger("sso-dashboard")
+if config.Config(None).settings.DEBUG:
+    # Set the log level to DEBUG for all defined loggers
+    for logger_name in logging.root.manager.loggerDict.keys():
+        logging.getLogger(logger_name).setLevel("DEBUG")
 
 app = Flask(__name__)
-everett_config = get_config()
 
 talisman = Talisman(app, content_security_policy=DASHBOARD_CSP, force_https=False)
 
@@ -116,11 +114,25 @@ def claim():
     return redirect("https://github.com/mozilla-iam/cis/blob/master/cis/schema.json", code=302)
 
 
+# Flask Error Handlers
 @app.errorhandler(404)
 def page_not_found(error):
     if request.url is not None:
-        logger.error("A 404 has been generated for {route}".format(route=request.url))
+        app.logger.error("A 404 has been generated for {route}".format(route=request.url))
     return render_template("404.html"), 404
+
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+
+    # Capture the traceback
+    tb_str = traceback.format_exc()
+
+    # Log the error with traceback
+    app.logger.error("An error occurred: %s\n%s", str(e), tb_str)
+
+    response = {"error": "An internal error occurred", "message": str(e)}
+    return jsonify(response), 500
 
 
 @app.route("/forbidden")
@@ -162,7 +174,7 @@ def showautologinsettings():
 
 @app.route("/signout.html")
 def signout():
-    logger.info("Signout messaging displayed.")
+    app.logger.info("Signout messaging displayed.")
     return render_template("signout.html")
 
 
@@ -170,7 +182,7 @@ def signout():
 @oidc.oidc_auth("default")
 def dashboard():
     """Primary dashboard the users will interact with."""
-    logger.info("User: {} authenticated proceeding to dashboard.".format(session.get("id_token")["sub"]))
+    app.logger.info("User: {} authenticated proceeding to dashboard.".format(session.get("id_token")["sub"]))
 
     # TODO: Refactor rules later to support full id_conformant session
     session["userinfo"]["user_id"] = session.get("id_token")["sub"]

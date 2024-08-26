@@ -32,4 +32,4 @@ ENTRYPOINT ["gunicorn", "dashboard.app:app"]
 # by cloud deploy. In general, these should match the
 # args used in cloud deploy dev environment
 # Default command arguments
-CMD ["--worker-class", "gevent", "--bind", "0.0.0.0:8000", "--workers=2", "--max-requests=1000", "--max-requests-jitter=50", "--graceful-timeout=30", "--timeout=60", "--log-level=debug", "--error-logfile=-", "--reload", "--reload-extra-file=/dashboard/data/apps.yml"]
+CMD ["--worker-class=gevent", "--bind=0.0.0.0:8000", "--workers=3", "--graceful-timeout=30", "--timeout=60", "--log-config=dashboard/logging.ini", "--reload", "--reload-extra-file=/dashboard/data/apps.yml"]

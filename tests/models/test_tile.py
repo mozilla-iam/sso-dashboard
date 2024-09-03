@@ -34,12 +34,10 @@ def test_is_updated_etag_match(mocker, cdn_transfer):
 
 def test_update_etag(mocker, cdn_transfer):
     mock_open = mocker.patch("builtins.open", mocker.mock_open())
-    
+
     cdn_transfer._update_etag("new-etag")
 
-    mock_open.assert_called_once_with(
-        os.path.join(os.path.dirname(module_file), "../data/apps.yml-etag"), "w+"
-    )
+    mock_open.assert_called_once_with(os.path.join(os.path.dirname(module_file), "../data/apps.yml-etag"), "w+")
     mock_open().write.assert_called_once_with("new-etag")
 
 
@@ -47,9 +45,7 @@ def test_etag_file_exists(mocker, cdn_transfer):
     mock_open = mocker.patch("builtins.open", mocker.mock_open(read_data="stored-etag"))
 
     assert cdn_transfer._etag() == "stored-etag"
-    mock_open.assert_called_once_with(
-        os.path.join(os.path.dirname(module_file), "../data/apps.yml-etag"), "r"
-    )
+    mock_open.assert_called_once_with(os.path.join(os.path.dirname(module_file), "../data/apps.yml-etag"), "r")
 
 
 def test_etag_file_missing(mocker, cdn_transfer):
@@ -90,6 +86,7 @@ def test_etag_file_missing(mocker, cdn_transfer):
 #         )
 #         mock_open_etag().write.assert_called_once_with("new-etag")
 
+
 def test_download_config_http_error(mocker, cdn_transfer):
     mocker.patch("urllib3.PoolManager.request", side_effect=urllib3.exceptions.HTTPError)
 
@@ -102,9 +99,7 @@ def test_load_apps_yml(mocker, cdn_transfer):
 
     cdn_transfer._load_apps_yml()
 
-    mock_open.assert_called_once_with(
-        os.path.join(os.path.dirname(module_file), "../data/apps.yml"), "r"
-    )
+    mock_open.assert_called_once_with(os.path.join(os.path.dirname(module_file), "../data/apps.yml"), "r")
     assert cdn_transfer.apps_yml == "mock apps.yml content"
 
 

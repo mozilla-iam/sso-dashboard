@@ -69,7 +69,8 @@ def test_vanity_urls_no_vanity():
     redirects = app.vanity_urls()
     assert len(redirects) == 0
 
+
 def test_no_apps_present(valid_application):
-    del valid_application.apps['apps']
+    del valid_application.apps["apps"]
 
     assert len(valid_application.vanity_urls()) == 0

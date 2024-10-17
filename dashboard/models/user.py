@@ -18,8 +18,8 @@ class User(object):
     def email(self):
         try:
             email = self.userinfo.get("email")
-        except Exception as e:
-            logger.error("The email attribute does no exists falling back to OIDC Conformant: {}.".format(e))
+        except Exception:
+            logger.exception("The email attribute does no exists falling back to OIDC Conformant.")
             email = self.userinfo.get("https://sso.mozilla.com/claim/emails")[0]["emails"]
         return email
 
@@ -92,7 +92,7 @@ class User(object):
             app["application"]["authorized_groups"]
             app["application"]["authorized_users"]
             return True
-        except Exception:
+        except KeyError:
             return False
 
 

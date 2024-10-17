@@ -6,9 +6,9 @@ from josepy.jws import JWS
 import josepy.errors as JWSErrors
 
 """Class that governs all authentication with open id connect."""
-from flask_pyoidc import OIDCAuthentication
-from flask_pyoidc.provider_configuration import ClientMetadata
-from flask_pyoidc.provider_configuration import ProviderConfiguration
+from flask_pyoidc import OIDCAuthentication  # type: ignore
+from flask_pyoidc.provider_configuration import ClientMetadata  # type: ignore
+from flask_pyoidc.provider_configuration import ProviderConfiguration  # type: ignore
 
 logger = logging.getLogger()
 

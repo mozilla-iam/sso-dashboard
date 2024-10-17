@@ -17,9 +17,9 @@ class Application:
     def _load_data(self):
         try:
             stream = yaml.safe_load(self.app_dict)
-        except yaml.YAMLError as e:
+        except yaml.YAMLError:
+            logger.exception("Could not load YAML")
             stream = None
-            logger.info(e)
         return stream
 
     def _render_data(self):

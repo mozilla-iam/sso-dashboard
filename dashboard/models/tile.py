@@ -50,12 +50,16 @@ class CDNTransfer(object):
         filename = os.path.join(this_dir, "../data/{name}").format(name="apps.yml-etag")
         try:
             with open(filename, "r") as f:
+                # What happens if we read nothing?
                 etag = f.read()
             return etag
-        except Exception as e:
-            """If the etag file is not found return a default etag."""
-            logger.warning("Error fetching etag: {e}".format(e=e))
-            # Return a fake ETag if etag file doesn't exist
+        # This can fail with
+        # * FileNotFoundError
+        # * PermissionError
+        # TODO(bhee): Do we want to be specific?
+        except Exception:
+            """If the etag file is not found return a fake etag."""
+            logger.exception("Error fetching etag")
             return "12345678"
 
     def _download_config(self):
@@ -67,8 +71,8 @@ class CDNTransfer(object):
             response = http.request("GET", self.url)
             if response.status != 200:
                 raise HTTPError(f"HTTP request failed with status {response.status}")
-        except HTTPError as e:
-            logger.error("Request for apps.yml failed: %s", str(e))
+        except HTTPError as exc:
+            exc.add_note("Request for apps.yml failed")
             raise
 
         this_dir = os.path.dirname(__file__)
@@ -85,9 +89,8 @@ class CDNTransfer(object):
                 # It is very important that the ETag file is written before we close
                 # apps.yml file. Otherwise, this may cause a reload loop
                 self._update_etag(response.headers["ETag"])
-        except Exception as e:
-            # Handle potential errors
-            logger.error("An error occurred while attempting to write apps.yml: %s", str(e))
+        except Exception as exc:
+            exc.add_note("An error occurred while attempting to write apps.yml")
             raise
 
     def _load_apps_yml(self):
@@ -105,16 +108,16 @@ class CDNTransfer(object):
             if self.is_updated():
                 logger.info("Config file is updated fetching new config.")
                 self._download_config()
-        except Exception as e:
-            logger.error("Problem fetching config file {error}".format(error=e))
+        except Exception:
+            logger.exception("Problem fetching config file")
 
         # Load the apps.yml file into self.apps_list
         # if it isn't already loaded
         try:
             if not self.apps_yml:
                 self._load_apps_yml()
-        except Exception as e:
-            logger.error("Problem loading the config file {error}".format(error=e))
+        except Exception:
+            logger.exception("Problem loading the config file")
 
 
 class Tile(object):

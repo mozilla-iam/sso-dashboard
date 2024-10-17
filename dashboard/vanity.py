@@ -1,8 +1,11 @@
+import logging
 from flask import make_response
 from flask import redirect
 from flask import request
 
 from dashboard.op import yaml_loader
+
+logger = logging.getLogger()
 
 
 class Router(object):
@@ -16,8 +19,8 @@ class Router(object):
                 try:
                     self.app.add_url_rule(vanity_url, vanity_url, self.redirect_url)
                     self.app.add_url_rule(vanity_url + "/", vanity_url + "/", self.redirect_url)
-                except Exception as e:
-                    print(e)
+                except Exception:
+                    logger.exception(f"Could not add {vanity_url}")
 
     def redirect_url(self):
         vanity_url = "/" + request.url.split("/")[3]

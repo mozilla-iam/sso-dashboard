@@ -2,6 +2,7 @@
 
 import json
 import logging
+import logging.config
 import mimetypes
 import os
 import redis
@@ -16,13 +17,13 @@ from flask import request
 from flask import send_from_directory
 from flask import session
 
-from flask_assets import Bundle
-from flask_assets import Environment
-from flask_kvsession import KVSessionExtension
-from flask_talisman import Talisman
+from flask_assets import Bundle  # type: ignore
+from flask_assets import Environment  # type: ignore
+from flask_kvsession import KVSessionExtension  # type: ignore
+from flask_talisman import Talisman  # type: ignore
 
-from simplekv.memory.redisstore import RedisStore
-from simplekv.decorator import PrefixDecorator
+from simplekv.memory.redisstore import RedisStore  # type: ignore
+from simplekv.decorator import PrefixDecorator  # type: ignore
 
 from dashboard import oidc_auth
 from dashboard import config

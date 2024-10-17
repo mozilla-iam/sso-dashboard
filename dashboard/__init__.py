@@ -1,7 +1,7 @@
 import os
 
-from everett.manager import ConfigManager
-from everett.manager import ConfigOSEnv
+from everett.manager import ConfigManager  # type: ignore
+from everett.manager import ConfigOSEnv  # type: ignore
 
 # -*- coding: utf-8 -*-
 

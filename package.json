@@ -4,7 +4,7 @@
     "description": "Mozilla SSO dashboard",
     "repository": {
         "type": "git",
-        "url": "hhttps://github.com/mozilla-iam/sso-dashboard"
+        "url": "https://github.com/mozilla-iam/sso-dashboard"
     },
     "author": "Mozilla",
     "license": "MPLv2",

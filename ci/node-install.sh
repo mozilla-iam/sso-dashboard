@@ -3,9 +3,10 @@ set -eu
 
 if [ -f "$TOX_ENV_DIR/bin/node" ]; then
     echo Node and friends already installed.
+    npm ci
     exit 0
 fi
 
-nodeenv --prebuilt -p --node 18.20.4 "$TOX_ENV_DIR"
-npm install -g npm@latest
+nodeenv --prebuilt -p --node "$NODE_VERSION" "$TOX_ENV_DIR"
+npm install -g "npm@$NPM_VERSION"
 npm ci

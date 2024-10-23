@@ -139,16 +139,20 @@ def handle_exception(e):
 @app.route("/forbidden")
 def forbidden():
     """Route to render error page."""
-
     if "error" not in request.args:
-        return render_template("forbidden.html")
-    else:
-        jws = request.args.get("error").encode()
-
-    token_verifier = oidc_auth.TokenVerification(jws=jws, public_key=app.config["FORBIDDEN_PAGE_PUBLIC_KEY"])
-    token_verifier.verify
-
-    return render_template("forbidden.html", token_verifier=token_verifier)
+        return render_template("forbidden.html"), 500
+    try:
+        tv = oidc_auth.TokenVerification(
+            jws=request.args.get("error").encode(),
+            public_key=app.config["FORBIDDEN_PAGE_PUBLIC_KEY"],
+        )
+    except oidc_auth.TokenError:
+        app.logger.exception("Could not validate JWS from IdP")
+        return render_template("forbidden.html"), 500
+    app.logger.warning(
+        f"{tv.error_code} for {tv.client} (connection: {tv.connection}, preferred connection: {tv.preferred_connection_name})"
+    )
+    return render_template("forbidden.html", message=tv.error_message()), 400
 
 
 @app.route("/logout")

@@ -10,11 +10,11 @@
       <div class="panel">
         <div class="pointer"></div>
         <h2>
-            {% if token_verifier %}
-                {{ token_verifier.error_message()|safe }}
-            {% else %}
-                 Oye, something went wrong.
-            {% endif %}
+            {%- if message %}
+                {{- message|safe }}
+            {%- else %}
+                Oye, something went wrong.
+            {%- endif %}
         </h2>
       </div>
     </div>

@@ -1,12 +1,10 @@
 import json
-import traceback
+from typing import Optional
+import josepy.errors
 from josepy.jwk import JWK
 from josepy.jws import JWS
-import josepy.errors
-import josepy.errors as JWSErrors
-from typing import Optional
 
-"""Class that governs all authentication with open id connect."""
+# Class that governs all authentication with OpenID Connect.
 from flask_pyoidc import OIDCAuthentication  # type: ignore
 from flask_pyoidc.provider_configuration import ClientMetadata  # type: ignore
 from flask_pyoidc.provider_configuration import ProviderConfiguration  # type: ignore
@@ -23,7 +21,7 @@ KNOWN_ERROR_CODES = {
 }
 
 
-class OpenIDConnect(object):
+class OpenIDConnect:
     """Auth object for login, logout, and response validation."""
 
     def __init__(self, configuration):
@@ -37,7 +35,7 @@ class OpenIDConnect(object):
     def provider_info(self):
         auth_request_params = {"scope": ["openid", "profile", "email"]}
         provider_config = ProviderConfiguration(
-            issuer="https://{DOMAIN}".format(DOMAIN=self.oidc_config.OIDC_DOMAIN),
+            issuer=f"https://{self.oidc_config.OIDC_DOMAIN}",
             client_metadata=self.client_info(),
             auth_request_params=auth_request_params,
         )
@@ -143,7 +141,7 @@ class TokenVerification:
                 <a href="https://help.github.com/articles/securing-your-account-with-two-factor-authentication-2fa/">GitHub documentation</a>
                 to setup your device, then try logging in again.
             """
-        elif self.error_code == "fxarequiremfa":
+        if self.error_code == "fxarequiremfa":
             return """
                 Please
                 <a href="https://support.mozilla.org/kb/secure-firefox-account-two-step-authentication">secure your Mozilla Account with two-step authentication</a>,
@@ -153,32 +151,32 @@ class TokenVerification:
                 <a href="https://accounts.firefox.com">Mozilla Accounts</a>
                 (click the "Sign out" button), then log back in.
             """
-        elif self.error_code == "notingroup":
+        if self.error_code == "notingroup":
             return f"""
                 Sorry, you do not have permission to access
                 {client_name}. Please contact the application
                 owner for access. If unsure who that may be, please contact
                 ServiceDesk@mozilla.com for support.
             """
-        elif self.error_code == "accesshasexpired":
+        if self.error_code == "accesshasexpired":
             return f"""
                 Sorry, your access to {client_name} has expired
                 because you have not been actively using it. Please request
                 access again.
             """
-        elif self.error_code == "primarynotverified":
+        if self.error_code == "primarynotverified":
             return f"""
                 You primary email address is not yet verified. Please verify your
                 email address with
                 {connection_name}
                 in order to use this service.
             """
-        elif self.error_code == "incorrectaccount":
+        if self.error_code == "incorrectaccount":
             return f"""
                 Sorry, you may not login using {connection_name}.  Instead,
                 please use {preferred_connection_name}.
             """
-        elif self.error_code == "aai_failed":
+        if self.error_code == "aai_failed":
             return f"""
                 {client_name.title()} requires you to setup additional
                 security measures for your account, such as enabling
@@ -186,8 +184,8 @@ class TokenVerification:
                 authentication method (such as a Mozilla Account login).  You
                 will not be able to login until this is done.
             """
-        elif self.error_code == "staffmustuseldap":
-            return f"""
+        if self.error_code == "staffmustuseldap":
+            return """
                 It appears that you are attempting to log in with a Mozilla
                 email address, which requires LDAP authentication.
                 Please log out and sign back in using your LDAP credentials.

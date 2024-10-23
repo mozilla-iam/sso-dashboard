@@ -145,7 +145,7 @@ def forbidden():
     else:
         jws = request.args.get("error").encode()
 
-    token_verifier = oidc_auth.tokenVerification(jws=jws, public_key=app.config["FORBIDDEN_PAGE_PUBLIC_KEY"])
+    token_verifier = oidc_auth.TokenVerification(jws=jws, public_key=app.config["FORBIDDEN_PAGE_PUBLIC_KEY"])
     token_verifier.verify
 
     return render_template("forbidden.html", token_verifier=token_verifier)

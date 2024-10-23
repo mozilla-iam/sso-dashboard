@@ -39,7 +39,7 @@ class OpenIDConnect(object):
         return o
 
 
-class tokenVerification(object):
+class TokenVerification:
     def __init__(self, jws, public_key):
         self.jws = jws
         self.jws_data = {}

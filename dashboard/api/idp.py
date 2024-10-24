@@ -93,14 +93,14 @@ class AuthorizeAPI(object):
                         audience=self.audience,
                         issuer="https://" + self.auth0_domain + "/",
                     )
-                except jwt.ExpiredSignatureError as e:
-                    logger.error(e)
+                except jwt.ExpiredSignatureError:
+                    logger.exception("Token expired")
                     raise AuthError(
                         {"code": "token_expired", "description": "token is expired"},
                         401,
                     )
-                except jwt.JWTClaimsError as e:
-                    logger.error(e)
+                except jwt.JWTClaimsError:
+                    logger.exception("Claims error")
                     raise AuthError(
                         {
                             "code": "invalid_claims",
@@ -108,8 +108,8 @@ class AuthorizeAPI(object):
                         },
                         401,
                     )
-                except Exception as e:
-                    logger.error(e)
+                except Exception:
+                    logger.exception("Some unknown error")
                     raise AuthError(
                         {
                             "code": "invalid_header",

@@ -19,7 +19,7 @@ Faker==26.1.0
 filelock==3.15.4
 Flask==3.0.3
 Flask-Assets==2.1.0
-Flask-KVSession @ git+https://github.com/zacqed/flask-kvsession.git@83322aa18ed784bbe0cb309322e8d0d48bb762da
+Flask-Session==0.8.0
 Flask-pyoidc==3.14.3
 flask-talisman==1.1.0
 future==1.0.0
@@ -54,11 +54,10 @@ python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 python-jose==3.3.0
 PyYAML==6.0.1
-redis==5.0.8
+redis==5.2.0
 requests==2.32.3
 rsa==4.9
 setuptools==72.1.0
-simplekv==0.14.1
 six==1.16.0
 tox==4.16.0
 types-PyYAML==6.0.12.20240724

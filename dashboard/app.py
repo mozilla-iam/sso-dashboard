@@ -16,14 +16,12 @@ from flask import render_template
 from flask import request
 from flask import send_from_directory
 from flask import session
+from flask.sessions import SessionInterface
 
 from flask_assets import Bundle  # type: ignore
 from flask_assets import Environment  # type: ignore
-from flask_kvsession import KVSessionExtension  # type: ignore
+from flask_session.redis import RedisSessionInterface  # type: ignore
 from flask_talisman import Talisman  # type: ignore
-
-from simplekv.memory.redisstore import RedisStore  # type: ignore
-from simplekv.decorator import PrefixDecorator  # type: ignore
 
 from dashboard import oidc_auth
 from dashboard import config
@@ -54,11 +52,34 @@ app.config.from_object(config.Config(app).settings)
 
 app_list = CDNTransfer(config.Config(app).settings)
 
-# Activate server-side redis sesssion KV
-redis_host, redis_port = app.config["REDIS_CONNECTOR"].split(":")
-store = RedisStore(redis.StrictRedis(host=redis_host, port=redis_port))
-prefixed_store = PrefixDecorator(app.config["SERVER_NAME"] + "_", store)
-KVSessionExtension(store, app)
+
+def session_configure(app: Flask) -> SessionInterface:
+    """
+    We should try doing what our dependencies prefer, falling back to what we
+    want to do only as a last resort. That is to say, try using a connection
+    string _first_, then do our logic.
+
+    This function will either return a _verified_ connection or raise an
+    exception (failing fast).
+
+    Considerations for the future:
+    * Auth
+    """
+    try:
+        client = redis.Redis.from_url(app.config["REDIS_CONNECTOR"])
+    except ValueError:
+        host, _, port = app.config["REDIS_CONNECTOR"].partition(":")
+        client = redis.Redis(host=host, port=int(port))
+    # [redis.Redis.ping] will raise an exception if it can't connect anyways,
+    # but at least this way we make use of it's return value. Feels weird to
+    # not?
+    #
+    # redis.Redis.ping: https://github.com/redis/redis-py/blob/00f5be420b397adfa1b9aa9c2761f7d8a27c0a9a/redis/commands/core.py#L1206
+    assert client.ping(), "Could not ping Redis"
+    return RedisSessionInterface(app, client=client)
+
+
+app.session_interface = session_configure(app)
 
 assets = Environment(app)
 js = Bundle("js/base.js", filters="jsmin", output="js/gen/packed.js")

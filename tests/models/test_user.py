@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 import os
 
 import dashboard.models.user as user
@@ -6,8 +7,8 @@ import dashboard.models.user as user
 
 class TestUser:
     def setup_method(self):
+        self.fixture_file = Path(__file__).parent.parent / "data" / "userinfo.json"
         try:
-            self.fixture_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), "data/userinfo.json")
             with open(self.fixture_file) as f:
                 self.session_fixture = json.load(f)
 

@@ -18,6 +18,7 @@ KNOWN_ERROR_CODES = {
     "incorrectaccount",
     "aai_failed",
     "staffmustuseldap",
+    "maintenancemode",
 }
 
 
@@ -193,5 +194,9 @@ class TokenVerification:
                 by entering your emal address and clicking Enter.
                 Avoid using the buttons Sign in with Mozilla, with GitHub, or
                 with Google.
+            """
+        if self.error_code == "maintenancemode":
+            return """
+                The system is in maintenance mode. Please try again later.
             """
         return None

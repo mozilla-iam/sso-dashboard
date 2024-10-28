@@ -28,8 +28,6 @@ from dashboard import config
 from dashboard import get_config
 from dashboard import vanity
 
-from dashboard.api import idp
-from dashboard.api import exceptions
 from dashboard.csp import DASHBOARD_CSP
 from dashboard.models.user import User
 from dashboard.models.user import FakeUser
@@ -97,8 +95,6 @@ authentication = oidc_auth.OpenIDConnect(oidc_config)
 oidc = authentication.get_oidc(app)
 
 vanity_router = vanity.Router(app, app_list).setup()
-
-api = idp.AuthorizeAPI(app, oidc_config)
 
 
 @app.route("/favicon.ico")

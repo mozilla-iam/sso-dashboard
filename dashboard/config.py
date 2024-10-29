@@ -21,33 +21,39 @@ class Default:
     SESSION_COOKIE_SAMESITE: str = os.environ.get("SSO-DASHBOARD_SESSION_COOKIE_SAMESITE", "lax")
     SESSION_COOKIE_HTTPONLY: bool = os.environ.get("SSO-DASHBOARD_SESSION_COOKIE_HTTPONLY", "True") == "True"
 
-    SECRET_KEY: str = os.environ["SSO-DASHBOARD_SECRET_KEY"]
+    SECRET_KEY: str
     SERVER_NAME: str = os.environ.get("SSO-DASHBOARD_SERVER_NAME", "localhost:8000")
     SESSION_COOKIE_NAME: str
     CDN: str
 
-    S3_BUCKET: str = os.environ["SSO-DASHBOARD_S3_BUCKET"]
-
-    FORBIDDEN_PAGE_PUBLIC_KEY: bytes = base64.b64decode(os.environ["SSO-DASHBOARD_FORBIDDEN_PAGE_PUBLIC_KEY"])
+    S3_BUCKET: str
+    FORBIDDEN_PAGE_PUBLIC_KEY: bytes
 
     PREFERRED_URL_SCHEME: str = os.environ.get("SSO-DASHBOARD_PREFERRED_URL_SCHEME", "https")
-    REDIS_CONNECTOR: str = os.environ["SSO-DASHBOARD_REDIS_CONNECTOR"]
+    REDIS_CONNECTOR: str
 
     def __init__(self):
         self.SESSION_COOKIE_NAME = f"{self.SERVER_NAME}_session"
         self.CDN = os.environ.get("SSO-DASHBOARD_CDN", f"https://cdn.{self.SERVER_NAME}")
+        self.REDIS_CONNECTOR = os.environ["SSO-DASHBOARD_REDIS_CONNECTOR"]
+        self.SECRET_KEY = os.environ["SSO-DASHBOARD_SECRET_KEY"]
+        self.S3_BUCKET = os.environ["SSO-DASHBOARD_S3_BUCKET"]
+        self.FORBIDDEN_PAGE_PUBLIC_KEY = base64.b64decode(os.environ["SSO-DASHBOARD_FORBIDDEN_PAGE_PUBLIC_KEY"])
 
 
 class OIDC:
     """Convienience Object for returning required vars to flask."""
 
-    OIDC_DOMAIN: str = os.environ["SSO-DASHBOARD_OIDC_DOMAIN"]
-    OIDC_CLIENT_ID: str = os.environ["SSO-DASHBOARD_OIDC_CLIENT_ID"]
-    OIDC_CLIENT_SECRET: str = os.environ["SSO-DASHBOARD_OIDC_CLIENT_SECRET"]
+    OIDC_DOMAIN: str
+    OIDC_CLIENT_ID: str
+    OIDC_CLIENT_SECRET: str
     LOGIN_URL: str
 
     def __init__(self):
         """General object initializer."""
+        self.OIDC_DOMAIN = os.environ["SSO-DASHBOARD_OIDC_DOMAIN"]
+        self.OIDC_CLIENT_ID = os.environ["SSO-DASHBOARD_OIDC_CLIENT_ID"]
+        self.OIDC_CLIENT_SECRET = os.environ["SSO-DASHBOARD_OIDC_CLIENT_SECRET"]
         self.LOGIN_URL = f"https://{self.OIDC_DOMAIN}/login?client={self.OIDC_CLIENT_ID}"
 
     @property

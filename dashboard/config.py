@@ -57,12 +57,3 @@ class OIDC:
     @property
     def client_secret(self):
         return self.OIDC_CLIENT_SECRET
-
-    def auth_endpoint(self):
-        return f"https://{self.OIDC_DOMAIN}/authorize"
-
-    def token_endpoint(self):
-        return f"https://{self.OIDC_DOMAIN}/oauth/token"
-
-    def userinfo_endpoint(self):
-        return f"https://{self.OIDC_DOMAIN}/userinfo"

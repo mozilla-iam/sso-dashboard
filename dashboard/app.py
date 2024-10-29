@@ -25,7 +25,6 @@ from flask_talisman import Talisman  # type: ignore
 
 from dashboard import oidc_auth
 from dashboard import config
-from dashboard import get_config
 from dashboard import vanity
 
 from dashboard.csp import DASHBOARD_CSP
@@ -37,18 +36,19 @@ from dashboard.models.tile import CDNTransfer
 
 logging.config.fileConfig("dashboard/logging.ini")
 
-if config.Config(None).settings.DEBUG:
+app_config = config.Default()
+
+if app_config.DEBUG:
     # Set the log level to DEBUG for all defined loggers
     for logger_name in logging.root.manager.loggerDict.keys():
         logging.getLogger(logger_name).setLevel("DEBUG")
 
 app = Flask(__name__)
+app.config.from_object(app_config)
 
 talisman = Talisman(app, content_security_policy=DASHBOARD_CSP, force_https=False)
 
-app.config.from_object(config.Config(app).settings)
-
-app_list = CDNTransfer(config.Config(app).settings)
+app_list = CDNTransfer(app_config)
 
 
 def session_configure(app: Flask) -> SessionInterface:
@@ -90,7 +90,7 @@ assets.register("css_all", css)
 # Hack to support serving .svg
 mimetypes.add_type("image/svg+xml", ".svg")
 
-oidc_config = config.OIDCConfig()
+oidc_config = config.OIDC()
 authentication = oidc_auth.OpenIDConnect(oidc_config)
 oidc = authentication.get_oidc(app)
 
@@ -104,7 +104,7 @@ def favicon():
 
 @app.route("/")
 def home():
-    if config.Config(app).environment == "local":
+    if app.config["ENVIRONMENT"] == "local":
         return redirect("dashboard", code=302)
 
     url = request.url.replace("http://", "https://", 1)
@@ -213,7 +213,7 @@ def dashboard():
     # If an update is found, all gunicorn workers will be reloaded
     app_list.sync_config()
 
-    user = User(session, config.Config(app).settings)
+    user = User(session, app.config)
     apps = user.apps(Application(app_list.apps_yml).apps)
 
     return render_template("dashboard.html", config=app.config, user=user, apps=apps)
@@ -221,7 +221,7 @@ def dashboard():
 
 @app.route("/styleguide/dashboard")
 def styleguide_dashboard():
-    user = FakeUser(config.Config(app).settings)
+    user = FakeUser(app.config)
     apps = user.apps(Application(app_list.apps_yml).apps)
 
     return render_template("dashboard.html", config=app.config, user=user, apps=apps)
@@ -230,7 +230,7 @@ def styleguide_dashboard():
 @app.route("/styleguide/notifications")
 @oidc.oidc_auth("default")
 def styleguide_notifications():
-    user = FakeUser(config.Config(app).settings)
+    user = FakeUser(app.config)
     return render_template("notifications.html", config=app.config, user=user)
 
 

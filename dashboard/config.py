@@ -47,6 +47,7 @@ class OIDC:
     OIDC_DOMAIN: str
     OIDC_CLIENT_ID: str
     OIDC_CLIENT_SECRET: str
+    OIDC_REDIRECT_URI: str
     LOGIN_URL: str
 
     def __init__(self):
@@ -54,6 +55,11 @@ class OIDC:
         self.OIDC_DOMAIN = os.environ["SSO-DASHBOARD_OIDC_DOMAIN"]
         self.OIDC_CLIENT_ID = os.environ["SSO-DASHBOARD_OIDC_CLIENT_ID"]
         self.OIDC_CLIENT_SECRET = os.environ["SSO-DASHBOARD_OIDC_CLIENT_SECRET"]
+        # Check for a prefixed environment variable, otherwise fallback to the
+        # unprefixed one.
+        self.OIDC_REDIRECT_URI = os.environ.get(
+            "SSO-DASHBOARD_OIDC_REDIRECT_URI", os.environ.get("OIDC_REDIRECT_URI", "https://sso.mozilla.com")
+        )
         self.LOGIN_URL = f"https://{self.OIDC_DOMAIN}/login?client={self.OIDC_CLIENT_ID}"
 
     @property

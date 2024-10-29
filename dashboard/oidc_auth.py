@@ -65,7 +65,10 @@ class TokenError(BaseException):
 
 
 class TokenVerification:
-    def __init__(self, jws, public_key):
+    oidc_redirect_uri: str
+
+    def __init__(self, jws, public_key, redirect_uri: str):
+        self.oidc_redirect_uri = redirect_uri
         try:
             self.jws = JWS.from_compact(jws)
         except josepy.errors.DeserializationError as exc:
@@ -104,7 +107,7 @@ class TokenVerification:
 
     @property
     def redirect_uri(self) -> str:
-        return self.jws_data.get("redirect_uri", "https://sso.mozilla.com")
+        return self.jws_data.get("redirect_uri", self.oidc_redirect_uri)
 
     def signed(self) -> bool:
         """

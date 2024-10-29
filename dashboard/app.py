@@ -162,6 +162,7 @@ def forbidden():
         tv = oidc_auth.TokenVerification(
             jws=request.args.get("error").encode(),
             public_key=app.config["FORBIDDEN_PAGE_PUBLIC_KEY"],
+            redirect_uri=oidc_config.OIDC_REDIRECT_URI,
         )
     except oidc_auth.TokenError:
         app.logger.exception("Could not validate JWS from IdP")

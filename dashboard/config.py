@@ -1,70 +1,67 @@
 """Configuration loader for different environments."""
 
+import os
 import base64
 import datetime
-from dashboard import get_config
-
-CONFIG = get_config()
 
 
-class Config(object):
-    def __init__(self, app):
-        self.app = app
-
-        self.environment = CONFIG("environment", default="local")
-        self.settings = self._init_env()
-
-    def _init_env(self):
-        return DefaultConfig()
-
-
-class DefaultConfig(object):
+class Default:
     """Defaults for the configuration objects."""
 
-    DEBUG = bool(CONFIG("debug", namespace="sso-dashboard", parser=bool, default="False"))
-    TESTING = bool(CONFIG("testing", namespace="sso-dashboard", parser=bool, default="False"))
+    ENVIRONMENT: str = os.environ.get("ENVIRONMENT", "local")
+    DEBUG: bool = os.environ.get("SSO-DASHBOARD_DEBUG", "True") == "True"
+    TESTING: bool = os.environ.get("SSO-DASHBOARD_TESTING", "True") == "True"
 
-    CSRF_ENABLED = bool(CONFIG("csrf_enabled", parser=bool, default="True"))
-    PERMANENT_SESSION = bool(CONFIG("permanent_session", namespace="sso-dashboard", parser=bool, default="True"))
-    seconds = int(CONFIG("permanent_session_lifetime", namespace="sso-dashboard", default="86400"))
-    PERMANENT_SESSION_LIFETIME = datetime.timedelta(seconds=seconds)
-
-    SESSION_COOKIE_SAMESITE = CONFIG("session_cookie_samesite", namespace="sso-dashboard", default="lax")
-    SESSION_COOKIE_HTTPONLY = bool(
-        CONFIG("session_cookie_httponly", namespace="sso-dashboard", parser=bool, default="True")
+    CSRF_ENABLED: bool = os.environ.get("SSO-DASHBOARD_CSRF_ENABLED", "True") == "True"
+    PERMANENT_SESSION: bool = os.environ.get("SSO-DASHBOARD_PERMANENT_SESSION", "True") == "True"
+    PERMANENT_SESSION_LIFETIME: datetime.timedelta = datetime.timedelta(
+        seconds=int(os.environ.get("SSO-DASHBOARD_PERMANENT_SESSION_LIFETIME", "86400"))
     )
 
-    SECRET_KEY = CONFIG("secret_key", namespace="sso-dashboard")
-    SERVER_NAME = CONFIG("server_name", namespace="sso-dashboard", default="localhost:8000")
-    SESSION_COOKIE_NAME = SERVER_NAME + "_session"
+    SESSION_COOKIE_SAMESITE: str = os.environ.get("SSO-DASHBOARD_SESSION_COOKIE_SAMESITE", "lax")
+    SESSION_COOKIE_HTTPONLY: bool = os.environ.get("SSO-DASHBOARD_SESSION_COOKIE_HTTPONLY", "True") == "True"
 
-    S3_BUCKET = CONFIG("s3_bucket", namespace="sso-dashboard")
+    SECRET_KEY: str
+    SERVER_NAME: str = os.environ.get("SSO-DASHBOARD_SERVER_NAME", "localhost:8000")
+    SESSION_COOKIE_NAME: str
+    CDN: str
 
-    CDN = CONFIG(
-        "cdn",
-        namespace="sso-dashboard",
-        default="https://cdn.{SERVER_NAME}".format(SERVER_NAME=SERVER_NAME),
-    )
+    S3_BUCKET: str
+    FORBIDDEN_PAGE_PUBLIC_KEY: bytes
 
-    FORBIDDEN_PAGE_PUBLIC_KEY = base64.b64decode(CONFIG("forbidden_page_public_key", namespace="sso-dashboard"))
+    PREFERRED_URL_SCHEME: str = os.environ.get("SSO-DASHBOARD_PREFERRED_URL_SCHEME", "https")
+    REDIS_CONNECTOR: str
 
-    PREFERRED_URL_SCHEME = CONFIG("preferred_url_scheme", namespace="sso-dashboard", default="https")
+    def __init__(self):
+        self.SESSION_COOKIE_NAME = f"{self.SERVER_NAME}_session"
+        self.CDN = os.environ.get("SSO-DASHBOARD_CDN", f"https://cdn.{self.SERVER_NAME}")
+        self.REDIS_CONNECTOR = os.environ["SSO-DASHBOARD_REDIS_CONNECTOR"]
+        self.SECRET_KEY = os.environ["SSO-DASHBOARD_SECRET_KEY"]
+        self.S3_BUCKET = os.environ["SSO-DASHBOARD_S3_BUCKET"]
+        self.FORBIDDEN_PAGE_PUBLIC_KEY = base64.b64decode(os.environ["SSO-DASHBOARD_FORBIDDEN_PAGE_PUBLIC_KEY"])
 
-    REDIS_CONNECTOR = CONFIG("redis_connector", namespace="sso-dashboard")
 
-
-class OIDCConfig(object):
+class OIDC:
     """Convienience Object for returning required vars to flask."""
+
+    OIDC_DOMAIN: str
+    OIDC_CLIENT_ID: str
+    OIDC_CLIENT_SECRET: str
+    OIDC_REDIRECT_URI: str
+    LOGIN_URL: str
 
     def __init__(self):
         """General object initializer."""
-        CONFIG = get_config()
-        self.OIDC_DOMAIN = CONFIG("oidc_domain", namespace="sso-dashboard")
-        self.OIDC_CLIENT_ID = CONFIG("oidc_client_id", namespace="sso-dashboard")
-        self.OIDC_CLIENT_SECRET = CONFIG("oidc_client_secret", namespace="sso-dashboard")
-        self.LOGIN_URL = "https://{DOMAIN}/login?client={CLIENT_ID}".format(
-            DOMAIN=self.OIDC_DOMAIN, CLIENT_ID=self.OIDC_CLIENT_ID
-        )
+        self.OIDC_DOMAIN = os.environ["SSO-DASHBOARD_OIDC_DOMAIN"]
+        self.OIDC_CLIENT_ID = os.environ["SSO-DASHBOARD_OIDC_CLIENT_ID"]
+        self.OIDC_CLIENT_SECRET = os.environ["SSO-DASHBOARD_OIDC_CLIENT_SECRET"]
+        # Check for a prefixed environment variable, otherwise fallback to the
+        # unprefixed one.
+        if redirect_uri := os.environ.get("SSO-DASHBOARD_OIDC_REDIRECT_URI"):
+            self.OIDC_REDIRECT_URI = redirect_uri
+        else:
+            self.OIDC_REDIRECT_URI = os.environ["OIDC_REDIRECT_URI"]
+        self.LOGIN_URL = f"https://{self.OIDC_DOMAIN}/login?client={self.OIDC_CLIENT_ID}"
 
     @property
     def client_id(self):
@@ -73,12 +70,3 @@ class OIDCConfig(object):
     @property
     def client_secret(self):
         return self.OIDC_CLIENT_SECRET
-
-    def auth_endpoint(self):
-        return "https://{DOMAIN}/authorize".format(DOMAIN=self.OIDC_DOMAIN)
-
-    def token_endpoint(self):
-        return "https://{DOMAIN}/oauth/token".format(DOMAIN=self.OIDC_DOMAIN)
-
-    def userinfo_endpoint(self):
-        return "https://{DOMAIN}/userinfo".format(DOMAIN=self.OIDC_DOMAIN)

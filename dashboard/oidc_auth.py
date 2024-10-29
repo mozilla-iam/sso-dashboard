@@ -102,10 +102,6 @@ class TokenVerification:
     def preferred_connection_name(self) -> Optional[str]:
         return self.jws_data.get("preferred_connection_name")
 
-    @property
-    def redirect_uri(self) -> str:
-        return self.jws_data.get("redirect_uri", "https://sso.mozilla.com")
-
     def signed(self) -> bool:
         """
         By the time we get here we've got a valid key, and a properly

@@ -57,9 +57,10 @@ class OIDC:
         self.OIDC_CLIENT_SECRET = os.environ["SSO-DASHBOARD_OIDC_CLIENT_SECRET"]
         # Check for a prefixed environment variable, otherwise fallback to the
         # unprefixed one.
-        self.OIDC_REDIRECT_URI = os.environ.get(
-            "SSO-DASHBOARD_OIDC_REDIRECT_URI", os.environ.get("OIDC_REDIRECT_URI", "https://sso.mozilla.com")
-        )
+        if redirect_uri := os.environ.get("SSO-DASHBOARD_OIDC_REDIRECT_URI"):
+            self.OIDC_REDIRECT_URI = redirect_uri
+        else:
+            self.OIDC_REDIRECT_URI = os.environ["OIDC_REDIRECT_URI"]
         self.LOGIN_URL = f"https://{self.OIDC_DOMAIN}/login?client={self.OIDC_CLIENT_ID}"
 
     @property

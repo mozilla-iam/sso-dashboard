@@ -1,0 +1,39 @@
+# Copied a snapshot from https://github.com/mozilla-iam/sso-dashboard-configuration/
+apps:
+- application:
+    authorized_groups:
+    - mozilliansorg_netlify-access
+    authorized_users: []
+    client_id: client-id-for-netlify
+    display: true
+    logo: netlify.png
+    name: Netlify
+    op: auth0
+    url: https://some-url-for-netlify
+    vanity_url:
+    - /netlify
+- application:
+    authorized_groups:
+    - team_moco
+    - team_mofo
+    - team_mzla
+    authorized_users: []
+    display: true
+    logo: accountmanager.png
+    name: Account Portal
+    op: auth0
+    url: https://some-url-for-account-manager
+    vanity_url:
+    - /accountmanager
+- application:
+    authorized_groups:
+    - mozilliansorg_acoustic_production_access
+    authorized_users: []
+    client_id: client-id-for-acoustic
+    display: true
+    logo: acoustic.png
+    name: Acoustic
+    op: auth0
+    url: https://some-url-for-acoustic
+    vanity_url:
+    - /acoustic

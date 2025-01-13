@@ -16,6 +16,7 @@ from flask import render_template
 from flask import request
 from flask import send_from_directory
 from flask import session
+from flask import url_for
 from flask.sessions import SessionInterface
 
 from flask_assets import Bundle  # type: ignore
@@ -180,11 +181,23 @@ def logout():
     started up with knowledge of it. Flask-pyoidc will make use of this
     endpoint if it's in the provider metadata [1].
 
-    If the tenant does not have this feature then we'll fall back to the
-    NLX-based logout method.
+    If the app was _not_ started with the End Session Endpoint, then we'll
+    fallback to using the `v2/logout` [2] endpoint.
+
+    These two methods cover all cases where:
+
+    * the tenant does not have the End Session Endpoint turned on/off;
+    * the Universal Login page has/has not been customized.
+
+    Note: As the Auth0 docs state [3], this _does not_ log users out of all
+    applications. This simply ends their session with Auth0 and clears their
+    SSO Dashboard session. Refer to the docs on what we'd need to do to achieve
+    a global logout.
 
     [0]: https://auth0.com/docs/authenticate/login/logout/log-users-out-of-auth0#example
     [1]: https://github.com/zamzterz/Flask-pyoidc/blob/26b123572cba0b3fa84482c6c0270900042a73c9/src/flask_pyoidc/flask_pyoidc.py#L263
+    [2]: https://auth0.com/docs/api/authentication#auth0-logout
+    [3]: https://manage.mozilla-dev.auth0.com/docs/authenticate/login/logout/log-users-out-of-applications
     """
     try:
         has_provider_endpoint = oidc.clients["default"].provider_end_session_endpoint is not None
@@ -196,8 +209,15 @@ def logout():
     # Old-school redirect. If we get here this means we haven't enabled the
     # RP-initiated logout end session endpoint on Auth0, and so we need to do
     # manual logout (in a non-breaking way).
-    app.logger.info("Redirecting to NLX logout endpoint")
-    logout_url = f"https://{oidc_config.OIDC_DOMAIN}/login?client={oidc_config.OIDC_CLIENT_ID}&action=logout"
+    app.logger.info("Redirecting to v2/logout")
+    # Build up the logout and signout URLs
+    signout_url = "http"
+    if request.is_secure:
+        signout_url += "s"
+    signout_url += f"://{app.config["SERVER_NAME"]}{url_for("signout")}"
+    logout_url = (
+        f"https://{oidc_config.OIDC_DOMAIN}/v2/logout?client_id={oidc_config.OIDC_CLIENT_ID}&returnTo={signout_url}"
+    )
     return redirect(logout_url, code=302)
 
 

@@ -211,10 +211,7 @@ def logout():
     # manual logout (in a non-breaking way).
     app.logger.info("Redirecting to v2/logout")
     # Build up the logout and signout URLs
-    signout_url = "http"
-    if request.is_secure:
-        signout_url += "s"
-    signout_url += f"://{app.config["SERVER_NAME"]}{url_for("signout")}"
+    signout_url = f"{app.config["PREFERRED_URL_SCHEME"]}://{app.config["SERVER_NAME"]}{url_for("signout")}"
     logout_url = (
         f"https://{oidc_config.OIDC_DOMAIN}/v2/logout?client_id={oidc_config.OIDC_CLIENT_ID}&returnTo={signout_url}"
     )

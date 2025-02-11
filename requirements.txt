@@ -8,7 +8,7 @@ chardet==5.2.0
 charset-normalizer==3.3.2
 click==8.1.7
 colorama==0.4.6
-cryptography==43.0.1
+cryptography==44.0.1
 cssmin==0.2.0
 defusedxml==0.7.1
 distlib==0.3.8
@@ -44,7 +44,7 @@ pydantic==2.8.2
 pydantic-settings==2.4.0
 pydantic_core==2.20.1
 pyjwkest==1.4.2
-pyOpenSSL==24.2.1
+pyOpenSSL==25.0.0
 pyproject-api==1.7.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1

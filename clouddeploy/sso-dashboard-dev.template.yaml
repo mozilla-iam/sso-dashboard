@@ -66,7 +66,7 @@ spec:
           - name: SSO-DASHBOARD_OIDC_CLIENT_ID
             value: 2KNOUCxN8AFnGGjDCGtqiDIzq8MKXi2h
           - name: SSO-DASHBOARD_OIDC_DOMAIN
-            value: dev.mozilla-dev.auth0.com
+            value: idp-dev.iam.mozilla.com
           - name: SSO-DASHBOARD_SERVER_NAME
             value: sso.allizom.org
           - name: SSO-DASHBOARD_CDN

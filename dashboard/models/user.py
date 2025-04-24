@@ -3,7 +3,7 @@
 import logging
 import time
 from faker import Faker
-from typeguard import check_type
+from typeguard import check_type, TypeCheckError
 
 from dashboard.models.apps import Application
 
@@ -93,7 +93,7 @@ class User(object):
         try:
             check_type(app["application"], Application)
             return True
-        except typeguard.TypeCheckError:
+        except TypeCheckError:
             return False
 
 

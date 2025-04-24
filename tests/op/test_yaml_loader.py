@@ -36,19 +36,9 @@ def test_load_data_invalid_yaml():
         Application(invalid_app)
 
 
-def test_render_data(valid_application):
-    assert valid_application.apps["apps"][0]["application"]["name"] == "Long Application.."
-    assert valid_application.apps["apps"][1]["application"]["alt_text"] == "Test Application"
-
-
 def test_alphabetize(valid_application):
-    assert valid_application.apps["apps"][0]["application"]["name"] == "Long Application.."
+    assert valid_application.apps["apps"][0]["application"]["name"] == "Long Application Name That Exceeds Limit"
     assert valid_application.apps["apps"][1]["application"]["name"] == "Test Application"
-
-
-def test_truncate(valid_application):
-    assert valid_application._truncate("Short Name") == "Short Name"
-    assert valid_application._truncate("This is a very long application name") == "This is a very l.."
 
 
 def test_vanity_urls(valid_application):

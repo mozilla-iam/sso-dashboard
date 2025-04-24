@@ -3,6 +3,9 @@
 import logging
 import time
 from faker import Faker
+from typeguard import check_type
+
+from dashboard.models.apps import Application
 
 fake = Faker()
 logger = logging.getLogger()
@@ -25,14 +28,14 @@ class User(object):
 
     def apps(self, app_list):
         """Return a list of the apps a user is allowed to see in dashboard."""
-        authorized_apps = {"apps": []}
-
+        authorized_apps = []
         for app in app_list["apps"]:
-            if self._is_valid_yaml(app):
-                if self._is_authorized(app):
-                    authorized_apps["apps"].append(app)
-
-        return authorized_apps.get("apps", [])
+            if not self._is_valid_yaml(app):
+                continue
+            if not self._is_authorized(app):
+                continue
+            authorized_apps.append(app)
+        return authorized_apps
 
     @property
     def avatar(self):
@@ -88,11 +91,9 @@ class User(object):
     def _is_valid_yaml(self, app):
         """If an app doesn't have the required fields skip it."""
         try:
-            app["application"]["display"]
-            app["application"]["authorized_groups"]
-            app["application"]["authorized_users"]
+            check_type(app["application"], Application)
             return True
-        except KeyError:
+        except typeguard.TypeCheckError:
             return False
 
 
@@ -105,13 +106,14 @@ class FakeUser(object):
         return fake.email()
 
     def apps(self, app_list):
-        authorized_apps = {"apps": []}
-
+        authorized_apps = []
         for app in app_list["apps"]:
-            if self._is_valid_yaml(app):
-                if self._is_authorized(app):
-                    authorized_apps["apps"].append(app)
-        return authorized_apps.get("apps", [])
+            if not self._is_valid_yaml(app):
+                continue
+            if not self._is_authorized(app):
+                continue
+            authorized_apps.append(app)
+        return authorized_apps
 
     @property
     def avatar(self):

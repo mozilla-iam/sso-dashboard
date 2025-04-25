@@ -31,6 +31,10 @@ class User(object):
         authorized_apps = []
         for app in app_list["apps"]:
             if not self._is_valid_yaml(app):
+                try:
+                    logger.warning(f"invalid YAML for app {app.get("name", "unknown")} detected")
+                except AttributeError:
+                    logger.warning(f"invalid YAML for app detected")
                 continue
             if not self._is_authorized(app):
                 continue

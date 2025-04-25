@@ -72,7 +72,7 @@
           <div class="mui--text-center app-logo">
             <img src="{{ config.CDN }}/images/{{ app['application']['logo'] }}" role="presentation" alt="">
           </div>
-          <p class="mui--text-center app-name" title="{{ app['application']['name'] }}">{{ app['application']['name'] }}</p>
+          <p class="mui--text-center app-name" title="{{ app['application']['name'] }}">{{ app['application']['name'] | truncate(16, True, '..' ) }}</p>
         </a>
       </li>
     {% endfor %}

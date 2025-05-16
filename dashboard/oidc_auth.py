@@ -187,7 +187,7 @@ class TokenVerification:
                 email address, which requires LDAP authentication.
                 Please log out and sign back in using your LDAP credentials.
                 To do this, click the Logout button below and then log in again
-                by entering your emal address and clicking Enter.
+                by entering your email address and clicking Enter.
                 Avoid using the buttons Sign in with Mozilla, with GitHub, or
                 with Google.
             """

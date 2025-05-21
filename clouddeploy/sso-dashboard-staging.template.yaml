@@ -49,41 +49,37 @@ spec:
         env:
           - name: TARGET
             value: Prod
-          - name: SSO-DASHBOARD_DEBUG
+          - name: TESTING
             value: False
-          - name: SSO-DASHBOARD_TESTING
-            value: False
-          - name: SSO-DASHBOARD_CSRF_ENABLED
+          - name: CSRF_ENABLED
             value: True
-          - name: SSO-DASHBOARD_PERMANENT_SESSION
+          - name: PERMANENT_SESSION
             value: True
-          - name: SSO-DASHBOARD_PERMANENT_SESSION_LIFETIME
+          - name: PERMANENT_SESSION_LIFETIME
             value: 86400
-          - name: SSO-DASHBOARD_SESSION_COOKIE_HTTPONLY
+          - name: SESSION_COOKIE_HTTPONLY
             value: True
-          - name: SSO-DASHBOARD_PREFERRED_URL_SCHEME
+          - name: PREFERRED_URL_SCHEME
             value: https
-          - name: SSO-DASHBOARD_OIDC_CLIENT_ID
+          - name: OIDC_CLIENT_ID
             value: UCOY390lYDxgj5rU8EeXRtN6EP005k7V
-          - name: SSO-DASHBOARD_OIDC_DOMAIN
+          - name: OIDC_DOMAIN
             value: auth.mozilla.auth0.com
-          - name: SSO-DASHBOARD_SERVER_NAME
+          - name: SERVER_NAME
             value: staging.sso.mozilla.com
-          - name: SSO-DASHBOARD_CDN
+          - name: CDN
             value: https://cdn.sso.mozilla.com
-          - name: SSO-DASHBOARD_S3_BUCKET
+          - name: S3_BUCKET
             value: sso-dashboard.configuration
-          - name: SSO-DASHBOARD_FORBIDDEN_PAGE_PUBLIC_KEY
+          - name: FORBIDDEN_PAGE_PUBLIC_KEY
             value: "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0NCk1JSUNJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBZzhBTUlJQ0NnS0NBZ0VBcStWVXhsWWlENUF1aGh3a0hEb3kNCmFXV0YzcFlzQmxGaDlUendZeGNNR282TFdUODljb0xuUDdWVHlLbGdsTklmTG5KZDdqY2E5VUJ1QjhIVFBQYWoNCk5Ibk5UaUZ5UEZTbjFoaVhqSDJieUNDNnA1ZnByRWFEazV3YVpVNTgwaTRDaVlYcWtrWWdVbXVINW91Mnl4NW4NClZCVGJmcityZFQ0a0tRdi9Dek9ZR1o3K05NVUdXYTMvNXRMZklyRXZnV2tTTEluemtVZVhUS3huRSs5a1AvU2ENCkM4SDZsNnBKbm9oOVpiY3J4RGhkbVl6TEx2c0tIQ2tidmdCczNiaUFkSENzeHFEeFcxSGlOMzJYeEc4Y1pyc00NCjV1ZDdnbHNNY2VZWk82aENTZW4vckFUWmJkc3RETWNLa2YzMTBpUFgxRWF5ZzNPcDNZUlVTdkxzVmp5bmxQZmYNClRSVjFmQ2hJaXFwQWdnS2x4MXdqRUk2UVBuQWdpU1E0WEJweTFCK3FUSTltd1BhcE5yY2IzbkpFNDFNT0dEZGwNCmFLcHlMeGdaeEI4NmNKYTlVQXZGSEFOR08zRXA1Vmd0UjNoUStqWkY2RGFHUThjMHNyaHg4MTc4dWJybFY2NGsNCnVxK1ozVUZBZHhDbHZTRnc0eDVyTm1tV2dTN280OG9yMnhWdXVXMTQxNEZYTVBvaytDNUdabGd6ZG5zZ3cxWlQNCmhzTWNldG1temthUTlyeWxmYXVRR1gzMk5lZ3FlOWFyR0VGbXBqYjJUb2w0Tk1RLy83MzRuVFN2Q1lmL0o0Qi8NCnR0NjJzOXRBTU1ZdkpvN0ZRV2o0Qks3dUYvYmxTbTczYUVvVlFiNHdzWjJRWWpMeVlWcGh2UFprYVdaZHA0Wi8NCng0STlPT3lOYThtaGZkK3h0OU9uWXVzQ0F3RUFBUT09DQotLS0tLUVORCBQVUJMSUMgS0VZLS0tLS0NCg==\n"
-          - name: SSO-DASHBOARD_REDIS_CONNECTOR
+          - name: REDIS_CONNECTOR
             value: 10.182.16.6:6379
           - name: AWS_DEFAULT_REGION
             value: us-west-2
           - name: ENVIRONMENT
             value: staging
           - name: FLASK_DEBUG
-            value: False
-          - name: DEBUG
             value: False
           - name: LANG
             value: en_US.utf8
@@ -96,12 +92,12 @@ spec:
               secretKeyRef:
                 key: latest
                 name: sso-dashboard-aws-secret-access-key
-          - name: SSO-DASHBOARD_SECRET_KEY
+          - name: SECRET_KEY
             valueFrom:
               secretKeyRef:
                 key: latest
                 name: sso-dashboard-prod-secret-key
-          - name: SSO-DASHBOARD_OIDC_CLIENT_SECRET
+          - name: OIDC_CLIENT_SECRET
             valueFrom:
               secretKeyRef:
                 key: latest

@@ -13,11 +13,11 @@ def externals(monkeypatch):
     models_dir = Path(__file__).parent / "models"
     monkeypatch.setattr("os.path.dirname", lambda _: models_dir)
     # Internal to how Configs work.
-    monkeypatch.setenv("SSO-DASHBOARD_REDIS_CONNECTOR", "foobar")
-    monkeypatch.setenv("SSO-DASHBOARD_SECRET_KEY", "deadbeef")
-    monkeypatch.setenv("SSO-DASHBOARD_S3_BUCKET", "")
-    monkeypatch.setenv("SSO-DASHBOARD_FORBIDDEN_PAGE_PUBLIC_KEY", "")
-    monkeypatch.setenv("SSO-DASHBOARD_CDN", "https://localhost")
+    monkeypatch.setenv("REDIS_CONNECTOR", "foobar")
+    monkeypatch.setenv("SECRET_KEY", "deadbeef")
+    monkeypatch.setenv("S3_BUCKET", "")
+    monkeypatch.setenv("FORBIDDEN_PAGE_PUBLIC_KEY", "")
+    monkeypatch.setenv("CDN", "https://localhost")
 
 
 @pytest.fixture

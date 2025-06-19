@@ -56,7 +56,7 @@ six==1.16.0
 tox==4.16.0
 types-PyYAML==6.0.12.20240724
 typing_extensions==4.12.2
-urllib3==2.2.2
+urllib3==2.5.0
 virtualenv==20.26.6
 webassets==2.0
 Werkzeug==3.0.6

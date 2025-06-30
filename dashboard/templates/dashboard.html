@@ -57,7 +57,7 @@
 
 {% block user_menu %}
   <div class="user-menu">
-    <a href="https://people.mozilla.org/e" target="_blank"><span>Settings</span> <img class="menu-icon" src="/static/img/settings.svg" alt=""></a>
+    <a href="https://people.mozilla.org/e"><span>Settings</span> <img class="menu-icon" src="/static/img/settings.svg" alt=""></a>
     <a href="/logout"><span>Logout</span> <img class="menu-icon"src="/static/img/logout.svg" alt=""></a>
     <a href="/autologin-settings"><span>Enable / Disable Auto-login</span></a>
   </div>
@@ -68,7 +68,7 @@
     <ul>
     {% for app in apps %}
       <li>
-        <a href="{{ app['application']['url'] }}" data-id="{{ app['application']['name'] }}" class="app-tile" target="_blank">
+        <a href="{{ app['application']['url'] }}" data-id="{{ app['application']['name'] }}" class="app-tile">
           <div class="mui--text-center app-logo">
             <img src="{{ config.CDN }}/images/{{ app['application']['logo'] }}" role="presentation" alt="">
           </div>

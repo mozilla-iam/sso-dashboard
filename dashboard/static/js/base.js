@@ -29,7 +29,7 @@ $(document).ready(function(){
                 const tiles = $('#app-grid .app-tile:visible');
                 if (tiles.length === 1) {
                 // If only one tile is visible, open its link on Enter
-                    window.open(tiles[0].href, '_blank');
+                    window.open(tiles[0].href);
                 }
             }
         });

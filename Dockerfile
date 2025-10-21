@@ -1,29 +1,33 @@
-FROM python:3.12-bullseye
+FROM node:22-alpine3.22 AS nodebuild
+RUN npm install -g sass
+
+FROM python:3.12-alpine3.22 AS pythonbuild
+RUN --mount=type=bind,source=requirements.txt,target=requirements.txt \
+    apk add gcc musl-dev libffi-dev \
+    && pip3 install --upgrade pip \
+    && pip3 install -r requirements.txt
+
+FROM python:3.12-alpine3.22
 ARG RELEASE_NAME
 
-# Install Node.js 18.20.4 and global npm packages in a single layer
-RUN apt update && apt install -y curl \
-    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs=18.20.4-1nodesource1 \
-    && npm install -g sass \
-    && rm -rf /var/lib/apt/lists/*
+COPY --from=nodebuild /usr/lib /usr/lib
+COPY --from=nodebuild /usr/local/lib /usr/local/lib
+COPY --from=nodebuild /usr/local/bin /usr/local/bin
+COPY --from=pythonbuild /usr/lib /usr/lib
+COPY --from=pythonbuild /usr/local/lib /usr/local/lib
+COPY --from=pythonbuild /usr/local/bin /usr/local/bin
 
-# Upgrade pip, install Python dependencies, and clean up in a single layer
-COPY ./requirements.txt /dashboard/
-RUN pip3 install --upgrade pip \
-    && pip3 install -r /dashboard/requirements.txt
-
-# Copy the dashboard code and create necessary directories and files
 COPY ./dashboard/ /dashboard/
-RUN mkdir -p /dashboard/data /dashboard/static/img/logos \
+RUN addgroup -S dashboard \
+    && adduser -SG dashboard dashboard \
+    && rm -f /dashboard/static/css/gen/all.css /dashboard/static/js/gen/packed.js /dashboard/data/apps.yml-etag \
+    && mkdir -p /dashboard/data /dashboard/static/img/logos \
     && touch /dashboard/data/apps.yml \
-    && chmod 750 -R /dashboard \
-    && rm /dashboard/static/css/gen/all.css \
-    /dashboard/static/js/gen/packed.js \
-    /dashboard/data/apps.yml-etag 2>/dev/null || true
+    && chown -R dashboard:dashboard /dashboard/data \
+    && chown -R dashboard:dashboard /dashboard/static \
+    && echo $RELEASE_NAME > /dashboard/version.json
 
-# Write the release name to a version file
-RUN echo $RELEASE_NAME > /version.json
+USER dashboard
 
 # Set the entrypoint for the container
 ENTRYPOINT ["gunicorn", "dashboard.app:app"]

@@ -17,7 +17,7 @@
         "update:static": "node 'tools/copy-static-files.js'"
     },
     "engines": {
-        "node": "v18.20.4"
+        "node": "v22.21.0"
     },
     "devDependencies": {
         "eslint": "^9.9.0",

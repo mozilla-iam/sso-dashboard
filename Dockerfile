@@ -25,7 +25,7 @@ RUN addgroup -S dashboard \
     && touch /dashboard/data/apps.yml \
     && chown -R dashboard:dashboard /dashboard/data \
     && chown -R dashboard:dashboard /dashboard/static \
-    && echo $RELEASE_NAME > /dashboard/version.json
+    && echo $RELEASE_NAME > /version.json
 
 USER dashboard
 

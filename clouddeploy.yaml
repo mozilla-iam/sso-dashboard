@@ -23,7 +23,7 @@ executionConfigs:
 - usages:
   - RENDER
   - DEPLOY
-  serviceAccount: sso-dashboard-prod@iam-auth0.iam.gserviceaccount.com
+  serviceAccount: sso-dashboard@iam-auth0.iam.gserviceaccount.com
 ---
 apiVersion: deploy.cloud.google.com/v1
 kind: Target

@@ -29,6 +29,7 @@ spec:
         run.googleapis.com/startup-cpu-boost: 'true'
         run.googleapis.com/vpc-access-connector: 'redis-connector'
     spec:
+      serviceAccountName: sso-dashboard-stage-runtime@iam-auth0.iam.gserviceaccount.com
       containers:
       - name: 'sso-dashboard'
         image: 'app'

@@ -29,6 +29,7 @@ spec:
         run.googleapis.com/startup-cpu-boost: 'true'
         run.googleapis.com/vpc-access-connector: 'redis-connector'
     spec:
+      serviceAccountName: sso-dashboard-stage-runtime@iam-auth0.iam.gserviceaccount.com
       containers:
       - name: 'sso-dashboard'
         image: 'app'
@@ -75,8 +76,6 @@ spec:
             value: "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0NCk1JSUNJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBZzhBTUlJQ0NnS0NBZ0VBcStWVXhsWWlENUF1aGh3a0hEb3kNCmFXV0YzcFlzQmxGaDlUendZeGNNR282TFdUODljb0xuUDdWVHlLbGdsTklmTG5KZDdqY2E5VUJ1QjhIVFBQYWoNCk5Ibk5UaUZ5UEZTbjFoaVhqSDJieUNDNnA1ZnByRWFEazV3YVpVNTgwaTRDaVlYcWtrWWdVbXVINW91Mnl4NW4NClZCVGJmcityZFQ0a0tRdi9Dek9ZR1o3K05NVUdXYTMvNXRMZklyRXZnV2tTTEluemtVZVhUS3huRSs5a1AvU2ENCkM4SDZsNnBKbm9oOVpiY3J4RGhkbVl6TEx2c0tIQ2tidmdCczNiaUFkSENzeHFEeFcxSGlOMzJYeEc4Y1pyc00NCjV1ZDdnbHNNY2VZWk82aENTZW4vckFUWmJkc3RETWNLa2YzMTBpUFgxRWF5ZzNPcDNZUlVTdkxzVmp5bmxQZmYNClRSVjFmQ2hJaXFwQWdnS2x4MXdqRUk2UVBuQWdpU1E0WEJweTFCK3FUSTltd1BhcE5yY2IzbkpFNDFNT0dEZGwNCmFLcHlMeGdaeEI4NmNKYTlVQXZGSEFOR08zRXA1Vmd0UjNoUStqWkY2RGFHUThjMHNyaHg4MTc4dWJybFY2NGsNCnVxK1ozVUZBZHhDbHZTRnc0eDVyTm1tV2dTN280OG9yMnhWdXVXMTQxNEZYTVBvaytDNUdabGd6ZG5zZ3cxWlQNCmhzTWNldG1temthUTlyeWxmYXVRR1gzMk5lZ3FlOWFyR0VGbXBqYjJUb2w0Tk1RLy83MzRuVFN2Q1lmL0o0Qi8NCnR0NjJzOXRBTU1ZdkpvN0ZRV2o0Qks3dUYvYmxTbTczYUVvVlFiNHdzWjJRWWpMeVlWcGh2UFprYVdaZHA0Wi8NCng0STlPT3lOYThtaGZkK3h0OU9uWXVzQ0F3RUFBUT09DQotLS0tLUVORCBQVUJMSUMgS0VZLS0tLS0NCg==\n"
           - name: REDIS_CONNECTOR
             value: 10.182.16.6:6379
-          - name: AWS_DEFAULT_REGION
-            value: us-west-2
           - name: ENVIRONMENT
             value: staging
           - name: FLASK_DEBUG
@@ -87,11 +86,6 @@ spec:
             value: dashboard/app.py
           - name: OIDC_REDIRECT_URI
             value: https://sso.mozilla.com/redirect_uri
-          - name: AWS_SECRET_ACCESS_KEY
-            valueFrom:
-              secretKeyRef:
-                key: latest
-                name: sso-dashboard-aws-secret-access-key
           - name: SECRET_KEY
             valueFrom:
               secretKeyRef:
@@ -102,8 +96,3 @@ spec:
               secretKeyRef:
                 key: latest
                 name: sso-dashboard-prod-oidc-client-secret
-          - name: AWS_ACCESS_KEY_ID
-            valueFrom:
-              secretKeyRef:
-                key: latest
-                name: sso-dashboard-aws-access-key-id

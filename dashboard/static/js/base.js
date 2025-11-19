@@ -23,6 +23,8 @@ $(document).ready(function(){
                 })
             // Fade those out
                 .fadeOut();
+            // Scroll to first visible
+            window.scrollTo({ top: 0 });
         })
         .on('keypress', function (ev) {
             if (ev.key === 'Enter') {

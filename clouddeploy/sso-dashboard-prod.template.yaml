@@ -65,7 +65,7 @@ spec:
           - name: OIDC_CLIENT_ID
             value: UCOY390lYDxgj5rU8EeXRtN6EP005k7V
           - name: OIDC_DOMAIN
-            value: auth.mozilla.auth0.com
+            value: idp.iam.mozilla.com
           - name: SERVER_NAME
             value: sso.mozilla.com
           - name: CDN

@@ -65,7 +65,7 @@ spec:
           - name: OIDC_CLIENT_ID
             value: 2KNOUCxN8AFnGGjDCGtqiDIzq8MKXi2h
           - name: OIDC_DOMAIN
-            value: idp-dev.iam.mozilla.com
+            value: dev.mozilla-dev.auth0.com
           - name: SERVER_NAME
             value: sso.allizom.org
           - name: CDN

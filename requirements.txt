@@ -59,7 +59,7 @@ typing_extensions==4.12.2
 urllib3==2.6.3
 virtualenv==20.26.6
 webassets==2.0
-Werkzeug==3.0.6
+Werkzeug==3.1.5
 zope.event==5.0
 zope.interface==6.4.post2
 typeguard==4.4.2

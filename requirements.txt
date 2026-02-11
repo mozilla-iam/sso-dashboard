@@ -2,7 +2,7 @@ annotated-types==0.7.0
 Beaker==1.13.0
 cachetools==5.4.0
 certifi==2024.7.4
-cffi==1.16.0
+cffi==2.0.0
 cfgv==3.4.0
 chardet==5.2.0
 charset-normalizer==3.3.2
@@ -44,7 +44,7 @@ pydantic==2.8.2
 pydantic-settings==2.4.0
 pydantic_core==2.20.1
 pyjwkest==1.4.2
-pyOpenSSL==25.0.0
+pyOpenSSL==25.3.0
 pyproject-api==1.7.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1

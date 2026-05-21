@@ -262,16 +262,7 @@ def styleguide_dashboard():
     return render_template("dashboard.html", config=app.config, user=user, apps=apps)
 
 
-@app.route("/styleguide/notifications")
-@oidc.oidc_auth("default")
-def styleguide_notifications():
-    user = FakeUser(app.config)
-    return render_template("notifications.html", config=app.config, user=user)
-
-
-"""useful endpoint for debugging"""
-
-
+# useful endpoint for debugging
 @app.route("/info")
 @oidc.oidc_auth("default")
 def info():

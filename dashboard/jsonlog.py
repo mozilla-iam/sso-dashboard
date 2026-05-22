@@ -12,12 +12,15 @@ import logging
 
 class JsonFormatter(logging.Formatter):
     def format(self, record):
-        return json.dumps(
-            {
-                "time": self.formatTime(record),
-                "level": record.levelname,
-                "process_id": record.process,
-                "message": record.getMessage(),
-                "name": f"{record.filename}:{record.name}:{record.funcName}:{record.lineno}",
-            }
-        )
+        data = {
+            "time": self.formatTime(record),
+            "level": record.levelname,
+            "process_id": record.process,
+            "message": record.getMessage(),
+            "name": f"{record.filename}:{record.name}:{record.funcName}:{record.lineno}",
+        }
+        if record.exc_info:
+            data["exc_info"] = self.formatException(record.exc_info)
+        if record.stack_info:
+            data["stack_info"] = self.formatStack(record.stack_info)
+        return json.dumps(data)

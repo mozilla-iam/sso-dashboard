@@ -21,6 +21,4 @@ class JsonFormatter(logging.Formatter):
         }
         if record.exc_info:
             data["exc_info"] = self.formatException(record.exc_info)
-        if record.stack_info:
-            data["stack_info"] = self.formatStack(record.stack_info)
         return json.dumps(data)

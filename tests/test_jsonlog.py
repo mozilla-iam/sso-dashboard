@@ -6,15 +6,17 @@ from dashboard.jsonlog import JsonFormatter
 
 def test_format_produces_valid_json_with_quotes_and_newlines():
     # The previous string-template formatter emitted invalid JSON whenever
-    # a message contained quotes or newlines (e.g. tracebacks).
+    # a message contained quotes or newlines (e.g. tracebacks). Args are
+    # interpolated into msg via record.getMessage(); use real args here so
+    # the test covers the args path alongside the literal-message path.
     formatter = JsonFormatter()
     record = logging.LogRecord(
         name="test.logger",
         level=logging.ERROR,
         pathname="/path/test_module.py",
         lineno=42,
-        msg='oops "quoted" and\nmulti-line',
-        args=(),
+        msg="oops %s and\n%s",
+        args=('"quoted"', "multi-line"),
         exc_info=None,
         func="some_func",
     )

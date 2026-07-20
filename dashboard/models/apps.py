@@ -63,7 +63,7 @@ class Application(TypedDict):
     # indicates the amount confidence in the authentication mechanism used is
     # required to access this RP. It is enforced by the Access Provider.
     # E.g. MEDIUM may mean 2FA required
-    AAL: NotRequired[Literal["LOW", "MEDIUM", "MAXIMUM"]]
+    AAL: NotRequired[Literal["LOW", "MEDIUM", "HIGH", "MAXIMUM"]]
 
 
 class AppEntry(TypedDict):

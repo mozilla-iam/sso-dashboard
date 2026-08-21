@@ -65,6 +65,10 @@ class Application(TypedDict):
     # E.g. MEDIUM may mean 2FA required
     AAL: NotRequired[Literal["LOW", "MEDIUM", "HIGH", "MAXIMUM"]]
 
+    # See: IAM-1989, where we have some requirements to restrict AAIs based on
+    # groups.
+    AAI: NotRequired[Literal["2FA", "HWK"]]
+
 
 class AppEntry(TypedDict):
     """An item in the `apps` list."""

@@ -7,6 +7,28 @@ If you change these definitions, copy them over there as well.
 from typing import Literal, NotRequired, TypedDict
 
 
+class StepUp(TypedDict):
+    """
+    This section isn't used by the SSO Dashboard, and is here because both
+    auth0-deploy and the SSO Dashboard make use of apps.yml. We define it here
+    anyways, so that if we do come across a mis-configured application, we can
+    hide it.
+
+    Canonical schema and docs for this are in the sso-dashboard-configuration
+    repository.
+
+    See: IAM-1989.
+    """
+
+    matching_users: list[str]
+    matching_groups: list[str]
+
+    # Not specifying literals because we may/may not want to add more in the
+    # future. Coming back to change the SSO Dashboard, when it doesn't actually
+    # care about these values, is a bit of a stink.
+    required_indicator: str
+
+
 class Application(TypedDict):
     """
     A schema(ish) definition for what we expect typical applications to
@@ -64,6 +86,9 @@ class Application(TypedDict):
     # required to access this RP. It is enforced by the Access Provider.
     # E.g. MEDIUM may mean 2FA required
     AAL: NotRequired[Literal["LOW", "MEDIUM", "HIGH", "MAXIMUM"]]
+
+    # Optional step-up, used more in auth0-deploy.
+    step_up: NotRequired[StepUp]
 
 
 class AppEntry(TypedDict):
